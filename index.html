@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>Quiz Example</title>
+  <title>My Quiz</title>
   <link href="http://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="sweet-alert.css">
-  <link rel="stylesheet" href="quiz.css">
+  <link rel="stylesheet" href="resources/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="resources/css/sweet-alert.css">
+  <link rel="stylesheet" href="resources/css/quiz.css">
   <style>
     #quiz {
       height: 600px;
@@ -19,13 +19,13 @@
   <div class="container-fluid">
     <div id="quiz"></div>
   </div>
-  <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  <script src="sweet-alert.min.js"></script>
-  <script src="quiz.js"></script>
+  <script src="resources/js/jquery-1.11.3.min.js"></script>
+  <script src="resources/js/bootstrap.min.js"></script>
+  <script src="resources/js/sweet-alert.min.js"></script>
+  <script src="resources/js/quiz.js"></script>
   <script>
     $(function() {
-      $('#quiz').quiz("unicorns.json");
+      $('#quiz').quiz("my_quiz.json");
     });
   </script>
 </body>
