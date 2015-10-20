@@ -1,2 +1,6 @@
 # Python files
 *.pyc
+
+# generated json and index
+./*.json
+./index.html
