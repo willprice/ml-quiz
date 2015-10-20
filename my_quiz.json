@@ -34,11 +34,11 @@
       "correct": {
         "index": 1
       },
-      "image": "unicorn.jpg",
+      "image": "img/unicorn.jpg",
       "number": 3,
       "prompt": "What shade of white is this unicorn?"
     }
   ],
   "title": "How well do you know real creatures?",
-  "url": "http://urbaninstitute.github.io/quick-quiz/"
+  "url": "http://so-cool.github.io/quick-quiz/"
 }
