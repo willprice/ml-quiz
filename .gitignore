@@ -3,4 +3,4 @@
 
 # generated json and index
 ./*.json
-./index.html
+index.html
