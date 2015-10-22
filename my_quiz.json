@@ -1,44 +1,88 @@
 {
   "questions": [
     {
+      "answer_type": "single",
       "answers": [
-        "Loch Ness Monster",
-        "Centaur",
-        "Unicorn",
-        "Mermaid"
+        "2 + 2",
+        "2 + 3",
+        "$ \\frac{7}{2} + 3 $",
+        "seven plus two"
       ],
-      "correct": {
-        "index": 2,
-        "text": "The unicorn is a mythical creature. Strong, wild, and fierce, it was impossible to tame by man. Plinie, the Roman naturalist records it as \"a very ferocious beast, similar in the rest of its body to a horse, with the head of a deer, the feet of an elephant, the tail of a boar, a deep, bellowing voice, and a single black horn, two cubits in length, standing out in the middle of its forehead.\""
-      },
+      "captions": [
+        "",
+        "my caption"
+      ],
+      "chapter": 5,
+      "correct": [
+        2
+      ],
+      "difficulty": "easy",
+      "images": [
+        "img/img1.jpg",
+        "img/img2.jpg"
+      ],
       "number": 1,
-      "prompt": "Which of the following is the most real?"
+      "prompt": "Which of the following is $\\LaTeX$ equation?",
+      "section": 15,
+      "text": "You know $\\LaTeX$! That's great!"
     },
     {
+      "answer_type": "multi",
       "answers": [
-        "True",
-        "False"
+        "T",
+        "F",
+        "7",
+        "w"
       ],
-      "correct": {
-        "index": 0
-      },
+      "chapter": 2,
+      "correct": [
+        0,
+        1,
+        3
+      ],
+      "difficulty": "medium",
       "number": 2,
-      "prompt": "Unicorns are real?"
+      "prompt": "Mark all the letters:",
+      "section": 2
     },
     {
+      "answer_type": "order",
       "answers": [
-        "Marshmallow",
-        "Moon glow",
-        "Egg shell"
+        "26",
+        "19",
+        "100"
       ],
-      "correct": {
-        "index": 1
-      },
-      "image": "img/unicorn.jpg",
+      "chapter": 12,
+      "correct": [
+        2,
+        1,
+        3
+      ],
+      "difficulty": "hard",
       "number": 3,
-      "prompt": "What shade of white is this unicorn?"
+      "prompt": "Order the following numbers:",
+      "section": 2
+    },
+    {
+      "answer_type": "blanks",
+      "chapter": 3,
+      "correct": [
+        "4",
+        "red"
+      ],
+      "difficulty": "hard",
+      "number": 4,
+      "prompt": [
+        "$2+2$ is ",
+        0,
+        ". What colour is red truck: ",
+        1,
+        "."
+      ],
+      "section": 4
     }
   ],
-  "title": "How well do you know real creatures?",
+  "title": "Quizk-quiz show-off.",
+  "uid": "ab12345",
   "url": "http://so-cool.github.io/quick-quiz/"
 }

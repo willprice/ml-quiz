@@ -1,41 +1,68 @@
 // example quiz text
-// @bsouthga
 // <- (this is a comment and will be ignored)
 
-// this is the url for the parent
+// this is the url for your quiz
 url: http://so-cool.github.io/quick-quiz/
 
+// this is your UoB username
+uid: ab12345
+
 // this is the title of the quiz
-# How well do you know real creatures?
+title: Quizk-quiz show-off.
 
 // this is an example question.
 // the number signifies the question order,
 // meaning questions can be placed in random order
 // within the file
-1) Which of the following is the most real?
+#1
+difficulty : easy
+reference : 5.15
+question: 
+  Which of the following is $\LaTeX$ equation?
+image::img/img1.jpg
+image: my caption : img/img2.jpg
 
   // these are answers, a correct answer
   // is indicated by a "*"
-  - Loch Ness Monster
-  - Centaur
-  * Unicorn
-  - Mermaid
+answers:single:
+  - 2 + 2
+  - 2 + 3
+  * $ \frac{7}{2} + 3 $
+  - seven plus two
 
   // this is a reponse text paragraph
-  // it will be displayed upon answering
-  // the question correctly
-  The unicorn is a mythical creature. Strong, wild, and fierce, it was impossible to tame by man. Plinie, the Roman naturalist records it as "a very ferocious beast, similar in the rest of its body to a horse, with the head of a deer, the feet of an elephant, the tail of a boar, a deep, bellowing voice, and a single black horn, two cubits in length, standing out in the middle of its forehead."
+  // it will be displayed upon answering the question
+response:
+  You know $\LaTeX$! That's great!
+1#
 
+#2
+difficulty : medium
+reference : 2.2
+question :
+  Mark all the letters:
+answers:multi:
+  * T
+  * F
+  - 7
+  * w
+2#
 
-2) Unicorns are real?
-  * True
-  - False
+#3
+difficulty : hard
+reference : 12.2
+question:
+  Order the following numbers:
+answers:order:
+  2) 26
+  1) 19
+  3) 100
+3#
 
-3) What shade of white is this unicorn?
-  - Marshmallow
-  * Moon glow
-  - Egg shell
-
-  // this image will appear along with
-  // the question pompt
-  (image) img/unicorn.jpg
+#4
+difficulty: hard
+reference: 3.4
+question:
+  $2+2$ is {4}. What colour is red truck: {red}.
+answers:blanks:
+4#
