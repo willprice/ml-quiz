@@ -101,8 +101,8 @@ image: my caption : img/img2.jpg
   // these are answers, a correct answer
   // is indicated by a "*"
 answers:single:
-  - 2 + 2
-  - 2 + 3
+  - 2 * 2
+  - 2 - 3
   * $ \frac{7}{2} + 3 $
   - seven plus two
 
@@ -139,7 +139,7 @@ answers:order:
 difficulty: hard
 reference: 3.4
 question:
-  $2+2$ is {4}. What colour is red truck: {red}.
+  $2+2$ is [4]. What colour is red truck: [red].
 answers:blanks:
 4#
 ```
@@ -156,8 +156,8 @@ This produces a formatted json file like this...
     {
       "answer_type": "single",
       "answers": [
-        "2 + 2",
-        "2 + 3",
+        "2 * 2",
+        "2 - 3",
         "$ \\frac{7}{2} + 3 $",
         "seven plus two"
       ],

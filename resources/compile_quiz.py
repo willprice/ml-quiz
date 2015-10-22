@@ -37,8 +37,8 @@ img_rx = re.compile(r"""
 # fill in blanks regex
 #
 blanks_rx = re.compile(r"""
-  (?P<text>[^{}]+)?
-  (\{(?P<blank>[^}]+)\})?
+  (?P<text>[^\[\]]+)?
+  (\[(?P<blank>[^\]]+)\])?
 """, re.X | re.M)
 
 #
@@ -56,7 +56,7 @@ answ_rx = re.compile(r"""
 #  \s*(?P<correct>[-*])
   \s*(?P<correct>\-|\*|(\d+\s*\)))
   # actual text of answer
-  \s*(?P<answer>.+)
+  \s*(?P<answer>.+)\n
 """, re.X | re.M)
 
 def toJson(filename):
@@ -141,7 +141,7 @@ def toJson(filename):
         out['answers'] = []
         out['correct'] = []
         try:
-          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip())]
+          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip()+"\n")]
         except:
           print("Answers not given or malformed for question #" + str(out['number']))
           sys.exit(1)
