@@ -9,15 +9,36 @@ import json
 #
 q_rx = re.compile(r"""
   # number of the question
-  (?P<number>\d+)\)
+  \s*\#\s*(?P<number>\d+)\s*
+  # question difficulty
+  (difficulty)\s*:\s*(?P<difficulty>(easy)|(medium)|(hard))\s*
+  # question reference
+  (reference)\s*:\s*(?P<chapter>\d+)\.(?P<section>\d+)\s*
   # Question being asked
-  (?P<prompt>.+\?)
+  (question)\s*:\s*(?P<prompt>.+)\s*
+  # image(s) to include in response
+  (?P<images>(\s*(image)\s*:.*:.*\s*)*)
   # Possible answers to the question
-  (?P<answers>(?:\s+[-\*]\s.+)+)
-  # image to include in response
-  \s+(?P<image>\(image\).+)?
+  (answers)\s*:\s*(?P<answer_type>(single)|(multi)|(order)|(blanks))\s*:(?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*)\s*
   # Extra text to include in response
-  \s+(?P<text>(?![-\*]|^\d+\)|\s+\(image\)).+)?
+  ((response)\s*:\s*(?P<text>.+))?\s*
+  \s*(?P=number)\s*\#\s*
+""", re.X | re.M)
+
+#
+# image regex
+#
+#
+img_rx = re.compile(r"""
+  \s*(image)\s*:\s*(?P<caption>.*)\s*:\s*(?P<path>.+)\s*
+""", re.X | re.M)
+
+#
+# fill in blanks regex
+#
+blanks_rx = re.compile(r"""
+  (?P<text>[^{}]+)?
+  (\{(?P<blank>[^}]+)\})?
 """, re.X | re.M)
 
 #
@@ -29,9 +50,13 @@ answ_rx = re.compile(r"""
   # (-) : incorrect
   # (*) : correct
   #
-  \s+(?P<correct>[-\*])
+  # or ordering of the answers
+  # eg. 1) 2) 3)
+  #
+#  \s*(?P<correct>[-*])
+  \s*(?P<correct>\-|\*|(\d+\s*\)))
   # actual text of answer
-  \s+(?P<answer>.+)
+  \s*(?P<answer>.+)
 """, re.X | re.M)
 
 def toJson(filename):
@@ -44,9 +69,14 @@ def toJson(filename):
     url = url.group(1).strip()
 
   # find title for quiz
-  title = re.search(r'^#(.+)', quiz_text, re.M)
+  title = re.search(r'^title:(.+)', quiz_text, re.M)
   if title:
     title = title.group(1).strip()
+
+  # find user id
+  uid = re.search(r'^uid:(.+)', quiz_text, re.M)
+  if uid:
+    uid = uid.group(1).strip()
 
   # remove comments from quiz file
   quiz_text = re.sub(r'//(.+)', "", quiz_text)
@@ -55,30 +85,87 @@ def toJson(filename):
   questions = [m.groupdict() for m in q_rx.finditer(quiz_text)]
 
   results = []
+  question_indeces = []
 
   for q in questions:
 
     out = {}
 
-    out['prompt'] = q['prompt'].strip()
-    out['number'] = int(q['number'])
+    try:
+      out['number'] = int(q['number'])
+    except:
+      print("Question number not given")
+      sys.exit(1)
+    if out['number'] in question_indeces:
+      print("Question index: " + str(out['number'] + " repeated"))
+      sys.exit(1)
+    question_indeces.append(out['number'])
 
-    if q['image']:
-      out['image'] = q['image'].replace('(image)', "").strip()
+    try:
+      out['answer_type'] = q['answer_type'].strip()
+    except:
+      print("Answer type (single, multi, etc.) not given for question #" + str(out['number']))
+      sys.exit(1)
 
-    # correct answer info
-    out['correct'] = {}
+    try:
+      out['chapter'] = int(q['chapter'])
+    except:
+      print("Chapter number not given in question #" + str(out['number']))
+      sys.exit(1)
 
+    try:
+      out['section'] = int(q['section'])
+    except:
+      print("Section number not given in question #" + str(out['number']))
+      sys.exit(1)
+
+    try:
+      out['difficulty'] = q['difficulty'].strip()
+    except:
+      print("Difficulty not given in question #" + str(out['number']))
+      sys.exit(1)
+
+    try:
+      if out['answer_type'].lower() == 'blanks':
+        prompt = [m.groupdict() for m in blanks_rx.finditer(q['prompt'].strip())]
+        out['prompt'] = []
+        out['correct'] = []
+        for a in prompt:
+          if a['text']:
+            out['prompt'].append(a['text'])
+          if a['blank']:
+            out['prompt'].append(len(out['correct']))
+            out['correct'].append(a['blank'])
+      else:
+        out['prompt'] = q['prompt'].strip()
+        out['answers'] = []
+        out['correct'] = []
+        try:
+          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip())]
+        except:
+          print("Answers not given or malformed for question #" + str(out['number']))
+          sys.exit(1)
+        for i, a in enumerate(answers):
+          out['answers'].append(a['answer'].strip())
+          if a['correct'] == "*":
+            out['correct'].append(i)
+          elif ')' in a['correct']:
+            out['correct'].append( int(a['correct'].strip().strip(')').strip())  )
+    except:
+      print("Question not given in question #" + str(out['number']))
+      sys.exit(1)
+
+    if q['images']:
+      images = [m.groupdict() for m in img_rx.finditer(q['images'].strip())]
+      out['captions'] = []
+      out['images'] = []
+      for a in images:
+        out['captions'].append(a['caption'].strip())
+        out['images'].append(a['path'].strip())
+
+    # TODO: add possibility to attach image in the answer
     if q['text']:
-      out['correct']['text'] = q['text'].strip()
-
-    answers = [m.groupdict() for m in answ_rx.finditer(q['answers'])]
-
-    out['answers'] = []
-    for i, a in enumerate(answers):
-      out['answers'].append(a['answer'].strip())
-      if a['correct'] == "*":
-        out['correct']['index'] = i
+      out['text'] = q['text'].strip()
 
     results.append(out)
 
@@ -87,7 +174,8 @@ def toJson(filename):
       {
         "questions" : sorted(results, key=lambda x: x['number']),
         "title" : title,
-        "url" : url
+        "url" : url,
+        "uid" : uid
       },
       outfile,
       sort_keys=True,
