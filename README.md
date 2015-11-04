@@ -13,9 +13,9 @@ Each question is wrapped in between `#1` and `1#`, where `1` in this example is 
 ## Types of question ##
 You can specify the following types of question:
  - Single choice (`single` keyword)
- - Multiple choice (`multi` keyword)
- - Order elements (`order` keyword)
- - Fill in blanks (`blanks` keyword)
+ - Multiple choice (`multiple` keyword)
+ - Order elements (`sort` keyword)
+ - Fill in blanks (`blank_answer` keyword)
 
 You define the type of question in `answer:` flag - see below for details.  
 See the example attached below for usage.
@@ -43,7 +43,7 @@ For *ordering questions* please specify the correct order with `1)`, `2)`, etc.,
  1) This is the first element
  3) This is the third element
 ```
-Finally, for the *filling-in blanks* questions please do not provide any kind of answer in the `answer:blanks:` tag. Instead alter the `quiestion:` tag by putting words to be asked in square brackets, e.g. `this [word] will be asked`.
+Finally, for the *filling-in blanks* questions please do not provide any kind of answer in the `answer:blank_answer:` tag. Instead alter the `quiestion:` tag by putting words to be asked in square brackets, e.g. `this [word] will be asked`.
 
 For more details please see attached below `.quiz` file.
 
@@ -117,7 +117,7 @@ difficulty : medium
 reference : 2.2
 question :
   Mark all the letters:
-answers:multi:
+answers:multiple:
   * T
   * F
   - 7
@@ -129,7 +129,7 @@ difficulty : hard
 reference : 12.2
 question:
   Order the following numbers:
-answers:order:
+answers:sort:
   2) 26
   1) 19
   3) 100
@@ -140,7 +140,7 @@ difficulty: hard
 reference: 3.4
 question:
   $2+2$ is [4]. What colour is red truck: [red].
-answers:blanks:
+answers:blank_answer:
 4#
 ```
 
@@ -180,7 +180,7 @@ This produces a formatted json file like this...
       "text": "You know $\\LaTeX$! That's great!"
     },
     {
-      "answer_type": "multi",
+      "answer_type": "multiple",
       "answers": [
         "T",
         "F",
@@ -199,7 +199,7 @@ This produces a formatted json file like this...
       "section": 2
     },
     {
-      "answer_type": "order",
+      "answer_type": "sort",
       "answers": [
         "26",
         "19",
@@ -217,7 +217,7 @@ This produces a formatted json file like this...
       "section": 2
     },
     {
-      "answer_type": "blanks",
+      "answer_type": "blank_answer",
       "chapter": 3,
       "correct": [
         "4",
