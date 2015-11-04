@@ -17,6 +17,8 @@ from html_templates import multipleTemplate
 q_rx = re.compile(r"""
   # number of the question
   \s*\#\s*(?P<number>\d+)\s*
+  # Extra text to include in response
+  ((response)\s*:\s*(?P<text>.+))?\s*
   # question difficulty
   (difficulty)\s*:\s*(?P<difficulty>(easy)|(medium)|(hard))\s*
   # question reference
@@ -26,11 +28,12 @@ q_rx = re.compile(r"""
   # image(s) to include in response
   (?P<images>(\s*(image)\s*:.*:\s*\n\s*.*\s*\n)*)
   # Possible answers to the question
-  (answers)\s*:\s*(?P<answer_type>(single)|(multiple)|(sort)|(blank_answer))\s*:(?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*)\s*
-  # Extra text to include in response
-  ((response)\s*:\s*(?P<text>.+))?\s*
+  (answers)\s*:\s*(?P<answer_type>(single)|(multiple)|(sort)|(blank_answer)|(cloze_answer)|(matrix_sort_answer))\s*:
+  (?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*  | (?:\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*)  )\s*
   \s*(?P=number)\s*\#\s*
 """, re.X | re.M)
+# matrix matcher
+
 
 #
 # image regex
@@ -60,10 +63,29 @@ answ_rx = re.compile(r"""
   # or ordering of the answers
   # eg. 1) 2) 3)
   #
-#  \s*(?P<correct>[-*])
+# \s*(?P<correct>[-*])
   \s*(?P<correct>\-|\*|(\d+\s*\)))
   # actual text of answer
   \s*(?P<answer>.+)\n
+""", re.X | re.M)
+
+#
+# answer contingency table regex
+#
+mx_rx = re.compile(r"""
+  # parse matrix in form of
+  #
+  # 00 | 01 | 02
+  # ------------
+  # 10 | 11 | 12
+  # ------------
+  # 20 | 21 | 22
+  #
+  \s*(?P<oo>\d+)\s*\|\s*(?P<oi>\d+)\s*\|\s*(?P<oz>\d+)\s*\n
+  -+\n
+  \s*(?P<io>\d+)\s*\|\s*(?P<ii>\d+)\s*\|\s*(?P<iz>\d+)\s*\n
+  -+\n
+  \s*(?P<zo>\d+)\s*\|\s*(?P<zi>\d+)\s*\|\s*(?P<zz>\d+)\s*
 """, re.X | re.M)
 
 # debug answers
@@ -72,9 +94,9 @@ ANSWERS_DEBUG = True#False
 #
 # correct answer indicator
 #
-def markAnswer(answerText):
+def markAnswerCh(answerText):
   return "&laquo;" + " " + answerText
-def markAnswer(answerText, order):
+def markAnswerOr(answerText, order):
   return str(order) + "" + "&laquo;" + " " + answerText
 def markBlank(answerText):
   return "&raquo;" + answerText + "&laquo;" + " "
@@ -175,6 +197,7 @@ def parseQuestions(filename):
       if out['answer_type'].lower() == 'blank_answer':
         prompt = [m.groupdict() for m in blanks_rx.finditer(q['prompt'].strip())]
         out['prompt'] = []
+        out['answers'] = None
         out['correct'] = []
         for a in prompt:
           if a['text']:
@@ -184,7 +207,7 @@ def parseQuestions(filename):
               out['prompt'].append(markBlank(a['blank']))
             out['prompt'].append(len(out['correct']))
             out['correct'].append(a['blank'])
-      else:
+      elif out['answer_type'].lower() == 'single' or out['answer_type'].lower() == 'multiple' or out['answer_type'].lower() == 'sort':
         out['prompt'] = q['prompt'].strip()
         out['answers'] = []
         out['correct'] = []
@@ -199,12 +222,41 @@ def parseQuestions(filename):
             out['correct'].append(i)
             # if answer debug flag is set append correct answer indicator
             if ANSWERS_DEBUG:
-              out['answers'][i] = markAnswer(out['answers'][i])
+              out['answers'][i] = markAnswerCh(out['answers'][i])
           elif ')' in a['correct']:
             out['correct'].append( int(a['correct'].strip().strip(')').strip())  )
             # if answer debug flag is set append correct ordering
             if ANSWERS_DEBUG:
-              out['answers'][i] = markAnswer(out['answers'][i], out['correct'][-1])
+              out['answers'][i] = markAnswerOr(out['answers'][i], out['correct'][-1])
+      elif out['answer_type'].lower() == 'cloze_answer':
+        try:
+          answers = [m.groupdict() for m in mx_rx.finditer(q['answers'].strip()+"\n")][0]
+        except:
+          print("Answers not given or malformed (contingency table) for question #" + str(out['number']))
+          sys.exit(1)
+        out['prompt'] = q['prompt'].strip()
+        out['answers'] = None
+        # reformat output
+        out['correct'] = { 00:answers['oo'], 01:answers['oi'], 02:answers['oz'], 10:answers['io'], 11:answers['ii'], 12:answers['iz'], 20:answers['zo'], 21:answers['zi'], 22:answers['zz'] }
+      elif out['answer_type'].lower() == 'matrix_sort_answer':
+        out['answers'] = []
+        out['correct'] = []
+        try:
+          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip()+"\n")]
+          for an in answers:
+            an2p = an['answer'].split('<->')
+            if ANSWERS_DEBUG:
+              out['answers'].append(an2p[0].strip() + " " + markBlank(an2p[1].strip()))
+            else:
+              out['answers'].append(an2p[0].strip())
+            out['correct'].append(an2p[1].strip())
+        except:
+          print("Answers not given or malformed (missing *<->* indicator?) for question #" + str(out['number']))
+          sys.exit(1)
+        out['prompt'] = q['prompt'].strip()
+      else:
+        print "Unrecognised type of question: " + out['answer_type']
+        sys.exit(1)
     except:
       print("Question not given in question #" + str(out['number']))
       sys.exit(1)
@@ -342,10 +394,54 @@ def toHtml(filename, results, title):
       question["answersStr"] = str( blankTemplate % questionStr )
 
       question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'matrix_sort_answer':
-      pass
     elif result['answer_type'] == 'cloze_answer':
-      pass
+      answers = []
+      question["correctness"] = []
+      # get dictionary keys and order them
+      answerKeys = result['correct'].keys()
+      answerKeys.sort()
+      for ai, answer in enumerate( answerKeys ):
+        answerText = str( result['correct'][answer] )
+        question["correctness"].append( answerText )
+        answers.append( dict( answerPos_0 = ai,
+          answerPos_1 = ai + 1,
+          id = question["id"],
+          answerText = answerText ) )
+      # Populate the question dict with the answers provided
+      question["answerType"] = result['answer_type']
+      question["answers"] = answers
+      question["numAnswers"] = len( answers )
+      question["json"] = htmlToJson( question )
+      # decide on template to fill based on debugging state
+      template = None
+      if ANSWERS_DEBUG:
+        marked = [markBlank(x) for x in question["correctness"]]
+        template = [x for pair in zip(marked,question["correctness"]) for x in pair]
+      else:
+        template = [x for pair in zip(['']*len(question["correctness"]),question["correctness"]) for x in pair]
+      question["answersStr"] = tableTemplate % tuple( template )
+      question["questionHTML"] = questionTemplate % question
+    elif result['answer_type'] == 'matrix_sort_answer':
+      answerList = []
+      questionList = []
+      question["answers"] = []
+
+      for ai, (t0,t1) in enumerate( zip(result['answers'], result['correct']) ):
+        question["answers"].append( ( t1, t0 ) )
+        answerList.append( matrixSort_answers_single % { "answerPos_0": ai, "answer": t1 } )
+        questionList.append( matrixSort_question_single % { "answerPos_0": ai, "answer": t0 } )
+
+      qaSet = { "ms_questions": "".join( quest for quest in answerList ), "ms_questionsSet": questionList, "ms_answers": "".join( quest for quest in questionList ), "ms_answersSet": answerList }
+      question = dict( dict( qaSet.items() + question.items() ) )
+
+      # Populate the question dict with the answers provided
+      question["answerType"] = result['answer_type']
+      question["numQuestions"] = 0
+      # answerStr | correctness
+      question["correctness"] = range( len( answerList ) )
+      question["numAnswers"] = len( answerList )
+      question["json"] = htmlToJson( question )
+      question["questionHTML"] = matrixSort_questionTemplate % question
     else:
       print( "Question type not recognised: " + result['answer_type'] + " !" )
       sys.exit(1)
