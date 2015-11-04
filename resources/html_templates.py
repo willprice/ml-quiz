@@ -2,24 +2,28 @@
 questionCategories = {\
   1:\
     {\
+    0:"The ingredients of machine learning",
     1:"Tasks: the problems that can be solved with machine learning",
-    2:"Models: the output ofmachine learning",
+    2:"Models: the output of machine learning",
     3:"Features: the workhorses of machine learning"
     },
   2:\
     {\
+    0:"Binary classification and related tasks",
     1:"Classification",
     2:"Scoring and ranking",
     3:"Class probability estimation"
     },
   3:
     {\
+    0:"Beyond binary classification",
     1:"Handling more than two classes",
     2:"Regression",
     3:"Unsupervised and descriptive learning"
     },
   4:\
     {\
+    0:"Concept learning",
     1:"The hypothesis space",
     2:"Paths through the hypothesis space",
     3:"Beyond conjunctive concepts",
@@ -27,12 +31,14 @@ questionCategories = {\
     },
   5:\
     {\
+    0:"Tree models",
     1:"Decision trees",
     2:"Ranking and probability estimation trees",
     3:"Tree learning as variance reduction"
     },
   6:\
     {\
+    0:"Rule models",
     1:"Learning ordered rule lists",
     2:"Learning unordered rule sets",
     3:"Descriptive rule learning",
@@ -40,6 +46,7 @@ questionCategories = {\
     },
   7:\
     {\
+    0:"Linear models",
     1:"The least-squares method",
     2:"The perceptron",
     3:"Support vector machines",
@@ -48,6 +55,7 @@ questionCategories = {\
     },
   8:\
     {\
+    0:"Distance-based models",
     1:"So many roads...",
     2:"Neighbours and exemplars",
     3:"Nearest-neighbour classification",
@@ -57,6 +65,7 @@ questionCategories = {\
     },
   9:\
     {\
+    0:"Probabilistic models",
     1:"The normal distribution and its geometric interpretations",
     2:"Probabilistic models for categorical data",
     3:"Discriminative learning by optimising conditional likelihood",
@@ -65,18 +74,21 @@ questionCategories = {\
     },
   10:\
     {\
+    0:"Features",
     1:"Kinds of feature",
     2:"Feature transformations",
     3:"Feature construction and selection"
     },
   11:\
     {\
+    0:"Model ensembles",
     1:"Bagging and random forests",
     2:"Boosting",
     3:"Mapping the ensemble landscape"
     },
   12:\
     {\
+    0:"Machine learning experiments",
     1:"What to measure",
     2:"How to measure it",
     3:"How to interpret it"
@@ -144,14 +156,14 @@ quizTemplate = """<!doctype html>
     <link rel="pingback" href="http://python.otuama.net/xmlrpc.php"/>
     <link rel="alternate" type="application/rss+xml" title="Machine Learning &raquo; Feed" href="http://python.otuama.net/feed/"/>
     <link rel="alternate" type="application/rss+xml" title="Machine Learning &raquo; Comments Feed" href="http://python.otuama.net/comments/feed/"/>
-    <link rel='stylesheet' id='wpProQuiz_front_style-css' href='http://python.otuama.net/wp-content/plugins/wp-pro-quiz/css/wpProQuiz_front.min.css?ver=0.28' type='text/css' media='all'/>
-    <link rel='stylesheet' id='responsive-style-css' href='http://python.otuama.net/wp-content/themes/responsive/style.css?ver=1.9.3.4' type='text/css' media='all'/>
-    <link rel='stylesheet' id='responsive-media-queries-css' href='http://python.otuama.net/wp-content/themes/responsive/core/css/style.css?ver=1.9.3.4' type='text/css' media='all'/>
-    <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/jquery.js?ver=1.10.2'>
+    <link rel='stylesheet' id='wpProQuiz_front_style-css' href='resources/css/wpProQuiz_front.min.css?ver=0.28' type='text/css' media='all'/>
+    <link rel='stylesheet' id='responsive-style-css' href='resources/css/responsive_style.css?ver=1.9.3.4' type='text/css' media='all'/>
+    <link rel='stylesheet' id='responsive-media-queries-css' href='resources/css/responsive_core_style.css?ver=1.9.3.4' type='text/css' media='all'/>
+    <script type='text/javascript' src='resources/js/wp_jquery.js?ver=1.10.2'>
     </script>
-    <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'>
+    <script type='text/javascript' src='resources/js/wp_jquery-migrate.min.js?ver=1.2.1'>
     </script>
-    <script type='text/javascript' src='http://python.otuama.net/wp-content/themes/responsive/core/js/responsive-modernizr.js?ver=2.6.1'>
+    <script type='text/javascript' src='resources/js/responsive_core_responsive-modernizr.js?ver=2.6.1'>
     </script>
     <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://python.otuama.net/xmlrpc.php?rsd"/>
     <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://python.otuama.net/wp-includes/wlwmanifest.xml"/>
@@ -161,7 +173,9 @@ quizTemplate = """<!doctype html>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {
-          inlineMath: [['$','$'], ['\\(','\\)']]}
+          inlineMath: [['$','$']],
+          displayMath: [ ['$$','$$'] ]
+        }
       });
     </script>
     <script
@@ -285,25 +299,25 @@ quizTemplate = """<!doctype html>
   <script type='text/javascript' src='http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
   </script>
   <!-- MathJax Latex Plugin installed -->
-  <script type='text/javascript' src='http://python.otuama.net/wp-content/themes/responsive/core/js/responsive-scripts.js?ver=1.2.4'>
+  <script type='text/javascript' src='resources/js/responsive_core_responsive-scripts.js?ver=1.2.4'>
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/ui/jquery.ui.core.min.js?ver=1.10.3'>
+  <script type='text/javascript' src='resources/js/wp_ui_jquery_core.min.js?ver=1.10.3'>
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/ui/jquery.ui.widget.min.js?ver=1.10.3'>
+  <script type='text/javascript' src='resources/js/wp_ui_jquery_widget.min.js?ver=1.10.3'>
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/ui/jquery.ui.mouse.min.js?ver=1.10.3'>
+  <script type='text/javascript' src='resources/js/wp_ui_jquery_mouse.min.js?ver=1.10.3'>
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-includes/js/jquery/ui/jquery.ui.sortable.min.js?ver=1.10.3'>
+  <script type='text/javascript' src='resources/js/wp_ui_jquery_sortable.min.js?ver=1.10.3'>
   </script>
   <script type='text/javascript'>
     /* <![CDATA[ */
-    var WpProQuizGlobal = {"ajaxurl":"http:\/\/python.otuama.net\/wp-admin\/admin-ajax.php","loadData":"Loading","questionNotSolved":"You must answer this question.","questionsNotSolved":"You must answer all questions before you can completed the quiz.","fieldsNotFilled":"All fields have to be filled."}
+    var WpProQuizGlobal = {"ajaxurl":"resources\/php\/wp_admin-ajax.php","loadData":"Loading","questionNotSolved":"You must answer this question.","questionsNotSolved":"You must answer all questions before you can completed the quiz.","fieldsNotFilled":"All fields have to be filled."}
         ;
     /* ]]> */
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-content/plugins/wp-pro-quiz/js/wpProQuiz_front.min.js?ver=0.28'>
+  <script type='text/javascript' src='resources/js/wpProQuiz_front.min.js?ver=0.28'>
   </script>
-  <script type='text/javascript' src='http://python.otuama.net/wp-content/plugins/wp-pro-quiz/js/jquery.ui.touch-punch.min.js?ver=0.2.2'>
+  <script type='text/javascript' src='resources/js/wpProQuiz_jquery.ui.touch-punch.min.js?ver=0.2.2'>
   </script>
 </body>
 </html>"""
