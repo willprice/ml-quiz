@@ -15,19 +15,16 @@ title: Quizk-quiz show-off.
 // meaning questions can be placed in random order
 // within the file
 #1
-  // this is a reponse text paragraph
-  // it will be displayed upon answering the question
-response:
-  You know $\LaTeX$! That's great!
 difficulty : easy
 reference : 5.2
-question: 
+question:
   Which of the following is $\LaTeX$ equation?
-image::img/img1.jpg
-image: my caption : img/img2.jpg
-
-  // these are answers, a correct answer
-  // is indicated by a "*"
+image::
+  img/unicorn.jpg
+image: my caption :
+  img/unicorn.jpg
+// these are answers, a correct answer
+// is indicated by a "*"
 answers:single:
   - 2 * 2
   - 2 - 3
@@ -62,7 +59,7 @@ answers:sort:
 difficulty: hard
 reference: 3.3
 question:
-  $2+2$ is [4]. What colour is red truck: [red,Red].
+  $2+2$ is [4]. What colour is a red truck: [red,Red].
 answers:blank_answer:
 4#
 
@@ -70,7 +67,7 @@ answers:blank_answer:
 difficulty: hard
 reference: 3.3
 question:
-  1TB<br>5TN<br>12 in total<br>5 actual positive
+  Fill in contingency matrix.<br><br>1TB<br>5TN<br>12 in total<br>5 actual positive
 answers:cloze_answer:
 
 1 | 2 | 3
@@ -85,7 +82,7 @@ answers:cloze_answer:
 difficulty: hard
 reference: 3.3
 question:
-  Fill the following blanks.
+  Match the following sentences.
 answers:matrix_sort_answer:
   - The letter after 'a' is <-> B.
   - The letter after 'g' is <-> H.
