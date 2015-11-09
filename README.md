@@ -4,6 +4,7 @@ A quick quiz generator focused on content; not platform.
 To generate a quiz create a text file with `.quiz` extension in the root of this folder structure (where `README.md` is located).
 
 Each quiz file must contain definition of:
+
  - `uid:` - your Bristol user ID e.g. `uid:ab12345`,
  - `title:` - the title of your quiz e.g. `title: My awesome ML quiz`,
  - `url:` - url to your quiz; if you host it on GitHub give a link to your GitHub repository otherwise put `url: 127.0.0.1`.
@@ -14,6 +15,7 @@ Each question is wrapped between `#1` and `1#`, where `1` in this example is que
 
 ## Types of question ##
 You can specify the following types of question:
+
  - Single choice (`single` keyword)
  - Multiple choice (`multiple` keyword)
  - Order elements (`sort` keyword)
@@ -88,6 +90,7 @@ For more details please see `.quiz` file attached below.
 ## Question flags ##
 ### Required parameters ###
 The following parameters are required:
+
  - `difficulty:` defines difficulty of the questions; possibilities are: *easy*, *medium* and *hard*.
  - `reference:` defines ML book chapter and section that the question corresponds to; it is given in format **chapter<dot>section** e.g. `5.12`.
  - `question:` defines the question text that will be asked; it must be contained in one line; both *in-line* LaTeX (i.e. `$\LaTeX$`) and *display* LaTeX (i.e. `$$\LaTeX$$`) are supported.
@@ -258,8 +261,14 @@ Therefore, flag `-a` compiles all of the questions in given `.quiz` file. `-q 7`
 
 # Submission #
 Please submit only two files:
+
 - `.quiz` file containing all of your questions; please make sure that it compiles on 2.11 MVB machines.
 - `.html` file containing all of your compiled questions.
+- `img` folder containing all used images if any.
+- A short report (2-4 pages) in `pdf` format describing for each question briefly what knowledge it tests, and what your rationale for classifying it as easy/medium/hard is. Your submission will primarily be marked on the diversity and originality of your questions, as well as your assessment of their difficulty level.
+    * An easy question is one that can be answered by looking up a specific passage in the book;
+    * a medium question is one that requires some degree of problem-solving;
+    * a hard question is one that requires some thinking beyond what was discussed in the lectures.
 
 # TODO #
  - [ ] Insert image in response text.
