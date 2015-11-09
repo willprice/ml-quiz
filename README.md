@@ -260,7 +260,7 @@ optional arguments:
 Therefore, flag `-a` compiles all of the questions in given `.quiz` file. `-q 7` compiles only question `#7`. `-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development.
 
 # Submission #
-Please submit only two files:
+Please submit only the following files:
 
 - `.quiz` file containing all of your questions; please make sure that it compiles on 2.11 MVB machines.
 - `.html` file containing all of your compiled questions.
@@ -269,6 +269,9 @@ Please submit only two files:
     * An easy question is one that can be answered by looking up a specific passage in the book;
     * a medium question is one that requires some degree of problem-solving;
     * a hard question is one that requires some thinking beyond what was discussed in the lectures.
+
+# Assignment description #
+Full assignment description is available [here](https://github.com/So-Cool/quick-quiz/wiki/Option-3:-ML-Quiz).
 
 # TODO #
  - [ ] Insert image in response text.
