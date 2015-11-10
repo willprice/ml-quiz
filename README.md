@@ -274,7 +274,11 @@ Please submit only the following files:
 Full assignment description is available [here](https://github.com/So-Cool/quick-quiz/wiki/Option-3:-ML-Quiz).
 
 # TODO #
+ - [ ] Question feedback (or/and response text): optional parameter *response text* - if specified it will appear upon question attempt (`response:` keyword).
+ - [ ] Question marking: indicator of good question & good with small flaws.
+ - [ ] Program flag for hiding correct answers in html (possible assignment with randomly generated questions per student).
+ - [ ] Program flag for generating all of the questions in separate files.
+ - [ ] Program flag for not permuting questions in single html file upon displaying.
+ - [ ] Program flag for generating JSON.
  - [ ] Insert image in response text.
  - [ ] Multi-line questions.
- - [ ] Question feedback.
- - [ ] Question marking.
