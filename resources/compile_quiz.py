@@ -27,7 +27,7 @@ q_rx = re.compile(r"""
   # number of the question
   \s*\#\s*(?P<number>\d+)\s*
   # Extra text to include in response
-  ((response)\s*:\s*(?P<text>.+))?\s*
+  ((feedback)\s*:\s*(?P<text>.+))?\s*
   # question difficulty
   (difficulty)\s*:\s*(?P<difficulty>(easy)|(medium)|(hard))\s*
   # question reference
@@ -286,6 +286,8 @@ def parseQuestions(filename, qToGen):
     # TODO: add possibility to attach image in the answer
     if q['text']:
       out['text'] = q['text'].strip()
+    else:
+      out['text'] = '-'
 
     results.append(out)
 
@@ -503,6 +505,19 @@ def updateIndex(dirname, jsonPath):
       for line in reader:
         writer.write(line.replace("my_quiz.json", jsonName))
 
+#
+# generate feedback for given user
+#
+def toFeedback( rootDir, uid, results ):
+  d = []
+  for r in results:
+    d.append('#' + str(r['number']) + ': ' + r['text'])
+  d.sort()
+
+  feedbackFile = rootDir + "feedback_" + uid + ".txt"
+  with open(feedbackFile, 'w') as ffile:
+    ffile.write( '\n'.join(d) )
+
 if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
@@ -531,8 +546,9 @@ if __name__ == '__main__':
     sys.exit(1)
 
   if args.feedback:
-    print( "Generating feedback.txt" )
-    print( "NOT YET IMPLEMENTED" )
+    results, _, _, uid = parseQuestions(quizFilename, args.question)
+    print( "Generating feedback for " + uid )
+    toFeedback( rootDir, uid, results )
   elif args.question:
     print( "Generating question #" + str(args.question[-1]) )
     results, title, url, uid = parseQuestions(quizFilename, args.question)

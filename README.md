@@ -274,12 +274,41 @@ Please submit only the following files:
 # Assignment description #
 Full assignment description is available [here](https://github.com/So-Cool/quick-quiz/wiki/Option-3:-ML-Quiz).
 
-# TODO #
- - [ ] Question feedback (or/and response text): optional parameter *response text* - if specified it will appear upon question attempt (`response:` keyword).
+# Marking - markers only #
+## Feedback ##
+For marking purposes you may leave feedback to each question with additional flag `feedback` e.g.:
+```
+#1
+feedback:
+  It is too easy.
+difficulty : easy
+reference : 5.2
+question:
+  Which of the following is $\LaTeX$ equation?
+image::
+  img/unicorn.jpg
+image: my caption :
+  img/unicorn.jpg
+// these are answers, a correct answer
+// is indicated by a "*"
+answers:single:
+  - 2 * 2
+  - 2 - 3
+  * $ \frac{7}{2} + 3 $
+  - seven plus two
+1#
+```
+
+Feedback flag **must** be the first one after question number.
+
+## Question indicator ##
  - [ ] Question marking: indicator of good question & good with small flaws.
+ - [ ] Program flag for not permuting questions in single html file upon displaying.
+
+# TODO #
+ - [ ] Question response text - if specified it will appear upon question attempt (`response:` keyword).
+ - [ ] Insert image in response text.
  - [ ] Program flag for hiding correct answers in html (possible assignment with randomly generated questions per student).
  - [ ] Program flag for generating all of the questions in separate files.
- - [ ] Program flag for not permuting questions in single html file upon displaying.
  - [ ] Program flag for generating JSON.
- - [ ] Insert image in response text.
  - [ ] Multi-line questions.
