@@ -19,6 +19,7 @@ parser.add_argument('-a', '--all', required=False, dest="all", default=True, act
 parser.add_argument('-d', '--debug', required=False, dest="debug", default=False, action='store_true', help=('indicate the correct answer in the question'))
 parser.add_argument('-f', '--feedback', required=False, dest="feedback", default=False, action='store_true', help=('generate feedback for all questions'))
 parser.add_argument('-e', '--extract', required=False, dest="extract", default=False, action='store_true', help=('export marked questions to separate file'))
+parser.add_argument('-s', '--separate', required=False, dest="separate", default=False, action='store_true', help=('generate all of the questions in separate files'))
 parser.add_argument('filename', type=str, nargs=1, help='path to your `.quiz` file')
 
 #
@@ -140,7 +141,7 @@ def fillBlanks(textList, dictionaryAnswers):
       sys.exit(1)
   return qs
 
-def parseQuestions(filename, qToGen):
+def parseQuestions(filename):
   with open(filename, 'r') as quiz_file:
     quiz_text = quiz_file.read()
 
@@ -181,10 +182,6 @@ def parseQuestions(filename, qToGen):
       print("Question index: " + str(out['number'] + " repeated"))
       sys.exit(1)
     question_indeces.append(out['number'])
-
-    # skip all the other questions if only interested in one
-    if qToGen != None:
-      if qToGen[-1] != out['number']: continue
 
     try:
       out['answer_type'] = q['answer_type'].strip()
@@ -325,167 +322,191 @@ def htmlToJson(question):
   return json
 
 # prepare and write results to html file
-def toHtml(filename, results, title):
-  questions = []
-  jsons = {}
+def toHtml(filename, results, title, qToGen):
+  # skip all the other questions if only interested in one
+  separateFilenames = False
+  if type(qToGen) == list:
+    for r in results:
+      if qToGen[-1] == r['number']:
+        resultsU = [r]
+        resultPartition = [resultsU]
+        break
+  elif qToGen == None:
+    resultsU = results
+    resultPartition = [resultsU]
+  elif qToGen:
+    separateFilenames = True
+    resultPartition = [[r] for r in results]
+  else:
+    sys.error("I shouldn't be here")
 
-  for result in results:
-    question = {}
-    question["questionNumber"] = question["id"] = result['number']
-    question["category"]       = str(result['chapter']) + "." + str(result['section']) +\
-      ": " +  questionCategories[result['chapter']][0] + " : " + questionCategories[result['chapter']][result['section']]
-    question["difficulty"]     = result['difficulty']
+  for rU in resultPartition:
+    questions = []
+    jsons = {}
+    for result in rU:
+      question = {}
+      question["questionNumber"] = question["id"] = result['number']
+      question["category"]       = str(result['chapter']) + "." + str(result['section']) +\
+        ": " +  questionCategories[result['chapter']][0] + " : " +\
+        questionCategories[result['chapter']][result['section']]
+      question["difficulty"]     = result['difficulty']
 
-    # prepare question to display: text + images
-    question["question"]       = result['prompt']
-    for i in range(len(result['images'])):
-      question["question"] += insertImage(result['images'][i], result['captions'][i])
+      # prepare question to display: text + images
+      question["question"]       = result['prompt']
+      for i in range(len(result['images'])):
+        question["question"] += insertImage(result['images'][i], result['captions'][i])
 
-    if result['answer_type'] == 'single':
-      # Loop over the answers and extract the text if it has been filled in appropriately
-      # remodel answers so that the first one in the list is correct
-      # TODO: fix in the same way as in multiple answers
-      rAnswers = result['answers'][:]
-      rAnswers_c = rAnswers.pop(result['correct'][0])
-      rAnswers.insert(0, rAnswers_c)
-      answers = []
-      for ai, answer in enumerate(rAnswers):
-        answers.append( dict(
-          answerPos_0 = ai,
-          answerPos_1 = ai + 1,
-          id = question["id"],
-          answerText = answer) )
+      if result['answer_type'] == 'single':
+        # Loop over the answers and extract the text if it has been filled in appropriately
+        # remodel answers so that the first one in the list is correct
+        # TODO: fix in the same way as in multiple answers
+        rAnswers = result['answers'][:]
+        rAnswers_c = rAnswers.pop(result['correct'][0])
+        rAnswers.insert(0, rAnswers_c)
+        answers = []
+        for ai, answer in enumerate(rAnswers):
+          answers.append( dict(
+            answerPos_0 = ai,
+            answerPos_1 = ai + 1,
+            id = question["id"],
+            answerText = answer) )
 
-      question["answers"] = answers
+        question["answers"] = answers
 
-      question["correctness"] = [0] * len( question["answers"] )
-      question["correctness"][0] = 1
+        question["correctness"] = [0] * len( question["answers"] )
+        question["correctness"][0] = 1
 
-      question["answersStr"] = "\n".join( singleTemplate % answer for answer in answers )
-      question["numAnswers"] = len( answers )
-      question["answerType"] = result['answer_type']
-      question["json"] = htmlToJson( question )
-      question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'multiple':
-      answers = []
-      for ai, answer in enumerate(result['answers']):
-        answers.append( dict(
-          answerPos_0 = ai,
-          answerPos_1 = ai + 1,
-          id = question["id"],
-          answerText = answer) )
-      question["answers"] = answers
+        question["answersStr"] = "\n".join( singleTemplate % answer for answer in answers )
+        question["numAnswers"] = len( answers )
+        question["answerType"] = result['answer_type']
+        question["json"] = htmlToJson( question )
+        question["questionHTML"] = questionTemplate % question
+      elif result['answer_type'] == 'multiple':
+        answers = []
+        for ai, answer in enumerate(result['answers']):
+          answers.append( dict(
+            answerPos_0 = ai,
+            answerPos_1 = ai + 1,
+            id = question["id"],
+            answerText = answer) )
+        question["answers"] = answers
 
-      question['correctness'] = [0] * len( question["answers"] )
-      for ri in result['correct']:
-        question["correctness"][ri] = 1
+        question['correctness'] = [0] * len( question["answers"] )
+        for ri in result['correct']:
+          question["correctness"][ri] = 1
 
-      question["answersStr"] = "\n".join( multipleTemplate% answer for answer in answers )
-      question["numAnswers"] = len( answers )
-      question["answerType"] = result['answer_type']
-      question["json"] = htmlToJson( question )
-      question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'sort':
-      answers = []
-      for ai, answer in enumerate(result['answers']):
-        answers.append( dict(
-          answerPos_0 = ai,
-          answerPos_1 = ai + 1,
-          id = question["id"],
-          answerText = answer) )
-      question["answers"] = answers
+        question["answersStr"] = "\n".join( multipleTemplate% answer for answer in answers )
+        question["numAnswers"] = len( answers )
+        question["answerType"] = result['answer_type']
+        question["json"] = htmlToJson( question )
+        question["questionHTML"] = questionTemplate % question
+      elif result['answer_type'] == 'sort':
+        answers = []
+        for ai, answer in enumerate(result['answers']):
+          answers.append( dict(
+            answerPos_0 = ai,
+            answerPos_1 = ai + 1,
+            id = question["id"],
+            answerText = answer) )
+        question["answers"] = answers
 
-      question["correctness"] = result['correct']
+        question["correctness"] = result['correct']
 
-      question["answersStr"] = "\n".join( sortTemplate% answer for answer in answers )
-      question["numAnswers"] = len( answers )
-      question["answerType"] = result['answer_type']
-      question["json"] = htmlToJson( question )
-      question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'blank_answer':
-      # overwrite the question prompt
-      question["question"] = "Fill in the blanks"
-      question["rawQuestion"] = mergeBlanks(result['prompt'], result['correct'])
+        question["answersStr"] = "\n".join( sortTemplate% answer for answer in answers )
+        question["numAnswers"] = len( answers )
+        question["answerType"] = result['answer_type']
+        question["json"] = htmlToJson( question )
+        question["questionHTML"] = questionTemplate % question
+      elif result['answer_type'] == 'blank_answer':
+        # overwrite the question prompt
+        question["question"] = "Fill in the blanks"
+        question["rawQuestion"] = mergeBlanks(result['prompt'], result['correct'])
 
-      # Build up the dictionary of answers
-      question["answers"] = []
-      question["correctness"] = []
-      for ic in result['correct']:
-        ic_r = ic.split(',')
-        ic_r = [r.strip() for r in ic_r]
-        question["correctness"].append(ic_r)
-        question["answers"].append({'length':max(map(len,ic_r)), 'answers':"("+', '.join(ic_r)+")"})
+        # Build up the dictionary of answers
+        question["answers"] = []
+        question["correctness"] = []
+        for ic in result['correct']:
+          ic_r = ic.split(',')
+          ic_r = [r.strip() for r in ic_r]
+          question["correctness"].append(ic_r)
+          question["answers"].append({'length':max(map(len,ic_r)), 'answers':"("+', '.join(ic_r)+")"})
 
-      questionStr = fillBlanks(result['prompt'], question["answers"])
+        questionStr = fillBlanks(result['prompt'], question["answers"])
 
-      question["answerType"] = result['answer_type']
-      question["numAnswers"] = len( question["answers"] )
-      question["json"] = htmlToJson( question )
-      question["answersStr"] = str( blankTemplate % questionStr )
+        question["answerType"] = result['answer_type']
+        question["numAnswers"] = len( question["answers"] )
+        question["json"] = htmlToJson( question )
+        question["answersStr"] = str( blankTemplate % questionStr )
 
-      question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'cloze_answer':
-      answers = []
-      question["correctness"] = []
-      # get dictionary keys and order them
-      answerKeys = result['correct'].keys()
-      answerKeys.sort()
-      for ai, answer in enumerate( answerKeys ):
-        answerText = str( result['correct'][answer] )
-        question["correctness"].append( answerText )
-        answers.append( dict( answerPos_0 = ai,
-          answerPos_1 = ai + 1,
-          id = question["id"],
-          answerText = answerText ) )
-      # Populate the question dict with the answers provided
-      question["answerType"] = result['answer_type']
-      question["answers"] = answers
-      question["numAnswers"] = len( answers )
-      question["json"] = htmlToJson( question )
-      # decide on template to fill based on debugging state
-      template = None
-      if ANSWERS_DEBUG:
-        marked = [markBlank(x) for x in question["correctness"]]
-        template = [x for pair in zip(marked,question["correctness"]) for x in pair]
+        question["questionHTML"] = questionTemplate % question
+      elif result['answer_type'] == 'cloze_answer':
+        answers = []
+        question["correctness"] = []
+        # get dictionary keys and order them
+        answerKeys = result['correct'].keys()
+        answerKeys.sort()
+        for ai, answer in enumerate( answerKeys ):
+          answerText = str( result['correct'][answer] )
+          question["correctness"].append( answerText )
+          answers.append( dict( answerPos_0 = ai,
+            answerPos_1 = ai + 1,
+            id = question["id"],
+            answerText = answerText ) )
+        # Populate the question dict with the answers provided
+        question["answerType"] = result['answer_type']
+        question["answers"] = answers
+        question["numAnswers"] = len( answers )
+        question["json"] = htmlToJson( question )
+        # decide on template to fill based on debugging state
+        template = None
+        if ANSWERS_DEBUG:
+          marked = [markBlank(x) for x in question["correctness"]]
+          template = [x for pair in zip(marked,question["correctness"]) for x in pair]
+        else:
+          template = [x for pair in zip(['']*len(question["correctness"]),question["correctness"]) for x in pair]
+        question["answersStr"] = tableTemplate % tuple( template )
+        question["questionHTML"] = questionTemplate % question
+      elif result['answer_type'] == 'matrix_sort_answer':
+        answerList = []
+        questionList = []
+        question["answers"] = []
+
+        for ai, (t0,t1) in enumerate( zip(result['answers'], result['correct']) ):
+          question["answers"].append( ( t1, t0 ) )
+          answerList.append( matrixSort_answers_single % { "answerPos_0": ai, "answer": t1 } )
+          questionList.append( matrixSort_question_single % { "answerPos_0": ai, "answer": t0 } )
+
+        qaSet = { "ms_questions": "".join( quest for quest in answerList ), "ms_questionsSet": questionList, "ms_answers": "".join( quest for quest in questionList ), "ms_answersSet": answerList }
+        question = dict( dict( qaSet.items() + question.items() ) )
+
+        # Populate the question dict with the answers provided
+        question["answerType"] = result['answer_type']
+        question["numQuestions"] = 0
+        # answerStr | correctness
+        question["correctness"] = range( len( answerList ) )
+        question["numAnswers"] = len( answerList )
+        question["json"] = htmlToJson( question )
+        question["questionHTML"] = matrixSort_questionTemplate % question
       else:
-        template = [x for pair in zip(['']*len(question["correctness"]),question["correctness"]) for x in pair]
-      question["answersStr"] = tableTemplate % tuple( template )
-      question["questionHTML"] = questionTemplate % question
-    elif result['answer_type'] == 'matrix_sort_answer':
-      answerList = []
-      questionList = []
-      question["answers"] = []
+        print( "Question type not recognised: " + result['answer_type'] + " !" )
+        sys.exit(1)
 
-      for ai, (t0,t1) in enumerate( zip(result['answers'], result['correct']) ):
-        question["answers"].append( ( t1, t0 ) )
-        answerList.append( matrixSort_answers_single % { "answerPos_0": ai, "answer": t1 } )
-        questionList.append( matrixSort_question_single % { "answerPos_0": ai, "answer": t0 } )
+      jsons[str( question["id"] )] = question["json"]
+      questions.append( question["questionHTML"] )
 
-      qaSet = { "ms_questions": "".join( quest for quest in answerList ), "ms_questionsSet": questionList, "ms_answers": "".join( quest for quest in questionList ), "ms_answersSet": answerList }
-      question = dict( dict( qaSet.items() + question.items() ) )
+    quiz = dict( \
+      quizTitle = title,
+      questions = '\n'.join( questions ),
+      answersJSON = jsons )
 
-      # Populate the question dict with the answers provided
-      question["answerType"] = result['answer_type']
-      question["numQuestions"] = 0
-      # answerStr | correctness
-      question["correctness"] = range( len( answerList ) )
-      question["numAnswers"] = len( answerList )
-      question["json"] = htmlToJson( question )
-      question["questionHTML"] = matrixSort_questionTemplate % question
+    if separateFilenames:
+      with open(filename[:-5] + "_Q" + str(rU[-1]['number']) + ".html", 'w') as outfile:
+        outfile.write(quizTemplate % quiz)
     else:
-      print( "Question type not recognised: " + result['answer_type'] + " !" )
-      sys.exit(1)
-
-    jsons[str( question["id"] )] = question["json"]
-    questions.append( question["questionHTML"] )
-
-  quiz = dict( \
-    quizTitle = title,
-    questions = '\n'.join( questions ),
-    answersJSON = jsons )
-
-  with open(filename[:-5] + ".html", 'w') as outfile:
-    outfile.write(quizTemplate % quiz)
+      if len(resultPartition) != 1:
+        sys.error("Bizarre")
+      with open(filename[:-5] + ".html", 'w') as outfile:
+        outfile.write(quizTemplate % quiz)
 
 def toJson(filename, results, title, url, uid):
   with open(filename[:-5] + ".json", 'w') as outfile:
@@ -574,22 +595,27 @@ if __name__ == '__main__':
     sys.exit(1)
 
   if args.feedback:
-    results, _, _, uid = parseQuestions(quizFilename, args.question)
+    results, _, _, uid = parseQuestions(quizFilename)
     print( "Generating feedback for " + uid )
     toFeedback( rootDir, uid, results )
   elif args.question:
     print( "Generating question #" + str(args.question[-1]) )
-    results, title, url, uid = parseQuestions(quizFilename, args.question)
-    toHtml(quizFilename, results, title)
+    results, title, url, uid = parseQuestions(quizFilename)
+    toHtml(quizFilename, results, title, args.question)
   elif args.extract:
     # extract marked questions
     print( "Extracting marked questions" )
-    results, _, _, uid = parseQuestions(quizFilename, args.question)
+    results, _, _, uid = parseQuestions(quizFilename)
     extract(rootDir, uid, results)
+  elif args.separate:
+    print( "Generating all of the questions in separate files" )
+    results, title, url, uid = parseQuestions(quizFilename)
+    toHtml(quizFilename, results, title, args.separate)
+    # must be the last element of if-elif-else
   elif args.all:
     print( "Generating all of the questions" )
-    results, title, url, uid = parseQuestions(quizFilename, args.question)
-    toHtml(quizFilename, results, title)
+    results, title, url, uid = parseQuestions(quizFilename)
+    toHtml(quizFilename, results, title, None)
   else:
     print( "I didn't expect to get here..." )
     sys.exit(1)

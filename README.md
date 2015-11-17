@@ -257,9 +257,10 @@ optional arguments:
   -d, --debug           indicate the correct answer in the question
   -f, --feedback        generate feedback for all questions
   -e, --extract         export marked questions to separate file
+  -s, --separate        generate all of the questions in separate files
 ```
 
-Therefore, flag `-a` compiles all of the questions in given `.quiz` file. `-q 7` compiles only question `#7`. `-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development.
+Therefore, flag `-a` compiles all of the questions in given `.quiz` file into one HTML. `-q 7` compiles only question `#7`. `-s` will compile all of the questions and place each one in separate HTML file. `-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development.
 
 # Submission #
 Please submit only the following files:
@@ -348,6 +349,5 @@ answers:sort:
  - [ ] Question response text - if specified it will appear upon question attempt (`response:` keyword).
  - [ ] Insert image in response text.
  - [ ] Program flag for hiding correct answers in html (possible assignment with randomly generated questions per student).
- - [ ] Program flag for generating all of the questions in separate files.
  - [ ] Program flag for generating JSON.
  - [ ] Multi-line questions.
