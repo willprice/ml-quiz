@@ -256,6 +256,7 @@ optional arguments:
   -a, --all             generate all of the questions
   -d, --debug           indicate the correct answer in the question
   -f, --feedback        generate feedback for all questions
+  -e, --extract         export marked questions to separate file
 ```
 
 Therefore, flag `-a` compiles all of the questions in given `.quiz` file. `-q 7` compiles only question `#7`. `-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development.
@@ -275,6 +276,8 @@ Please submit only the following files:
 Full assignment description is available [here](https://github.com/So-Cool/quick-quiz/wiki/Option-3:-ML-Quiz).
 
 # Marking - markers only #
+**Please do not use these options!**
+
 ## Feedback ##
 For marking purposes you may leave feedback to each question with additional flag `feedback` e.g.:
 ```
@@ -302,10 +305,46 @@ answers:single:
 Feedback flag **must** be the first one after question number.
 
 ## Question indicator ##
- - [ ] Question marking: indicator of good question & good with small flaws.
- - [ ] Program flag for not permuting questions in single html file upon displaying.
+It is possible to put questions into two categories:
+
+ - good question - `-` indicator,
+ - good with small flaws - `~` indicator.
+
+they need to be placed right after question definition; please see example below for usage.
+
+```
+#1 -
+difficulty : easy
+reference : 5.2
+question:
+  Which of the following is $\LaTeX$ equation?
+image::
+  img/unicorn.jpg
+image: my caption :
+  img/unicorn.jpg
+// these are answers, a correct answer
+// is indicated by a "*"
+answers:single:
+  - 2 * 2
+  - 2 - 3
+  * $ \frac{7}{2} + 3 $
+  - seven plus two
+1#
+
+#3 ~
+difficulty : hard
+reference : 12.2
+question:
+  Order the following numbers:
+answers:sort:
+  2) 26
+  1) 19
+  3) 100
+3#
+```
 
 # TODO #
+ - [ ] Program flag for not permuting questions in single html file upon displaying.
  - [ ] Question response text - if specified it will appear upon question attempt (`response:` keyword).
  - [ ] Insert image in response text.
  - [ ] Program flag for hiding correct answers in html (possible assignment with randomly generated questions per student).

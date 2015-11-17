@@ -18,14 +18,17 @@ parser.add_argument('-q', '--question', type=int, nargs=1, required=False, dest=
 parser.add_argument('-a', '--all', required=False, dest="all", default=True, action='store_true', help=('generate all of the questions'))
 parser.add_argument('-d', '--debug', required=False, dest="debug", default=False, action='store_true', help=('indicate the correct answer in the question'))
 parser.add_argument('-f', '--feedback', required=False, dest="feedback", default=False, action='store_true', help=('generate feedback for all questions'))
+parser.add_argument('-e', '--extract', required=False, dest="extract", default=False, action='store_true', help=('export marked questions to separate file'))
 parser.add_argument('filename', type=str, nargs=1, help='path to your `.quiz` file')
 
 #
 # find all questions and metadata
 #
 q_rx = re.compile(r"""
+  (?P<fullq>
   # number of the question
   \s*\#\s*(?P<number>\d+)\s*
+    (?P<quality>-|~)?\s*
   # Extra text to include in response
   ((feedback)\s*:\s*(?P<text>.+))?\s*
   # question difficulty
@@ -40,6 +43,7 @@ q_rx = re.compile(r"""
   (answers)\s*:\s*(?P<answer_type>(single)|(multiple)|(sort)|(blank_answer)|(cloze_answer)|(matrix_sort_answer))\s*:
   (?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*  | (?:\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*)  )\s*
   \s*(?P=number)\s*\#\s*
+  )
 """, re.X | re.M)
 # matrix matcher
 
@@ -283,11 +287,22 @@ def parseQuestions(filename, qToGen):
         out['captions'].append(a['caption'].strip())
         out['images'].append(a['path'].strip())
 
-    # TODO: add possibility to attach image in the answer
     if q['text']:
       out['text'] = q['text'].strip()
     else:
       out['text'] = '-'
+
+    # full question text
+    if q['fullq']:
+      out['fullq'] = q['fullq']
+    else:
+      sys.error("Couldn't parse the whole question!")
+
+    # quality control
+    if q['quality']:
+      out['quality'] = True
+    else:
+      out['quality'] = False
 
     results.append(out)
 
@@ -518,6 +533,19 @@ def toFeedback( rootDir, uid, results ):
   with open(feedbackFile, 'w') as ffile:
     ffile.write( '\n'.join(d) )
 
+#
+# generate marked questions
+#
+def extract(rootDir, uid, results):
+  d = [ 'uid: ' + uid + '\n' ]
+  for r in results:
+    if r['quality']:
+      d.append(r['fullq'])
+
+  extractFile = rootDir + "extract_" + uid + ".quiz"
+  with open(extractFile, 'w') as efile:
+    efile.write( '\n'.join(d) )
+
 if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
@@ -553,6 +581,11 @@ if __name__ == '__main__':
     print( "Generating question #" + str(args.question[-1]) )
     results, title, url, uid = parseQuestions(quizFilename, args.question)
     toHtml(quizFilename, results, title)
+  elif args.extract:
+    # extract marked questions
+    print( "Extracting marked questions" )
+    results, _, _, uid = parseQuestions(quizFilename, args.question)
+    extract(rootDir, uid, results)
   elif args.all:
     print( "Generating all of the questions" )
     results, title, url, uid = parseQuestions(quizFilename, args.question)
@@ -560,8 +593,6 @@ if __name__ == '__main__':
   else:
     print( "I didn't expect to get here..." )
     sys.exit(1)
-
-  #TODO: extract marked questions
 
     #TODO: argument flag to generate JSON
     # quizJson = quizFilename[:-5] + ".json"
