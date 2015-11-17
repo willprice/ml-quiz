@@ -63,19 +63,20 @@ For *filling-in contingency matrix* in the answer field create text based matrix
 ```
 answers:cloze_answer:
 
-1 | 2 | 3
+1 | 4 | 5
 ----------
-4 | 5 | 9
+2 | 5 | 7
 ----------
-5 | 7 | 12
+3 | 9 | 12
+
 ```
 Where the numbers are as follows:
 
-|             | Actual + | Actual - |   |
-|-------------|----------|----------|---|
-| Predicted + | 1        | 2        | 3 |
-| Predicted - | 4        | 5        | 9 |
-|             | 5        | 7        |   |
+|          | Predicted + | Predicted - |    |
+|----------|-------------|-------------|----|
+| Actual + | 1           | 4           | 5  |
+| Actual - | 2           | 5           | 7  |
+|          | 3           | 9           | 12 |
 
 Finally, for *object matching* create bullet list containing question and answer separated by `<->` symbol i.e. `- question <-> answer` e.g.
 ```
@@ -212,14 +213,14 @@ answers:blank_answer:
 difficulty: hard
 reference: 3.3
 question:
-  Fill in contingency matrix.<br><br>1TB<br>5TN<br>12 in total<br>5 actual positive
+  Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive
 answers:cloze_answer:
 
-1 | 2 | 3
+1 | 4 | 5
 ----------
-4 | 5 | 9
+2 | 5 | 7
 ----------
-5 | 7 | 12
+3 | 9 | 12
 
 5#
 

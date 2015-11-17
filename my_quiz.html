@@ -341,30 +341,30 @@ w
   <div class="wpProQuiz_question" style="margin: 10px 0px 0px 0px;">
 
     <!-- QUESTION -->
-    <div class="wpProQuiz_question_text"><p>Fill in contingency matrix.<br><br>1TB<br>5TN<br>12 in total<br>5 actual positive</p></div>
+    <div class="wpProQuiz_question_text"><p>Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive</p></div>
 
     <!-- ANSWER -->
     <ul class="wpProQuiz_questionList" data-question_id="5" data-type="cloze_answer">
 <li class="wpProQuiz_questionListItem" data-pos="0">
 <table>
   <tbody>
-  <tr><td></td><td>Actual+</td><td>Actual-</td><td></td></tr>
+  <tr><td></td><td>Predicted+</td><td>Predicted-</td><td></td></tr>
   <tr>
-    <td>Predicted+</td>
+    <td>Actual+</td>
     <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(1)</span></span></td>
-    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(2)</span></span></td>
-    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(3)</span></span></td>
-  </tr>
-  <tr>
-    <td>Predicted-</td>
     <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(4)</span></span></td>
     <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(5)</span></span></td>
-    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(9)</span></span></td>
+  </tr>
+  <tr>
+    <td>Actual-</td>
+    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(2)</span></span></td>
+    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(5)</span></span></td>
+    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(7)</span></span></td>
   </tr>
   <tr>
     <td></td>
-    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(5)</span></span></td>
-    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(7)</span></span></td>
+    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(3)</span></span></td>
+    <td><span class="wpProQuiz_cloze"><input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(9)</span></span></td>
     <td><span class="wpProQuiz_cloze"><input data-wordlen="3" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(12)</span></span></td>
   </tr>
   </tbody>
@@ -440,7 +440,7 @@ w
               ,
               formPos: 0,
               lbn: "Finish quiz",
-              json: {'1': {'points': 1, 'type': 'single', 'id': 1, 'catId': 0, 'correct': [1, 0, 0, 0]}, '3': {'points': 1, 'type': 'sort', 'id': 3, 'catId': 0, 'correct': [2, 1, 3]}, '2': {'points': 1, 'type': 'multiple', 'id': 2, 'catId': 0, 'correct': [1, 1, 0, 1]}, '5': {'points': 1, 'type': 'cloze_answer', 'id': 5, 'catId': 0, 'correct': ['1', '2', '3', '4', '5', '9', '5', '7', '12']}, '4': {'points': 1, 'type': 'blank_answer', 'id': 4, 'catId': 0, 'correct': [['4'], ['red', 'Red']]}, '6': {'points': 1, 'type': 'matrix_sort_answer', 'id': 6, 'catId': 0, 'correct': [0, 1, 2]}}      }
+              json: {'1': {'points': 1, 'type': 'single', 'id': 1, 'catId': 0, 'correct': [1, 0, 0, 0]}, '3': {'points': 1, 'type': 'sort', 'id': 3, 'catId': 0, 'correct': [2, 1, 3]}, '2': {'points': 1, 'type': 'multiple', 'id': 2, 'catId': 0, 'correct': [1, 1, 0, 1]}, '5': {'points': 1, 'type': 'cloze_answer', 'id': 5, 'catId': 0, 'correct': ['1', '4', '5', '2', '5', '7', '3', '9', '12']}, '4': {'points': 1, 'type': 'blank_answer', 'id': 4, 'catId': 0, 'correct': [['4'], ['red', 'Red']]}, '6': {'points': 1, 'type': 'matrix_sort_answer', 'id': 6, 'catId': 0, 'correct': [0, 1, 2]}}      }
                                             );
           }
                                 );

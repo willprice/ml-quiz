@@ -340,15 +340,15 @@ tableTemplate = \
 <li class="wpProQuiz_questionListItem" data-pos="0">
 <table>
   <tbody>
-  <tr><td></td><td>Actual+</td><td>Actual-</td><td></td></tr>
+  <tr><td></td><td>Predicted+</td><td>Predicted-</td><td></td></tr>
   <tr>
-    <td>Predicted+</td>
+    <td>Actual+</td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
   </tr>
   <tr>
-    <td>Predicted-</td>
+    <td>Actual-</td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
     <td><span class="wpProQuiz_cloze">%s<input data-wordlen="2" type="text" value=""><span class="wpProQuiz_clozeCorrect" style="display: none;">(%s)</span></span></td>
