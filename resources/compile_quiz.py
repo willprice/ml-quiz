@@ -39,10 +39,10 @@ q_rx = re.compile(r"""
   # Question being asked
   (question)\s*:\s*(?P<prompt>.+)\s*
   # image(s) to include in response
-  (?P<images>(\s*(image)\s*:.*:\s*\n\s*.*\s*\n)*)
+  (?P<images>(\s*(image)\s*:.*:\s*(\n|\r\n)\s*.*\s*(\n|\r\n))*)
   # Possible answers to the question
   (answers)\s*:\s*(?P<answer_type>(single)|(multiple)|(sort)|(blank_answer)|(cloze_answer)|(matrix_sort_answer))\s*:
-  (?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*  | (?:\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*\n-+\n\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*)  )\s*
+  (?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*  | (?:\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*(\n|\r\n)-+(\n|\r\n)\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*(\n|\r\n)-+(\n|\r\n)\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*)  )\s*
   \s*(?P=number)\s*\#\s*
   )
 """, re.X | re.M)
@@ -80,7 +80,7 @@ answ_rx = re.compile(r"""
 # \s*(?P<correct>[-*])
   \s*(?P<correct>\-|\*|(\d+\s*\)))
   # actual text of answer
-  \s*(?P<answer>.+)\n
+  \s*(?P<answer>.+)(\n|\r\n)
 """, re.X | re.M)
 
 #
@@ -95,10 +95,10 @@ mx_rx = re.compile(r"""
   # ------------
   # 20 | 21 | 22
   #
-  \s*(?P<oo>\d+)\s*\|\s*(?P<oi>\d+)\s*\|\s*(?P<oz>\d+)\s*\n
-  -+\n
-  \s*(?P<io>\d+)\s*\|\s*(?P<ii>\d+)\s*\|\s*(?P<iz>\d+)\s*\n
-  -+\n
+  \s*(?P<oo>\d+)\s*\|\s*(?P<oi>\d+)\s*\|\s*(?P<oz>\d+)\s*(\n|\r\n)
+  -+(\n|\r\n)
+  \s*(?P<io>\d+)\s*\|\s*(?P<ii>\d+)\s*\|\s*(?P<iz>\d+)\s*(\n|\r\n)
+  -+(\n|\r\n)
   \s*(?P<zo>\d+)\s*\|\s*(?P<zi>\d+)\s*\|\s*(?P<zz>\d+)\s*
 """, re.X | re.M)
 
