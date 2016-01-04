@@ -95,6 +95,37 @@ questionCategories = {\
     }\
 }
 
+iframeGeneralTemplate = """
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+   <head>
+     <title>One-by-one quiz</title>
+   </head>
+   <body>
+
+%(iframes)s
+
+   </body>
+</html>
+
+"""
+
+iframeIframeTemplate = """
+
+<iframe
+ src="%(filename)s"
+ width="100%%" height="600"
+>
+  <p>
+    <a href="%(filename)s">
+      Fallback link for browsers that, unlikely, don't support frames
+    </a>
+  </p>
+</iframe>
+
+"""
+
 questionTemplate = """
 
 <!-- START OF QUESTION %(questionNumber)d -->
