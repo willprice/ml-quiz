@@ -586,7 +586,7 @@ def updateIndex(dirname, jsonPath):
 #
 # generate feedback for given user
 #
-def toFeedback( rootDir, uid, results ):
+def toFeedback( rootDir, uid, results, sectionCoverage, difficulty ):
   d = []
   for r in results:
     d.append('#' + str(r['number']) + ': ' + r['text'])
@@ -594,6 +594,7 @@ def toFeedback( rootDir, uid, results ):
 
   feedbackFile = rootDir + "feedback_" + uid + ".txt"
   with open(feedbackFile, 'w') as ffile:
+    ffile.write( quizStats(uid, len(results), sectionCoverage, difficulty) )
     ffile.write( '\n'.join(d) )
 
 #
@@ -640,6 +641,52 @@ def orderQuestions(filename, order, uid, questions):
 
   return out
 
+#
+# produce quiz statistics#
+#
+def quizStats(uid, questionCount, sectionCoverage, difficulty):
+  stats =("-----------------------------|\n" +\
+          "^ hard:             %2d (%2d%%) |\n" +\
+          "| medium:           %2d (%2d%%) |\n" +\
+          "v easy:             %2d (%2d%%) |\n" +\
+          "-----------------------------|\n" +\
+          "~ total:            %2d       |\n" +\
+          "-----------------------------|\n" +\
+          "@ section coverage: %2d       |\n" +\
+          "-----------------------------|\n" ) %\
+          (difficulty[0], 100.0*difficulty[0]/questionCount, \
+          difficulty[1], 100.0*difficulty[1]/questionCount, \
+          difficulty[2], 100.0*difficulty[2]/questionCount, \
+          questionCount, sectionCoverage)
+
+  difficultyRequirements = "\n"
+  uidGroup = uid_rx.match(uid)
+  if uidGroup:
+    authors = '---'.join(list(uidGroup.groups()))
+    authorsNo = 2
+    if questionCount < 50: difficultyRequirements += "& too little questions &"
+    if sectionCoverage < 25: difficultyRequirements += "& too few sections &"
+  else:
+    authors = uid
+    authorsNo = 1
+    if questionCount < 30: difficultyRequirements += "& too little questions &"
+    if sectionCoverage < 15: difficultyRequirements += "& too few sections &"
+
+  if 100.0*difficulty[2]/questionCount > 40: difficultyRequirements += "& too many easy &"
+  if 100.0*difficulty[0]/questionCount < 20: difficultyRequirements += "& too few hard &"
+
+  detection = ""
+  if difficultyRequirements != "\n":
+    detection += "Detected " + str(authorsNo)
+    if authorsNo == 1:
+      detection += " author: "
+    else:
+      detection += " authors: "
+    detection += str(authors) + "\nDifficulty requirements broken:\n  " +\
+      difficultyRequirements
+
+  return stats + difficultyRequirements
+
 if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
@@ -679,7 +726,7 @@ if __name__ == '__main__':
 
   if args.feedback:
     print( "Generating feedback for " + uid )
-    toFeedback( rootDir, uid, results )
+    toFeedback( rootDir, uid, results, sectionCoverage, difficulty )
   elif args.question:
     print( "Generating question #" + str(args.question[-1]) )
     toHtml(quizFilename, results, title, args.question)
@@ -704,36 +751,7 @@ if __name__ == '__main__':
     sys.exit(1)
 
   if args.count:
-    questionCount = len(results)
-    print "-----------------------------|"
-    print "^ hard:             %2d (%2d%%) |" % (difficulty[0], 100.0*difficulty[0]/questionCount)
-    print "| medium:           %2d (%2d%%) |" % (difficulty[1], 100.0*difficulty[1]/questionCount)
-    print "v easy:             %2d (%2d%%) |" % (difficulty[2], 100.0*difficulty[2]/questionCount)
-    print "-----------------------------|"
-    print "~ total:            %2d       |" % questionCount
-    print "-----------------------------|"
-    print "@ section coverage: %2d       |" % sectionCoverage
-    print "-----------------------------|\n"
-
-    difficultyRequirements = ""
-    uidGroup = uid_rx.match(uid)
-    if uidGroup:
-      authors = '---'.join(list(uidGroup.groups()))
-      authorsNo = 2
-      if questionCount < 50: difficultyRequirements += "& too little questions &"
-      if sectionCoverage < 25: difficultyRequirements += "& too few sections &"
-    else:
-      authors = uid
-      authorsNo = 1
-      if questionCount < 30: difficultyRequirements += "& too little questions &"
-      if sectionCoverage < 15: difficultyRequirements += "& too few sections &"
-
-    if int(100.0*difficulty[2]/questionCount)+1 > 40: difficultyRequirements += "& too many easy &"
-    if int(100.0*difficulty[0]/questionCount)+1 < 20: difficultyRequirements += "& too few hard &"
-
-    if difficultyRequirements != "":
-      print "Detected ", authorsNo, " authors: ", authors
-      print "Difficulty requirements broken:\n  ", difficultyRequirements
+    print quizStats(uid, len(results), sectionCoverage, difficulty),
 
     #TODO: argument flag to generate JSON
     # quizJson = quizFilename[:-5] + ".json"
