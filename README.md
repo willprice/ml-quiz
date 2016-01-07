@@ -5,7 +5,7 @@ To generate a quiz create a text file with `.quiz` extension in the root of this
 
 Each quiz file must contain definition of:
 
- - `uid:` - your Bristol user ID e.g. `uid:ab12345`,
+ - `uid:` - your Bristol user ID e.g. `uid:ab12345` (if more than one person is working on a quiz please insert one `uid:` entry per person),
  - `title:` - the title of your quiz e.g. `title: My awesome ML quiz`,
  - `url:` - url to your quiz; if you host it on GitHub give a link to your GitHub repository otherwise put `url: 127.0.0.1`.
 
@@ -152,6 +152,8 @@ url: http://so-cool.github.io/quick-quiz/
 
 // this is your UoB username
 uid: ab12345
+// uncomment the next line if you're working in a pair
+// uid: cd67890
 
 // this is the title of the quiz
 title: Quizk-quiz show-off.

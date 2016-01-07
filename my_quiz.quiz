@@ -6,6 +6,8 @@ url: http://so-cool.github.io/quick-quiz/
 
 // this is your UoB username
 uid: ab12345
+// uncomment the next line if you're working in a pair
+// uid: cd67890
 
 // this is the title of the quiz
 title: Quizk-quiz show-off.
