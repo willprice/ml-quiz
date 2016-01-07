@@ -61,8 +61,11 @@ q_rx = re.compile(r"""
 # UID matcher
 #
 #
+uids_rx = re.compile(r"""
+  (?:.*((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*)
+""", re.M | re.X)
 uid_rx = re.compile(r"""
-  (.*(?:(?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*(?:(?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*)
+  ((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6}))
 """, re.M | re.X)
 
 #
@@ -172,9 +175,9 @@ def parseQuestions(filename):
     title = title.group(1).strip()
 
   # find user id
-  uid = re.search(r'^uid:(.+)', quiz_text, re.M)
+  uid = re.findall(r'^uid:(.+)', quiz_text, re.M)
   if uid:
-    uid = uid.group(1).strip()
+    uid = [sid.strip() for sid in uid]
 
   # remove comments from quiz file
   quiz_text = re.sub(r'//(.+)', "", quiz_text)
@@ -589,24 +592,25 @@ def updateIndex(dirname, jsonPath):
 def toFeedback( rootDir, uid, results, sectionCoverage, difficulty ):
   d = []
   for r in results:
-    d.append('#' + str(r['number']) + ': ' + r['text'])
+    d.append('#' + str(r['number']).zfill(2) + ': ' + r['text'])
   d.sort()
 
-  feedbackFile = rootDir + "feedback_" + uid + ".txt"
+  feedbackFile = rootDir + "feedback_" + '_'.join(uid) + ".txt"
   with open(feedbackFile, 'w') as ffile:
     ffile.write( quizStats(uid, len(results), sectionCoverage, difficulty) )
+    ffile.write('\n\n')
     ffile.write( '\n'.join(d) )
 
 #
 # generate marked questions
 #
 def extract(rootDir, uid, results):
-  d = [ 'uid: ' + uid + '\n' ]
+  d = [ 'uid: ' + i + '\n' for i in uid]
   for r in results:
     if r['quality']:
       d.append(r['fullq'])
 
-  extractFile = rootDir + "extract_" + uid + ".quiz"
+  extractFile = rootDir + "extract_" + '_'.join(uid) + ".quiz"
   with open(extractFile, 'w') as efile:
     efile.write( '\n'.join(d) )
 
@@ -625,17 +629,20 @@ def writeIframe(filename, questionFilenames):
 #
 def orderQuestions(filename, order, uid, questions):
 
+  ordering_dict = {'easy':0, 'medium':2, 'hard':3}
+
   if order == 'O':
     of = '^'
-    out = sorted(questions, key=lambda elem: "%s %02d.%02d" % (elem['difficulty'], elem['chapter'], elem['section']))
+    out = sorted(questions, key=lambda elem: "%d %02d.%02d" % (ordering_dict[elem['difficulty']], elem['chapter'], elem['section']))
   elif order == 'o':
     of = 'v'
-    out = sorted(questions, key=lambda elem: "%02d.%02d %s" % (elem['chapter'], elem['section'], elem['difficulty']))
+    out = sorted(questions, key=lambda elem: "%02d.%02d %d" % (elem['chapter'], elem['section'], ordering_dict[elem['difficulty']]))
   else:
     sys.exit('Unknown order')
 
   with open(filename[:-5] + "_" + of + order + ".quiz", 'w') as o_file:
-    o_file.write( 'uid: '+uid+'\n' )
+    for i in uid:
+      o_file.write( 'uid: '+i+'\n' )
     for i in out:
       o_file.write( '\n' + i['fullq'] )
 
@@ -660,32 +667,34 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
           questionCount, sectionCoverage)
 
   difficultyRequirements = "\n"
-  uidGroup = uid_rx.match(uid)
-  if uidGroup:
-    authors = '---'.join(list(uidGroup.groups()))
-    authorsNo = 2
+
+  authors = ' & '.join(uid)
+  authorsNo = len(uid)
+
+  if authorsNo == 2:
     if questionCount < 50: difficultyRequirements += "& too little questions &"
     if sectionCoverage < 25: difficultyRequirements += "& too few sections &"
-  else:
-    authors = uid
-    authorsNo = 1
+  elif authorsNo == 1:
     if questionCount < 30: difficultyRequirements += "& too little questions &"
     if sectionCoverage < 15: difficultyRequirements += "& too few sections &"
+  else:
+    print "Too many uids detected (", authorsNo, ") : ", authors
+    sys.exit(1)
 
   if 100.0*difficulty[2]/questionCount > 40: difficultyRequirements += "& too many easy &"
   if 100.0*difficulty[0]/questionCount < 20: difficultyRequirements += "& too few hard &"
 
-  detection = ""
+  detection = "\n"
   if difficultyRequirements != "\n":
     detection += "Detected " + str(authorsNo)
     if authorsNo == 1:
       detection += " author: "
     else:
       detection += " authors: "
-    detection += str(authors) + "\nDifficulty requirements broken:\n  " +\
+    detection += str(authors) + "\nDifficulty requirements broken:" +\
       difficultyRequirements
 
-  return stats + difficultyRequirements
+  return stats + detection
 
 if __name__ == '__main__':
   # parse arguments
@@ -716,6 +725,17 @@ if __name__ == '__main__':
 
   results, title, url, uid, sectionCoverage, difficulty = parseQuestions(quizFilename)
 
+  # legacy uid checker
+  if len(uid) == 1:
+    uidGroup = uids_rx.match(uid[-1])
+    if uidGroup:
+      print "Legacy group input method detected... converting"
+      uid = [i.strip() for i in list(uidGroup.groups())]
+      for i in uid:
+        if not uid_rx.match(i):
+          print "uid: ", i, " not recognised!"
+          sys.exit(1)
+
   # order questions if needed
   if args.order:
     print "Ordering the questions first on book section then on difficulty"
@@ -725,7 +745,7 @@ if __name__ == '__main__':
     results = orderQuestions(quizFilename, 'O', uid, results)
 
   if args.feedback:
-    print( "Generating feedback for " + uid )
+    print( "Generating feedback for " + ' & '.join(uid) )
     toFeedback( rootDir, uid, results, sectionCoverage, difficulty )
   elif args.question:
     print( "Generating question #" + str(args.question[-1]) )
