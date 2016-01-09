@@ -250,7 +250,7 @@ And open resulting `./my_quiz.html` in your web browser.
 ### Compiler options ###
 To see the compiler options do `./resources/compile_quiz.py -h`. The options are:
 ```bash
-ptional arguments:
+optional arguments:
   -h, --help            show this help message and exit
   -q QUESTION, --question QUESTION
                         the # of question to be generated (all questions are
@@ -266,17 +266,17 @@ ptional arguments:
   -f, --feedback        generate feedback for all questions
   -e, --extract         export marked questions to separate file
   -c, --count           show difficulty statistics of the quiz file
+  -t, --tarball         tarball the quiz for submissions
 ```
 
 Therefore, flag `-a` compiles all of the questions in given `.quiz` file into one HTML. `-q 7` compiles only question `#7`. `-s` will compile all of the questions and place each one in separate HTML file. `-i` generates `iframe` based HTML displaying all questions on one page.  
-`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics. And `-o`/`-O` will create additional `.quiz` file with questions sorted as described above.
+`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics. And `-o`/`-O` will create additional `.quiz` file with questions sorted as described above.  
+Finally, `-t` creates a *tarball* (archive) with all files necessary for submission.
 
 # Submission #
 Please submit only the following files:
 
-- `.quiz` file containing all of your questions; please make sure that it compiles on 2.11 MVB machines.
-- `.html` file containing all of your compiled questions.
-- `img` folder containing all used images if any.
+- A tarball with your quiz created with `-t` option.
 - A short report (2-4 pages) in `pdf` format describing for each question briefly what knowledge it tests, and what your rationale for classifying it as easy/medium/hard is. Your submission will primarily be marked on the diversity and originality of your questions, as well as your assessment of their difficulty level.
     * An easy question is one that can be answered by looking up a specific passage in the book;
     * a medium question is one that requires some degree of problem-solving;
