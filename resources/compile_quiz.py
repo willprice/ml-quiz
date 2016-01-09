@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import re
-import sys, os
+import sys, os, shutil
 import json
 import argparse
+import tarfile
 from html_templates import questionCategories,questionTemplate,quizTemplate
 from html_templates import singleTemplate
 from html_templates import sortTemplate
@@ -29,6 +30,11 @@ parser.add_argument('-d', '--debug', required=False, dest="debug", default=False
 parser.add_argument('-f', '--feedback', required=False, dest="feedback", default=False, action='store_true', help=('generate feedback for all questions'))
 parser.add_argument('-e', '--extract', required=False, dest="extract", default=False, action='store_true', help=('export marked questions to separate file'))
 parser.add_argument('-c', '--count', required=False, dest="count", default=False, action='store_true', help=('show difficulty statistics of the quiz file'))
+
+parser.add_argument('-t', '--tarball', required=False, dest="tarball", default=False, action='store_true', help=('tarball the quiz for submissions'))
+parser.add_argument('-p', '--peter', required=False, dest="peter", default=False, action='store_true', help=('Peter\'s special 1'))
+parser.add_argument('-P', '--Peter', required=False, dest="Peter", default=False, action='store_true', help=('Peter\'s special 2'))
+
 parser.add_argument('filename', type=str, nargs=1, help='path to your `.quiz` file')
 
 #
@@ -605,14 +611,27 @@ def toFeedback( rootDir, uid, results, sectionCoverage, difficulty ):
 # generate marked questions
 #
 def extract(rootDir, uid, results):
+  needed_images = []
+
+  any_to_extract = False
+
   d = [ 'uid: ' + i + '\n' for i in uid]
   for r in results:
     if r['quality']:
+      any_to_extract = True
       d.append(r['fullq'])
+      # get list of images
+      if r['images']:
+        if r['images'] not in needed_images:
+          needed_images += r['images']
 
   extractFile = rootDir + "extract_" + '_'.join(uid) + ".quiz"
-  with open(extractFile, 'w') as efile:
-    efile.write( '\n'.join(d) )
+
+  if any_to_extract:
+    with open(extractFile, 'w') as efile:
+      efile.write( '\n'.join(d) )
+
+  return needed_images
 
 #
 # generate iFrame
@@ -627,7 +646,7 @@ def writeIframe(filename, questionFilenames):
 #
 # order questions
 #
-def orderQuestions(filename, order, uid, questions):
+def orderQuestions(filename, order, uid, questions, to_file):
 
   ordering_dict = {'easy':0, 'medium':2, 'hard':3}
 
@@ -640,11 +659,12 @@ def orderQuestions(filename, order, uid, questions):
   else:
     sys.exit('Unknown order')
 
-  with open(filename[:-5] + "_" + of + order + ".quiz", 'w') as o_file:
-    for i in uid:
-      o_file.write( 'uid: '+i+'\n' )
-    for i in out:
-      o_file.write( '\n' + i['fullq'] )
+  if to_file:
+    with open(filename[:-5] + "_" + of + order + ".quiz", 'w') as o_file:
+      for i in uid:
+        o_file.write( 'uid: '+i+'\n' )
+      for i in out:
+        o_file.write( '\n' + i['fullq'] )
 
   return out
 
@@ -696,6 +716,25 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
 
   return stats + detection
 
+#
+# check and compare legacy UID
+#
+def checkLegacyUID(uid):
+  # legacy uid checker
+  if len(uid) == 1:
+    uidGroup = uids_rx.match(uid[-1])
+    if uidGroup:
+      print "Legacy group input method detected... converting"
+      uid = [i.strip() for i in list(uidGroup.groups())]
+      for i in uid:
+        if not uid_rx.match(i):
+          print "uid: ", i, " not recognised!"
+          sys.exit(1)
+  # order uids
+  uid.sort()
+  return uid
+
+
 if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
@@ -707,6 +746,8 @@ if __name__ == '__main__':
       if quizFilename[-5:] != ".quiz":
         print("Your file must have `.quiz` extension")
         sys.exit(1)
+    elif args.peter or args.Peter:
+      pass
     else:
       print(quizFilename + " is not a file!")
       sys.exit(1)
@@ -715,34 +756,146 @@ if __name__ == '__main__':
     sys.exit(1)
   # check if the file is located in the root of the repository
   rootDir_i = quizFilename[::-1].find('/')
-  if rootDir_i != -1:
+  if args.peter or args.Peter:
+    if quizFilename[-1] == '/':
+      rootDir = quizFilename
+    else:
+      rootDir = quizFilename + '/'
+  elif rootDir_i != -1:
     rootDir = quizFilename[::-1][rootDir_i:][::-1]
   else:
     rootDir = "./"
-  if not os.path.exists(rootDir+"resources/js/wpProQuiz_jquery.ui.touch-punch.min.js"):
-    print "Your .quiz files must be located in the root directory of this package to work properly"
-    sys.exit(1)
+  if (not args.peter) and (not args.Peter):
+    if not os.path.exists(rootDir+"resources/js/wpProQuiz_jquery.ui.touch-punch.min.js"):
+      print "Your .quiz files must be located in the root directory of this package to work properly"
+      sys.exit(1)
+
+  # small p - based on big O ordering
+  if args.peter:
+    print "Entering Peter's special mode #1"
+    quiz_archives = [i for i in os.listdir(rootDir) if '.tar.gz' in i.lower()]
+    os.makedirs(rootDir+'special')
+    for i in quiz_archives:
+      with tarfile.open(i, mode='r:gz') as f:
+        f.extractall(path=rootDir+'special')
+
+    # iframe
+    quizs = [i for i in os.listdir(rootDir+'special') if '.quiz' in i.lower()]
+    link = "<a href=\"%s\">%s</a><br>\n"
+    body = ""
+    for i in quizs:
+      results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+'special/'+i)
+      uid = checkLegacyUID(uid)
+
+      # bog O ordering
+      results = orderQuestions(rootDir+'special/'+i, 'O', uid, results, True)
+
+      qfilenames = toHtml(rootDir+'special/'+i, results, title, True)
+      new_qfilenames = [os.path.basename(j) for j in qfilenames]
+
+      # write stat file
+      stat = quizStats(uid, len(results), sectionCoverage, difficulty)
+      with open(rootDir+'special/'+i[:-5]+'.stat', 'w') as stat_file:
+        stat_file.write(stat)
+
+      writeIframe(rootDir+'special/'+i, [i[:-5]+'.stat']+new_qfilenames)
+
+      body += link % (os.path.basename(i)[:-5]+'_iFrame.html', os.path.basename(i))
+
+    # general HTML
+    body = iframeGeneralTemplate % {'iframes':body}
+    with open(rootDir+'special/index.html', 'w') as index_file:
+      index_file.write(body)
+
+    sys.exit(0)
+
+  # big P - based on big O ordering
+  if args.Peter:
+    print "Entering Peter's special mode #2"
+    # generate feedback based on O
+    if not os.path.exists(rootDir+'feedback'):
+      os.makedirs(rootDir+'feedback')
+    if not os.path.exists(rootDir+'extract'):
+      os.makedirs(rootDir+'extract')
+    quizs = [i for i in os.listdir(rootDir) if '_^O.quiz' in i]
+    for i in quizs:
+      results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+os.path.basename(i))
+      uid = checkLegacyUID(uid)
+      # bog O ordering
+      results = orderQuestions(rootDir+i, 'O', uid, results, False)
+      toFeedback( rootDir+'feedback/', uid, results, sectionCoverage, difficulty )
+      # extract all marked questions with graphics
+      imgs = extract(rootDir+'extract/', uid, results)
+      for img in imgs:
+        if not os.path.exists(os.path.dirname(rootDir+'extract/'+img)):
+          os.makedirs(os.path.dirname(rootDir+'extract/'+img))
+        shutil.copy(rootDir+img, os.path.dirname(rootDir+'extract/'+img))
+    sys.exit(0)
 
   results, title, url, uid, sectionCoverage, difficulty = parseQuestions(quizFilename)
-
-  # legacy uid checker
-  if len(uid) == 1:
-    uidGroup = uids_rx.match(uid[-1])
-    if uidGroup:
-      print "Legacy group input method detected... converting"
-      uid = [i.strip() for i in list(uidGroup.groups())]
-      for i in uid:
-        if not uid_rx.match(i):
-          print "uid: ", i, " not recognised!"
-          sys.exit(1)
+  uid = checkLegacyUID(uid)
 
   # order questions if needed
+  if args.tarball:
+    # check usernames
+    if len(uid) == 1:
+      print "Is your UoB id: ", uid[-1], "?"
+    elif len(uid) == 2:
+      print "Are your UoB ids: ", " & ".join(uid), "?"
+    else:
+      print "Too many uids detected\n", " & ".join(uid)
+      sys.exit(1)
+
+    uid_choices = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
+    uid_choice = None
+    while True:
+      print "Is this correct? [y/n]"
+      choice = raw_input().lower()
+      if choice in uid_choices:
+        uid_choice = uid_choices[choice]
+        break
+      else:
+        print "Please respond with 'yes' or 'no' (or 'y' or 'n')."
+
+    if not uid_choice:
+      print "\nOperation failed!"
+      print "Please put correct id(s) in the `.quiz` file."
+      sys.exit(1)
+
+    # generate html copy and rename
+    qfilenames = toHtml(quizFilename, results, title, True)
+    # generate iframe with filenames
+    writeIframe(quizFilename, qfilenames)
+
+    # modify `img` tags
+    with open(quizFilename, 'r') as quiz_file:
+      with open(quizFilename[:-5]+'_imgCdV', 'w') as quiz_img_r:
+        for line in quiz_file:
+          quiz_img_r.write(line.replace('img/', 'img/'+'_'.join(uid)+'/'))
+
+    with tarfile.open('_'.join(uid)+".tar.gz", mode='w:gz') as f:
+      # generate master copy - 1:1
+      for i in qfilenames:
+        f.add(i, arcname='1to1/'+'_'.join(uid)+i[1:])
+      f.add(quizFilename[:-5]+"_iFrame.html", arcname='1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename)[:-5]+"_iFrame.html")
+      f.add(quizFilename, arcname='1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename))
+      f.add(rootDir+'img', arcname='1to1/'+'_'.join(uid)+'/img')
+
+      # copy images into img/uid/*
+      f.add(rootDir+'img', arcname='img/'+'_'.join(uid))
+      # copy and rename .quiz - alter img paths
+      f.add(quizFilename[:-5]+'_imgCdV', arcname='_'.join(uid)+'.quiz')
+
+    os.remove(quizFilename[:-5]+'_imgCdV')
+    print "\nPlease submit *", '_'.join(uid)+".tar.gz", "* file"
+    sys.exit(0)
+
   if args.order:
     print "Ordering the questions first on book section then on difficulty"
-    results = orderQuestions(quizFilename, 'o', uid, results)
+    results = orderQuestions(quizFilename, 'o', uid, results, True)
   elif args.Order:
     print "Ordering the questions first on difficulty then on book section"
-    results = orderQuestions(quizFilename, 'O', uid, results)
+    results = orderQuestions(quizFilename, 'O', uid, results, True)
 
   if args.feedback:
     print( "Generating feedback for " + ' & '.join(uid) )
