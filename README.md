@@ -352,10 +352,3 @@ answers:sort:
   3) 100
 3#
 ```
-
-# TODO #
- - [ ] Question response text - if specified it will appear upon question attempt (`response:` keyword).
- - [ ] Insert image in response text.
- - [ ] Program flag for hiding correct answers in html (possible assignment with randomly generated questions per student).
- - [ ] Program flag for generating JSON.
- - [ ] Multi-line questions.
