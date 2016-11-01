@@ -262,22 +262,22 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "-",
         "answer": "2 * 2",
-        "hint": "",
+        "hint": "multiplication",
         "comments": ""
       },
       { "correctness": "-",
         "answer": "2 - 3",
-        "hint": "",
+        "hint": "subtraction",
         "comments": ""
       },
       { "correctness": "+",
         "answer": "$\\frac{7}{2} + 3$",
-        "hint": "",
+        "hint": "addition",
         "comments": ""
       },
       { "correctness": "-",
         "answer": "seven plus two",
-        "hint": "",
+        "hint": "addition",
         "comments": ""
       }
     ],
@@ -293,27 +293,27 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "+",
         "answer": "T",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "+",
         "answer": "F",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "-",
         "answer": "7",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "-",
         "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "+",
         "answer": "W",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       }
     ],
@@ -329,17 +329,17 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "2",
         "answer": "26",
-        "hint": "",
+        "hint": "common knowledge",
         "comments": ""
       },
       { "correctness": "1",
         "answer": "19",
-        "hint": "",
+        "hint": "common knowledge",
         "comments": ""
       },
       { "correctness": "3",
         "answer": "70",
-        "hint": "",
+        "hint": "common knowledge",
         "comments": ""
       }
     ],
@@ -358,13 +358,13 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": 1,
         "answer": "4",
-        "hint": "",
-        "comments": ""
+        "hint": "2+2=4",
+        "comments": "just arithmetics"
       },
       { "correctness": 2,
         "answer": "red",
-        "hint": "",
-        "comments": ""
+        "hint": "R.E.D.",
+        "comments": "just colours"
       }
     ],
     "comments": "What's special about this question?"
@@ -382,8 +382,8 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
                  "2 | 5 | 7 ",
                  "----------",
                  "3 | 9 | 12"],
-      "hint": "",
-      "comments": ""
+      "hint": "do the math",
+      "comments": "just arithmetics"
     },
     "comments": "What's special about this question?"
   },
@@ -397,17 +397,17 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "The letter after 'a' is ",
         "answer": "'B'.",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "The letter after 'g' is ",
         "answer": "'H'.",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       },
       { "correctness": "I like ",
         "answer": "alphabet.",
-        "hint": "",
+        "hint": "look at the alphabet",
         "comments": ""
       }
     ],
