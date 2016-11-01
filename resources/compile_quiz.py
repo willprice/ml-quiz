@@ -38,77 +38,6 @@ parser.add_argument('-P', '--Peter', required=False, dest="Peter", default=False
 parser.add_argument('filename', type=str, nargs=1, help='path to your `.quiz` file')
 
 #
-# find all questions and metadata
-#
-q_rx = re.compile(r"""
-  (?P<fullq>
-  # number of the question
-  \s*\#\s*(?P<number>\d+)\s*
-    (?P<quality>-|~)?\s*
-  # Extra text to include in response
-  ((feedback)\s*:\s*(?P<text>.+))?\s*
-  # question difficulty
-  (difficulty)\s*:\s*(?P<difficulty>(easy)|(medium)|(hard))\s*
-  # question reference
-  (reference)\s*:\s*(?P<chapter>\d+)\.(?P<section>\d+)\s*
-  # Question being asked
-  (question)\s*:\s*(?P<prompt>.+)\s*
-  # image(s) to include in response
-  (?P<images>(\s*(image)\s*:.*:\s*(\n|\r\n)\s*.*\s*(\n|\r\n))*)
-  # Possible answers to the question
-  (answers)\s*:\s*(?P<answer_type>(single)|(multiple)|(sort)|(blank_answer)|(cloze_answer)|(matrix_sort_answer))\s*:
-  (?P<answers>(?:\s*(\-|\*|(\d+\s*\)))\s*.+)*  | (?:\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*(\n|\r\n)-+(\n|\r\n)\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*(\n|\r\n)-+(\n|\r\n)\s*\d+\s*\|\s*\d+\s*\|\s*\d+\s*)  )\s*
-  \s*(?P=number)\s*\#\s*
-  )
-""", re.X | re.M)
-# matrix matcher
-
-#
-# UID matcher
-#
-#
-uids_rx = re.compile(r"""
-  (?:.*((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6})).*)
-""", re.M | re.X)
-uid_rx = re.compile(r"""
-  ((?:[a-z]{2}[0-9]{4,5})|(?:[a-z]{5,6}))
-""", re.M | re.X)
-
-#
-# image regex
-#
-#
-img_rx = re.compile(r"""
-  \s*(image)\s*:\s*(?P<caption>.*)\s*:\s*(?P<path>.+)\s*
-""", re.X | re.M)
-
-#
-# fill in blanks regex
-#
-blanks_rx = re.compile(r"""
-  (?P<text>[^\[\]]+)?
-  (\[(?P<blank>[^\]]+)\])?
-""", re.X | re.M)
-
-#
-# question answer regex
-#
-answ_rx = re.compile(r"""
-  # indicator if correct or not
-  #
-  # (-) : incorrect
-  # (*) : correct
-  #
-  # or ordering of the answers
-  # eg. 1) 2) 3)
-  #
-# \s*(?P<correct>[-*])
-  \s*(?P<correct>\-|\*|(\d+\s*\)))
-  # actual text of answer
-  \s*(?P<answer>.+)(\n|\r\n)
-""", re.X | re.M)
-
-#
 # answer contingency table regex
 #
 mx_rx = re.compile(r"""
@@ -130,6 +59,10 @@ mx_rx = re.compile(r"""
 # debug answers
 ANSWERS_DEBUG = False
 
+# book chapters
+
+# book sections
+
 #
 # correct answer indicator
 #
@@ -148,7 +81,7 @@ def mergeBlanks(textList, answers):
   for i in textList:
     if type(i) == int:
       answer += "[answer]" + answers[i] + "[/answer]"
-    elif type(i) == str:
+    elif type(i) == str or type(i) == unicode:
       answer += i
     else:
       print( "Unknown prompt type!" )
@@ -159,7 +92,7 @@ def fillBlanks(textList, dictionaryAnswers):
   for i in textList:
     if type(i) == int:
       qs += ( blankItem % dictionaryAnswers[i] )
-    elif type(i) == str:
+    elif type(i) == str or type(i) == unicode:
       qs += i
     else:
       print( "Unknown prompt type!" )
@@ -167,29 +100,66 @@ def fillBlanks(textList, dictionaryAnswers):
   return qs
 
 def parseQuestions(filename):
+  ########################################
+  # http://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-ones-from-json-in-python
+  def json_load_byteified(file_handle):
+    return _byteify(
+      json.load(file_handle, object_hook=_byteify),
+      ignore_dicts=True
+    )
+
+  def json_loads_byteified(json_text):
+    return _byteify(
+      json.loads(json_text, object_hook=_byteify),
+      ignore_dicts=True
+    )
+
+  def _byteify(data, ignore_dicts = False):
+    # if this is a unicode string, return its string representation
+    if isinstance(data, unicode):
+      return data.encode('utf-8')
+    # if this is a list of values, return list of byteified values
+    if isinstance(data, list):
+      return [ _byteify(item, ignore_dicts=True) for item in data ]
+    # if this is a dictionary, return dictionary of byteified keys and values
+    # but only if we haven't already byteified it
+    if isinstance(data, dict) and not ignore_dicts:
+      return {
+          _byteify(key, ignore_dicts=True): _byteify(value, ignore_dicts=True)
+          for key, value in data.iteritems()
+      }
+    # if it's anything else, return it in its original form
+    return data
+  ########################################
+
+
   with open(filename, 'r') as quiz_file:
     quiz_text = quiz_file.read()
 
-  # find the parent url before comments are removed
-  url = re.search(r'^url:(.+)', quiz_text, re.M)
-  if url:
-    url = url.group(1).strip()
+  # remove comments from quiz file
+  quiz_text = re.sub(r'^\s*//.+$', "", quiz_text, flags=re.M)
+
+  # merge lines ended with "\": allow multiline in strings
+  quiz_text = re.sub(r'\\$\s*', "", quiz_text, flags=re.M)
+
+  # read in JSON
+  # quiz_text = json.loads(quiz_text)
+  quiz_text = json_loads_byteified(quiz_text)
+
+  # find the parent url
+  url = quiz_text.get('url', '')
 
   # find title for quiz
-  title = re.search(r'^title:(.+)', quiz_text, re.M)
-  if title:
-    title = title.group(1).strip()
+  title = quiz_text.get('title', '')
 
-  # find user id
-  uid = re.findall(r'^uid:(.+)', quiz_text, re.M)
-  if uid:
-    uid = [sid.strip() for sid in uid]
-
-  # remove comments from quiz file
-  quiz_text = re.sub(r'//(.+)', "", quiz_text)
+  # find candidate ids
+  uid = quiz_text.get("candidate_number", [])
+  if not uid:
+    sys.exit("Candidate number not supplied. It's required for this assignment")
+  uid = [str(i) for i in uid]
 
   # find all questions
-  questions = [m.groupdict() for m in q_rx.finditer(quiz_text)]
+  questions = {i:quiz_text[i] for i in quiz_text if i.strip().isdigit()}
 
   results = []
   question_indeces = []
@@ -199,36 +169,50 @@ def parseQuestions(filename):
   unique_sections = 0
 
   for q in questions:
-
     out = {}
 
-    try:
-      out['number'] = int(q['number'])
-    except:
-      print("Question number not given")
-      sys.exit(1)
+    out['number'] = int(q)
     if out['number'] in question_indeces:
       print("Question index: " + str(out['number'] + " repeated"))
       sys.exit(1)
     question_indeces.append(out['number'])
 
-    try:
-      out['answer_type'] = q['answer_type'].strip()
-    except:
-      print("Answer type (single, multi, etc.) not given for question #" + str(out['number']))
-      sys.exit(1)
+    out['answer_type'] = questions[q].get('answer_type', '').strip()
+    if not out['answer_type'] :
+      sys.exit("Answer type (not given for question #%d" % out['number'])
+    if out['answer_type'] not in ['single', 'multiple', 'sort', \
+                                  'blank_answer', 'cloze_answer', \
+                                  'matrix_sort_answer']:
+      sys.exit("Unknown answer type \"%s\" for question #%d" % \
+               (out['answer_type'], out['number'])
+              )
 
-    try:
-      out['chapter'] = int(q['chapter'])
-    except:
-      print("Chapter number not given in question #" + str(out['number']))
-      sys.exit(1)
+    out['problem_type'] = questions[q].get('problem_type', '').strip()
 
-    try:
-      out['section'] = int(q['section'])
-    except:
-      print("Section number not given in question #" + str(out['number']))
-      sys.exit(1)
+    book = questions[q].get('reference', '')
+    book_split = book.split('.')
+    if len(book_split) != 2:
+        sys.exit('Incorrect book reference format \"%s\" in question #%d' % \
+                 (book, out['number'])
+                )
+    if not book_split[0].isdigit():
+        sys.exit('Incorrect format of book chapter \"%s\" in question #%d' % \
+                 (book_split[0].strip(), out['number'])
+                )
+    if int(book_split[0]) not in questionCategories:
+        sys.exit('Unknown book chapter \"%s\" in question #%d' % \
+                 (book_split[0].strip(), out['number'])
+                )
+    out['chapter'] = int(book_split[0])
+    if not book_split[1].isdigit():
+        sys.exit('Incorrect format of book section \"%s\" in question #%d' % \
+                 (book_split[1].strip(), out['number'])
+                )
+    if int(book_split[1]) not in questionCategories[out['chapter']]:
+        sys.exit('Unknown book section \"%s\" in question #%d' % \
+                 (book_split[1].strip(), out['number'])
+                )
+    out['section'] = int(book_split[1])
 
     # count unique sections
     current_section = str(out['chapter']) + "." + str(out['section'])
@@ -236,11 +220,14 @@ def parseQuestions(filename):
       used_sections.append(current_section)
       unique_sections += 1
 
-    try:
-      out['difficulty'] = q['difficulty'].strip()
-    except:
-      print("Difficulty not given in question #" + str(out['number']))
-      sys.exit(1)
+    difficulty = questions[q].get('difficulty', '').strip()
+    if not difficulty:
+        sys.exit('Difficulty not given in question #%d' % out['number'])
+    if difficulty not in ['easy', 'medium', 'hard']:
+        sys.exit('Unknown difficulty \"%s\" in question #%d' % \
+                 (difficulty, out['number'])
+                )
+    out['difficulty'] = difficulty
 
     # count difficulties
     if out['difficulty'] == "hard":
@@ -249,102 +236,103 @@ def parseQuestions(filename):
       difficulty_count[1] += 1
     elif out['difficulty'] == "easy":
       difficulty_count[2] += 1
-    else:
-      sys.exit("Unknown difficulty marker")
 
-    try:
-      if out['answer_type'].lower() == 'blank_answer':
-        prompt = [m.groupdict() for m in blanks_rx.finditer(q['prompt'].strip())]
-        out['prompt'] = []
-        out['answers'] = None
-        out['correct'] = []
-        for a in prompt:
-          if a['text']:
-            out['prompt'].append(a['text'])
-          if a['blank']:
-            if ANSWERS_DEBUG:
-              out['prompt'].append(markBlank(a['blank']))
-            out['prompt'].append(len(out['correct']))
-            out['correct'].append(a['blank'])
-      elif out['answer_type'].lower() == 'single' or out['answer_type'].lower() == 'multiple' or out['answer_type'].lower() == 'sort':
-        out['prompt'] = q['prompt'].strip()
-        out['answers'] = []
-        out['correct'] = []
-        try:
-          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip()+"\n")]
-        except:
-          print("Answers not given or malformed for question #" + str(out['number']))
-          sys.exit(1)
-        for i, a in enumerate(answers):
-          out['answers'].append(a['answer'].strip())
-          if a['correct'] == "*":
-            out['correct'].append(i)
-            # if answer debug flag is set append correct answer indicator
-            if ANSWERS_DEBUG:
-              out['answers'][i] = markAnswerCh(out['answers'][i])
-          elif ')' in a['correct']:
-            out['correct'].append( int(a['correct'].strip().strip(')').strip())  )
+    if out['answer_type'].lower() == 'single' or \
+       out['answer_type'].lower() == 'multiple' or \
+       out['answer_type'].lower() == 'sort' or \
+       out['answer_type'].lower() == 'cloze_answer' or \
+       out['answer_type'].lower() == 'matrix_sort_answer':
+
+      out['prompt'] = questions[q].get('question', '').strip()
+      if not out['prompt']:
+          sys.exit('Question not given in question #%d.' % out['number'])
+
+      out['answers'] = []
+      out['correct'] = []
+      out['hint'] = []
+      out['comment'] = []
+      # single, multiple, sort, matrix_sort_answer
+      if isinstance(questions[q].get('answers'), list):
+        for i, a in enumerate(questions[q].get('answers', [])):
+          out['hint'].append(a['hint'].strip())
+          out['comment'].append(a['comments'].strip())
+          # single, multiple
+          if a['correctness'] == "+" or a['correctness'] == "-":
+            out['answers'].append(a['answer'].strip())
+            if a['correctness'] == "+":
+              out['correct'].append(i)
+              # if answer debug flag is set append correct answer indicator
+              if ANSWERS_DEBUG:
+                out['answers'][i] = markAnswerCh(out['answers'][i])
+          # sort
+          elif a['correctness'].isdigit():
+            out['answers'].append(a['answer'].strip())
+            out['correct'].append(int(a['correctness']))
             # if answer debug flag is set append correct ordering
             if ANSWERS_DEBUG:
-              out['answers'][i] = markAnswerOr(out['answers'][i], out['correct'][-1])
-      elif out['answer_type'].lower() == 'cloze_answer':
-        try:
-          answers = [m.groupdict() for m in mx_rx.finditer(q['answers'].strip()+"\n")][0]
-        except:
-          print("Answers not given or malformed (contingency table) for question #" + str(out['number']))
-          sys.exit(1)
-        out['prompt'] = q['prompt'].strip()
-        out['answers'] = None
-        # reformat output
-        out['correct'] = { 00:answers['oo'], 01:answers['oi'], 02:answers['oz'], 10:answers['io'], 11:answers['ii'], 12:answers['iz'], 20:answers['zo'], 21:answers['zi'], 22:answers['zz'] }
-      elif out['answer_type'].lower() == 'matrix_sort_answer':
-        out['answers'] = []
-        out['correct'] = []
-        try:
-          answers = [m.groupdict() for m in answ_rx.finditer(q['answers'].strip()+"\n")]
-          for an in answers:
-            an2p = an['answer'].split('<->')
+              out['answers'][i] = markAnswerOr(out['answers'][i],
+                                               out['correct'][-1])
+          # matrix_sort_answer
+          elif (isinstance(a['correctness'], str) or \
+                isinstance(a['correctness'], unicode)) and \
+               len(a['correctness']) > 1:
+            out['correct'].append(a['answer'].strip())
             if ANSWERS_DEBUG:
-              out['answers'].append(an2p[0].strip() + " " + markBlank(an2p[1].strip()))
+              out['answers'].append(a['correctness'].strip() + " " + \
+                                    markBlank(a['answer'].strip()))
             else:
-              out['answers'].append(an2p[0].strip())
-            out['correct'].append(an2p[1].strip())
+              out['answers'].append(a['correctness'].strip())
+      # contingency table
+      elif isinstance(questions[q].get('answers'), dict):
+        out['answers'] = None
+        out['hint'] = [questions[q].get('answers', {}).get('hint', "")]
+        out['comment'] = [questions[q].get('answers', {}).get('comments', "")]
+        answer = "\n".join(questions[q].get('answers', {}).get('answer', []))
+        answer += "\n"
+        try:
+          answers = [m.groupdict() for m in mx_rx.finditer(answer)][0]
         except:
-          print("Answers not given or malformed (missing *<->* indicator?) for question #" + str(out['number']))
-          sys.exit(1)
-        out['prompt'] = q['prompt'].strip()
-      else:
-        print "Unrecognised type of question: " + out['answer_type']
-        sys.exit(1)
-    except:
-      print("Question not given in question #" + str(out['number']))
-      sys.exit(1)
+          sys.exit("Answers not given or malformed (contingency table) for \
+                   question #%d" % out['number'])
+        # reformat output
+        out['correct'] = {00:answers['oo'], 01:answers['oi'], 02:answers['oz'],
+                          10:answers['io'], 11:answers['ii'], 12:answers['iz'],
+                          20:answers['zo'], 21:answers['zi'], 22:answers['zz']}
+    elif out['answer_type'].lower() == 'blank_answer':
+      out['answers'] = None
+      out['correct'] = []
+      out['hint'] = []
+      out['comment'] = []
+
+      prompt = questions[q].get('question', [])
+      if not prompt:
+        sys.exit('Question not given in question #%d.' % out['number'])
+
+      answer = {}
+      for a in questions[q].get("answers", []):
+        answer[a["correctness"]] = a["answer"]
+        out['comment'].append((a["correctness"], a["comments"]))
+        out['hint'].append((a["correctness"], a["hint"]))
+
+      out['prompt'] = []
+      for a in prompt:
+        if isinstance(a, str) or isinstance(a, unicode):
+          out['prompt'].append(a)
+        if isinstance(a, int):
+          if ANSWERS_DEBUG:
+            out['prompt'].append(markBlank(answer[a]))
+          out['prompt'].append(len(out['correct']))
+          out['correct'].append(answer[a])
+    else:
+      sys.exit("Unrecognised type of question: \"%s\" in question #%d." % \
+               (out['answer_type'], out['number']))
 
     out['captions'] = []
     out['images'] = []
-    if q['images']:
-      images = [m.groupdict() for m in img_rx.finditer(q['images'].strip())]
-
-      for a in images:
-        out['captions'].append(a['caption'].strip())
-        out['images'].append(a['path'].strip())
-
-    if q['text']:
-      out['text'] = q['text'].strip()
-    else:
-      out['text'] = '-'
-
-    # full question text
-    if q['fullq']:
-      out['fullq'] = q['fullq']
-    else:
-      sys.error("Couldn't parse the whole question!")
-
-    # quality control
-    if q['quality']:
-      out['quality'] = True
-    else:
-      out['quality'] = False
+    im = questions[q].get('images', [])
+    for a in im:
+      out['captions'].append(a.get('caption', '').strip())
+      out['images'].append(a['url'].strip())
 
     results.append(out)
 
@@ -716,25 +704,6 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
 
   return stats + detection
 
-#
-# check and compare legacy UID
-#
-def checkLegacyUID(uid):
-  # legacy uid checker
-  if len(uid) == 1:
-    uidGroup = uids_rx.match(uid[-1])
-    if uidGroup:
-      print "Legacy group input method detected... converting"
-      uid = [i.strip() for i in list(uidGroup.groups())]
-      for i in uid:
-        if not uid_rx.match(i):
-          print "uid: ", i, " not recognised!"
-          sys.exit(1)
-  # order uids
-  uid.sort()
-  return uid
-
-
 if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
@@ -767,7 +736,7 @@ if __name__ == '__main__':
     rootDir = "./"
   if (not args.peter) and (not args.Peter):
     if not os.path.exists(rootDir+"resources/js/wpProQuiz_jquery.ui.touch-punch.min.js"):
-      print "Your .quiz files must be located in the root directory of this package to work properly"
+      print "Your .quiz files must be located in the root directory of this package to work properly."
       sys.exit(1)
 
   # small p - based on big O ordering
@@ -785,7 +754,6 @@ if __name__ == '__main__':
     body = ""
     for i in quizs:
       results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+'special/'+i)
-      uid = checkLegacyUID(uid)
 
       # bog O ordering
       results = orderQuestions(rootDir+'special/'+i, 'O', uid, results, True)
@@ -820,7 +788,6 @@ if __name__ == '__main__':
     quizs = [i for i in os.listdir(rootDir) if '_^O.quiz' in i]
     for i in quizs:
       results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+os.path.basename(i))
-      uid = checkLegacyUID(uid)
       # bog O ordering
       results = orderQuestions(rootDir+i, 'O', uid, results, False)
       toFeedback( rootDir+'feedback/', uid, results, sectionCoverage, difficulty )
@@ -833,17 +800,16 @@ if __name__ == '__main__':
     sys.exit(0)
 
   results, title, url, uid, sectionCoverage, difficulty = parseQuestions(quizFilename)
-  uid = checkLegacyUID(uid)
 
   # order questions if needed
   if args.tarball:
     # check usernames
     if len(uid) == 1:
-      print "Is your UoB id: ", uid[-1], "?"
+      print "Is your UoB candidate number: ", uid[-1], "?"
     elif len(uid) == 2:
-      print "Are your UoB ids: ", " & ".join(uid), "?"
+      print "Are your UoB candidate numbers: ", " & ".join(uid), "?"
     else:
-      print "Too many uids detected\n", " & ".join(uid)
+      print "Too many candidate numbers detected\n", " & ".join(uid)
       sys.exit(1)
 
     uid_choices = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
@@ -925,19 +891,3 @@ if __name__ == '__main__':
 
   if args.count:
     print quizStats(uid, len(results), sectionCoverage, difficulty),
-
-    #TODO: argument flag to generate JSON
-    # quizJson = quizFilename[:-5] + ".json"
-    # print("generating " + quizJson)
-    # results, title, url, uid = parseQuestions(quizFilename)
-    # toJson(quizFilename, results, title, url, uid)
-
-    # indexFilename = None
-    # indexDir_i = quizFilename[::-1].find('/')
-    # if indexDir_i != -1:
-      # indexDir = quizFilename[::-1][indexDir_i:][::-1]
-    # else:
-      # indexDir = "./"
-    # indexFilename = indexDir + "index.html"
-    # print("updating " + indexFilename)
-    # updateIndex(indexDir, quizJson)

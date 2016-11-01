@@ -1,92 +1,188 @@
-// example quiz text
-// <- (this is a comment and will be ignored)
+{
+  // example quiz text
+  // <- (this is a comment and will be ignored)
 
-// this is the url for your quiz
-url: http://so-cool.github.io/quick-quiz/
+  // this is the url for your quiz
+  "url": "http://so-cool.github.io/quick-quiz/",
 
-// this is your UoB username
-uid: ab12345
-// uncomment the next line if you're working in a pair
-// uid: cd67890
+  // this are your UoB candidate numbers as a comma separated list
+  "candidate_number": [12345, 54321],
 
-// this is the title of the quiz
-title: Quizk-quiz show-off.
+  // this is the title of the quiz
+  "title": "Quizk-quiz show-off.",
 
-// this is an example question.
-// the number signifies the question order,
-// meaning questions can be placed in random order
-// within the file
-#1
-difficulty : easy
-reference : 5.2
-question:
-  Which of the following is $\LaTeX$ equation?
-image::
-  img/unicorn.jpg
-image: my caption :
-  img/unicorn.jpg
-// these are answers, a correct answer
-// is indicated by a "*"
-answers:single:
-  - 2 * 2
-  - 2 - 3
-  * $ \frac{7}{2} + 3 $
-  - seven plus two
-1#
+  // this is an example question.
+  // the number signifies the question order,
+  // meaning questions can be placed in random order
+  // within the file
+  "1": {
+    "difficulty": "easy",
+    "reference": "5.2",
+    "problem_type": "definitions",
+    "question": "Which of the following is $\\LaTeX$ \
+                 equation\
+                 ?",
+    "images": [
+      { "url": "img/unicorn.jpg",
+        "caption": "my caption"
+      },
+      { "url": "img/unicorn.jpg"}
+    ],
+    // these are answers, a correct answer
+    // is indicated by a "+", incorrect answer has a "-"
+    "answer_type": "single",
+    "answers": [
+      { "correctness": "-",
+        "answer": "2 * 2",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "-",
+        "answer": "2 - 3",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "+",
+        "answer": "$\\frac{7}{2} + 3$",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "-",
+        "answer": "seven plus two",
+        "hint": "",
+        "comments": ""
+      }
+    ],
+    "comments": "What's special about this question?"
+  },
 
-#2
-difficulty : medium
-reference : 2.2
-question :
-  Mark all the letters:
-answers:multiple:
-  * T
-  * F
-  - 7
-  * w
-2#
+  "2": {
+    "difficulty": "medium",
+    "reference": "2.2",
+    "problem_type": "calculations",
+    "question": "Mark all the letters:",
+    "answer_type": "multiple",
+    "answers": [
+      { "correctness": "+",
+        "answer": "T",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "+",
+        "answer": "F",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "-",
+        "answer": "7",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "-",
+        "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "+",
+        "answer": "W",
+        "hint": "",
+        "comments": ""
+      }
+    ],
+    "comments": "What's special about this question?"
+  },
 
-#3
-difficulty : hard
-reference : 12.2
-question:
-  Order the following numbers:
-answers:sort:
-  2) 26
-  1) 19
-  3) 100
-3#
+  "3": {
+    "difficulty": "hard",
+    "reference": "12.2",
+    "problem_type": "beyond scope of the book",
+    "question": "Order the following numbers:",
+    "answer_type": "sort",
+    "answers": [
+      { "correctness": "2",
+        "answer": "26",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "1",
+        "answer": "19",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "3",
+        "answer": "70",
+        "hint": "",
+        "comments": ""
+      }
+    ],
+    "comments": "What's special about this question?"
+  },
 
-#4
-difficulty: hard
-reference: 3.3
-question:
-  $2+2$ is [4]. What colour is a red truck: [red,Red].
-answers:blank_answer:
-4#
+  "4": {
+    "difficulty": "hard",
+    "reference": "3.3",
+    "problem_type": "beyond scope of the book",
+    "answer_type": "blank_answer",
+    "question": [
+      "$2+2$ is ", 1, ". ",
+      "What colour is a red truck: ", 2, "."
+    ],
+    "answers": [
+      { "correctness": 1,
+        "answer": "4",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": 2,
+        "answer": "red",
+        "hint": "",
+        "comments": ""
+      }
+    ],
+    "comments": "What's special about this question?"
+  },
 
-#5
-difficulty: hard
-reference: 3.3
-question:
-  Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive
-answers:cloze_answer:
+  "5": {
+    "difficulty": "hard",
+    "reference": "3.3",
+    "problem_type": "beyond scope of the book",
+    "question": "Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive",
+    "answer_type": "cloze_answer",
+    "answers": {
+      "answer": ["1 | 4 | 5 ",
+                 "----------",
+                 "2 | 5 | 7 ",
+                 "----------",
+                 "3 | 9 | 12"],
+      "hint": "",
+      "comments": ""
+    },
+    "comments": "What's special about this question?"
+  },
 
-1 | 4 | 5
-----------
-2 | 5 | 7
-----------
-3 | 9 | 12
-
-5#
-
-#6
-difficulty: hard
-reference: 3.3
-question:
-  Match the following sentences.
-answers:matrix_sort_answer:
-  - The letter after 'a' is <-> B.
-  - The letter after 'g' is <-> H.
-  - I like <-> alphabet.
-6#
+  "6": {
+    "difficulty": "hard",
+    "reference": "3.3",
+    "problem_type": "beyond scope of the book",
+    "question": "Match the following sentences.",
+    "answer_type": "matrix_sort_answer",
+    "answers": [
+      { "correctness": "The letter after 'a' is ",
+        "answer": "'B'.",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "The letter after 'g' is ",
+        "answer": "'H'.",
+        "hint": "",
+        "comments": ""
+      },
+      { "correctness": "I like ",
+        "answer": "alphabet.",
+        "hint": "",
+        "comments": ""
+      }
+    ],
+    "comments": "What's special about this question?"
+  }
+}
