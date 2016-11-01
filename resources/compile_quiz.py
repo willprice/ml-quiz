@@ -27,6 +27,8 @@ parser_group2.add_argument('-o', '--order', required=False, dest="order", defaul
 parser_group2.add_argument('-O', '--Order', required=False, dest="Order", default=False, action='store_true', help=('order the questions first on difficulty then on book section'))
 
 parser.add_argument('-d', '--debug', required=False, dest="debug", default=False, action='store_true', help=('indicate the correct answer in the question'))
+parser.add_argument('--comments', required=False, dest="comments", default=False, action='store_true', help=('show *comments* in each question'))
+parser.add_argument('--hints', required=False, dest="hints", default=False, action='store_true', help=('show *hints* in each question'))
 parser.add_argument('-f', '--feedback', required=False, dest="feedback", default=False, action='store_true', help=('generate feedback for all questions'))
 parser.add_argument('-e', '--extract', required=False, dest="extract", default=False, action='store_true', help=('export marked questions to separate file'))
 parser.add_argument('-c', '--count', required=False, dest="count", default=False, action='store_true', help=('show difficulty statistics of the quiz file'))
@@ -58,10 +60,15 @@ mx_rx = re.compile(r"""
 
 # debug answers
 ANSWERS_DEBUG = False
+SHOW_HINTS = False
+SHOW_COMMENTS = False
 
-# book chapters
-
-# book sections
+def add_hint_comment(ctype, comment):
+  colour_box = '<p style="border-style:solid; border-width:5px; border-color:#ff0000 #0000ff;">%s:<br>%s</p><hr>'
+  if ctype == 'c':
+    return colour_box % ("comment", comment)
+  elif ctype == 'h':
+    return colour_box % ("hint", comment)
 
 #
 # correct answer indicator
@@ -188,6 +195,12 @@ def parseQuestions(filename):
               )
 
     out['problem_type'] = questions[q].get('problem_type', '').strip()
+    if not out['problem_type']:
+      sys.exit("Problem type not given for question #%d" % out['number'])
+
+    out['comments'] = questions[q].get('comments', '').strip()
+    if not out['comments']:
+      sys.exit("Comments not given for question #%d" % out['number'])
 
     book = questions[q].get('reference', '')
     book_split = book.split('.')
@@ -245,7 +258,9 @@ def parseQuestions(filename):
 
       out['prompt'] = questions[q].get('question', '').strip()
       if not out['prompt']:
-          sys.exit('Question not given in question #%d.' % out['number'])
+        sys.exit('Question not given in question #%d.' % out['number'])
+      if SHOW_COMMENTS:
+        out['prompt'] = add_hint_comment('c', out['comments']) + out['prompt']
 
       out['answers'] = []
       out['correct'] = []
@@ -255,6 +270,9 @@ def parseQuestions(filename):
       if isinstance(questions[q].get('answers'), list):
         for i, a in enumerate(questions[q].get('answers', [])):
           out['hint'].append(a['hint'].strip())
+          if not out['hint']:
+            sys.exit('In question #%d the %d answer lacks hint.' % \
+                     (out['number'], i))
           out['comment'].append(a['comments'].strip())
           # single, multiple
           if a['correctness'] == "+" or a['correctness'] == "-":
@@ -282,11 +300,22 @@ def parseQuestions(filename):
                                     markBlank(a['answer'].strip()))
             else:
               out['answers'].append(a['correctness'].strip())
+
+          if SHOW_HINTS:
+            out["answers"][-1] = out["answers"][-1] + add_hint_comment("h", out["hint"][-1])
+          if SHOW_COMMENTS:
+            out["answers"][-1] = out["answers"][-1] + add_hint_comment("c", out["comment"][-1])
       # contingency table
       elif isinstance(questions[q].get('answers'), dict):
         out['answers'] = None
         out['hint'] = [questions[q].get('answers', {}).get('hint', "")]
         out['comment'] = [questions[q].get('answers', {}).get('comments', "")]
+
+        if SHOW_HINTS:
+          out["prompt"] += add_hint_comment("h", out['hint'][-1])
+        if SHOW_COMMENTS:
+          out["prompt"] += add_hint_comment("c", out['comment'][-1])
+
         answer = "\n".join(questions[q].get('answers', {}).get('answer', []))
         answer += "\n"
         try:
@@ -314,7 +343,10 @@ def parseQuestions(filename):
         out['comment'].append((a["correctness"], a["comments"]))
         out['hint'].append((a["correctness"], a["hint"]))
 
-      out['prompt'] = []
+      if SHOW_COMMENTS:
+        out['prompt'] = [add_hint_comment('c', out['comments'])]
+      else:
+        out['prompt'] = []
       for a in prompt:
         if isinstance(a, str) or isinstance(a, unicode):
           out['prompt'].append(a)
@@ -323,6 +355,17 @@ def parseQuestions(filename):
             out['prompt'].append(markBlank(answer[a]))
           out['prompt'].append(len(out['correct']))
           out['correct'].append(answer[a])
+
+      if SHOW_HINTS:
+        hhs = []
+        for hh in out["hint"]:
+          hhs.append("%s blank: %s" % hh)
+        out["prompt"] += add_hint_comment("h", "<br>".join(hhs))
+      if SHOW_COMMENTS:
+        ccs = []
+        for cc in out["comment"]:
+          ccs.append("%s blank: %s" % cc)
+        out["prompt"] += add_hint_comment("c", "<br>".join(ccs))
     else:
       sys.exit("Unrecognised type of question: \"%s\" in question #%d." % \
                (out['answer_type'], out['number']))
@@ -393,8 +436,9 @@ def toHtml(filename, results, title, qToGen):
         question["question"] += insertImage(result['images'][i], result['captions'][i])
 
       if result['answer_type'] == 'single':
-        # Loop over the answers and extract the text if it has been filled in appropriately
-        # remodel answers so that the first one in the list is correct
+        # Loop over the answers and extract the text if it has been filled in
+        # appropriately remodel answers so that the first one in the list is
+        # correct
         # TODO: fix in the same way as in multiple answers
         rAnswers = result['answers'][:]
         rAnswers_c = rAnswers.pop(result['correct'][0])
@@ -708,6 +752,8 @@ if __name__ == '__main__':
   # parse arguments
   args = parser.parse_args()
   ANSWERS_DEBUG = args.debug
+  SHOW_HINTS = args.hints
+  SHOW_COMMENTS = args.comments
   quizFilename = args.filename[0]
   # check if given file exists
   if os.path.exists(quizFilename):
