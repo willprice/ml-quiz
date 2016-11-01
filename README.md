@@ -441,6 +441,8 @@ optional arguments:
   -O, --Order           order the questions first on difficulty then on book
                         section
   -d, --debug           indicate the correct answer in the question
+  --comments            show *comments* in each question
+  --hints               show *hints* in each question
   -f, --feedback        generate feedback for all questions
   -e, --extract         export marked questions to separate file
   -c, --count           show difficulty statistics of the quiz file
@@ -448,7 +450,7 @@ optional arguments:
 ```
 
 Therefore, flag `-a` compiles all of the questions in given `.quiz` file into one HTML. `-q 7` compiles only question `#7`. `-s` will compile all of the questions and place each one in a separate HTML file. `-i` generates `iframe` based HTML displaying all questions on a single page.  
-`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics. And `-o`/`-O` will create additional `.quiz` file with questions sorted as described above.  
+`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics; and `-o`/`-O` will create additional `.quiz` file with questions sorted as described above. `--comments` and `--hints` will display comments and hints in the rendered HTML.  
 Finally, `-t` creates a *tarball* (archive) with all files necessary for submission.
 
 # Submission #
