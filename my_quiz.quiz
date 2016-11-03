@@ -16,7 +16,7 @@
   // meaning questions can be placed in random order
   // within the file
   "1": {
-    "difficulty": "easy",
+    "difficulty": "1",
     "reference": "5.2",
     "problem_type": "definitions",
     "question": "Which of the following is $\\LaTeX$ \
@@ -53,7 +53,7 @@
   },
 
   "2": {
-    "difficulty": "easy",
+    "difficulty": "5",
     "reference": "2.2",
     "problem_type": "calculations",
     "question": "Mark all the letters:",
@@ -85,7 +85,7 @@
   },
 
   "3": {
-    "difficulty": "easy",
+    "difficulty": "2",
     "reference": "12.2",
     "problem_type": "beyond scope of the book",
     "question": "Order the following numbers:",
@@ -111,7 +111,7 @@
   },
 
   "4": {
-    "difficulty": "easy",
+    "difficulty": "4",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "answer_type": "blank_answer",
@@ -136,7 +136,7 @@
   },
 
   "5": {
-    "difficulty": "easy",
+    "difficulty": "3",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive",
@@ -156,7 +156,7 @@
   },
 
   "6": {
-    "difficulty": "easy",
+    "difficulty": "5",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Match the following sentences.",

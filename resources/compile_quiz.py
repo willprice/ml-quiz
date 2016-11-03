@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# scale difficulty: 1–5 (show difficulty stats | order question)
 # Update brief.html, wiki, readme, gh-pages
 # Update question requirements
 
@@ -187,12 +186,14 @@ def parseQuestions(filename):
   results = []
   question_indeces = []
 
-  difficulty_count = [0, 0, 0]
+  difficulty_count = [0, 0, 0, 0, 0]
   used_sections = []
   unique_sections = 0
 
   for q in questions:
     out = {}
+
+    out['fullq'] = json.dumps(questions[q], sort_keys=True, indent=4)
 
     out['number'] = int(q)
     if out['number'] in question_indeces:
@@ -264,19 +265,23 @@ def parseQuestions(filename):
     difficulty = questions[q].get('difficulty', '').strip()
     if not difficulty:
         sys.exit('Difficulty not given in question #%d' % out['number'])
-    if difficulty not in ['easy', 'medium', 'hard']:
+    if difficulty not in ["1", "2", "3", "4", "5"]:
         sys.exit('Unknown difficulty \"%s\" in question #%d' % \
                  (difficulty, out['number'])
                 )
     out['difficulty'] = difficulty
 
     # count difficulties
-    if out['difficulty'] == "hard":
+    if out['difficulty'] == "5":
       difficulty_count[0] += 1
-    elif out['difficulty'] == "medium":
+    elif out['difficulty'] == "4":
       difficulty_count[1] += 1
-    elif out['difficulty'] == "easy":
+    elif out['difficulty'] == "3":
       difficulty_count[2] += 1
+    elif out['difficulty'] == "2":
+      difficulty_count[3] += 1
+    elif out['difficulty'] == "1":
+      difficulty_count[4] += 1
 
     if out['answer_type'].lower() == 'single' or \
        out['answer_type'].lower() == 'multiple' or \
@@ -445,6 +450,9 @@ def htmlToJson(question):
 
 # prepare and write results to html file
 def toHtml(filename, results, title, qToGen):
+  translate_difficulty = {"1":"easy (1)", "2":"easy-medium (2)", \
+                          "3":"medium (3)", "4":"medium-hard (4)", \
+                          "5":"hard (5)"}
   # skip all the other questions if only interested in one
   separateFilenames = False
   if type(qToGen) == list:
@@ -474,7 +482,7 @@ def toHtml(filename, results, title, qToGen):
       question["category"]       = str(result['chapter']) + "." + str(result['section']) +\
         ": " +  questionCategories[result['chapter']][0] + " : " +\
         questionCategories[result['chapter']][result['section']]
-      question["difficulty"]     = result['difficulty']
+      question["difficulty"]     = translate_difficulty[result['difficulty']]
 
       # prepare question to display: text + images
       question["question"]       = result['prompt']
@@ -725,24 +733,26 @@ def writeIframe(filename, questionFilenames):
 # order questions
 #
 def orderQuestions(filename, order, uid, questions, to_file):
-
-  ordering_dict = {'easy':0, 'medium':2, 'hard':3}
-
+  # TODO: add title and url
   if order == 'O':
     of = '^'
-    out = sorted(questions, key=lambda elem: "%d %02d.%02d" % (ordering_dict[elem['difficulty']], elem['chapter'], elem['section']))
+    out = sorted(questions, key=lambda elem: "%d %02d.%02d" % (int(elem['difficulty']), elem['chapter'], elem['section']))
   elif order == 'o':
     of = 'v'
-    out = sorted(questions, key=lambda elem: "%02d.%02d %d" % (elem['chapter'], elem['section'], ordering_dict[elem['difficulty']]))
+    out = sorted(questions, key=lambda elem: "%02d.%02d %d" % (elem['chapter'], elem['section'], int(elem['difficulty'])))
   else:
     sys.exit('Unknown order')
 
   if to_file:
+    f_content = []
+    f_content.append('{\n')
+    f_content.append('"candidate_number": ' + json.dumps(uid) + ',\n')
+    for i in out:
+      f_content.append('\n"' + str(i["number"]) + '": ' + i['fullq'] + ",")
+    f_content[-1] = f_content[-1][:-1] # remove the last comma
+    f_content.append('\n}\n')
     with open(filename[:-5] + "_" + of + order + ".quiz", 'w') as o_file:
-      for i in uid:
-        o_file.write( 'uid: '+i+'\n' )
-      for i in out:
-        o_file.write( '\n' + i['fullq'] )
+      o_file.write("".join(f_content))
 
   return out
 
@@ -752,7 +762,9 @@ def orderQuestions(filename, order, uid, questions, to_file):
 def quizStats(uid, questionCount, sectionCoverage, difficulty):
   stats =("-----------------------------|\n" +\
           "^ hard:             %2d (%2d%%) |\n" +\
+          "| hard-medium:      %2d (%2d%%) |\n" +\
           "| medium:           %2d (%2d%%) |\n" +\
+          "| medium-easy:      %2d (%2d%%) |\n" +\
           "v easy:             %2d (%2d%%) |\n" +\
           "-----------------------------|\n" +\
           "~ total:            %2d       |\n" +\
@@ -762,6 +774,8 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
           (difficulty[0], 100.0*difficulty[0]/questionCount, \
           difficulty[1], 100.0*difficulty[1]/questionCount, \
           difficulty[2], 100.0*difficulty[2]/questionCount, \
+          difficulty[3], 100.0*difficulty[3]/questionCount, \
+          difficulty[4], 100.0*difficulty[4]/questionCount, \
           questionCount, sectionCoverage)
 
   difficultyRequirements = "\n"
@@ -776,7 +790,7 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
     if questionCount < 30: difficultyRequirements += "& too little questions &"
     if sectionCoverage < 15: difficultyRequirements += "& too few sections &"
   else:
-    print "Too many uids detected (", authorsNo, ") : ", authors
+    print "Too many candidate numbers detected (", authorsNo, ") : ", authors
     sys.exit(1)
 
   if 100.0*difficulty[2]/questionCount > 40: difficultyRequirements += "& too many easy &"
