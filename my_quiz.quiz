@@ -33,31 +33,27 @@
     "answer_type": "single",
     "answers": [
       { "correctness": "-",
-        "answer": "2 * 2",
-        "hint": "multiplication",
-        "comments": ""
+        "answer": "2 * 2"
       },
       { "correctness": "-",
-        "answer": "2 - 3",
-        "hint": "subtraction",
-        "comments": ""
+        "answer": "2 - 3"
       },
       { "correctness": "+",
         "answer": "$\\frac{7}{2} + 3$",
-        "hint": "addition",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "-",
-        "answer": "seven plus two",
-        "hint": "addition",
-        "comments": ""
+        "answer": "seven plus two"
       }
     ],
+    "hint": "you do the math",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "wikipedia url",
     "comments": "What's special about this question?"
   },
 
   "2": {
-    "difficulty": "medium",
+    "difficulty": "easy",
     "reference": "2.2",
     "problem_type": "calculations",
     "question": "Mark all the letters:",
@@ -65,35 +61,31 @@
     "answers": [
       { "correctness": "+",
         "answer": "T",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "+",
         "answer": "F",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "-",
-        "answer": "7",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "answer": "7"
       },
       { "correctness": "-",
-        "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">"
       },
       { "correctness": "+",
         "answer": "W",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "3": {
-    "difficulty": "hard",
+    "difficulty": "easy",
     "reference": "12.2",
     "problem_type": "beyond scope of the book",
     "question": "Order the following numbers:",
@@ -101,25 +93,25 @@
     "answers": [
       { "correctness": "2",
         "answer": "26",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       },
       { "correctness": "1",
         "answer": "19",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       },
       { "correctness": "3",
         "answer": "70",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "4": {
-    "difficulty": "hard",
+    "difficulty": "easy",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "answer_type": "blank_answer",
@@ -130,20 +122,21 @@
     "answers": [
       { "correctness": 1,
         "answer": "4",
-        "hint": "2+2=4",
-        "comments": "just arithmetics"
+        "explanation": "why this answer is correct"
       },
       { "correctness": 2,
         "answer": "red",
-        "hint": "R.E.D.",
-        "comments": "just colours"
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "5": {
-    "difficulty": "hard",
+    "difficulty": "easy",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive",
@@ -154,14 +147,16 @@
                  "2 | 5 | 7 ",
                  "----------",
                  "3 | 9 | 12"],
-      "hint": "do the math",
-      "comments": "just arithmetics"
+      "explanation": "why this answer is correct"
     },
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "6": {
-    "difficulty": "hard",
+    "difficulty": "easy",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Match the following sentences.",
@@ -169,20 +164,20 @@
     "answers": [
       { "correctness": "The letter after 'a' is ",
         "answer": "'B'.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "The letter after 'g' is ",
         "answer": "'H'.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "I like ",
         "answer": "alphabet.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   }
 }

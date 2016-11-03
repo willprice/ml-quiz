@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# scale difficulty: 1–5 (show difficulty stats | order question)
+# Update brief.html, wiki, readme, gh-pages
+# Update question requirements
+
 import re
 import sys, os, shutil
 import json
@@ -29,6 +33,9 @@ parser_group2.add_argument('-O', '--Order', required=False, dest="Order", defaul
 parser.add_argument('-d', '--debug', required=False, dest="debug", default=False, action='store_true', help=('indicate the correct answer in the question'))
 parser.add_argument('--comments', required=False, dest="comments", default=False, action='store_true', help=('show *comments* in each question'))
 parser.add_argument('--hints', required=False, dest="hints", default=False, action='store_true', help=('show *hints* in each question'))
+parser.add_argument('--source', required=False, dest="source", default=False, action='store_true', help=('show *source* in each question'))
+parser.add_argument('--workings', required=False, dest="workings", default=False, action='store_true', help=('show *workings* in each question'))
+parser.add_argument('--explanation', required=False, dest="explanation", default=False, action='store_true', help=('show *explanation* in each answer'))
 parser.add_argument('-f', '--feedback', required=False, dest="feedback", default=False, action='store_true', help=('generate feedback for all questions'))
 parser.add_argument('-e', '--extract', required=False, dest="extract", default=False, action='store_true', help=('export marked questions to separate file'))
 parser.add_argument('-c', '--count', required=False, dest="count", default=False, action='store_true', help=('show difficulty statistics of the quiz file'))
@@ -62,6 +69,9 @@ mx_rx = re.compile(r"""
 ANSWERS_DEBUG = False
 SHOW_HINTS = False
 SHOW_COMMENTS = False
+SHOW_SOURCE = False
+SHOW_WORKINGS = False
+SHOW_EXPLANATION = False
 
 def add_hint_comment(ctype, comment):
   colour_box = '<p style="border-style:solid; border-width:5px; border-color:#ff0000 #0000ff;">%s:<br>%s</p><hr>'
@@ -69,6 +79,12 @@ def add_hint_comment(ctype, comment):
     return colour_box % ("comment", comment)
   elif ctype == 'h':
     return colour_box % ("hint", comment)
+  elif ctype == 's':
+    return colour_box % ("source", comment)
+  elif ctype == 'w':
+    return colour_box % ("workings", comment)
+  elif ctype == 'e':
+    return colour_box % ("explanation", comment)
 
 #
 # correct answer indicator
@@ -202,6 +218,18 @@ def parseQuestions(filename):
     if not out['comments']:
       sys.exit("Comments not given for question #%d" % out['number'])
 
+    out['source'] = questions[q].get('source', '').strip()
+    if not out['source']:
+      sys.exit("Source not given for question #%d" % out['number'])
+
+    out['hint'] = questions[q].get('hint', '').strip()
+    if not out['hint']:
+      sys.exit("Hint not given for question #%d" % out['number'])
+
+    out['workings'] = questions[q].get('workings', '').strip()
+    # if not out['workings']:
+    #   sys.exit("Workings not given for question #%d" % out['number'])
+
     book = questions[q].get('reference', '')
     book_split = book.split('.')
     if len(book_split) != 2:
@@ -261,60 +289,77 @@ def parseQuestions(filename):
         sys.exit('Question not given in question #%d.' % out['number'])
       if SHOW_COMMENTS:
         out['prompt'] = add_hint_comment('c', out['comments']) + out['prompt']
+      if SHOW_HINTS:
+        out['prompt'] = add_hint_comment('h', out['hint']) + out['prompt']
+      if SHOW_WORKINGS:
+        out['prompt'] = add_hint_comment('w', out['workings']) + out['prompt']
+      if SHOW_SOURCE:
+        out['prompt'] = add_hint_comment('s', out['source']) + out['prompt']
 
       out['answers'] = []
       out['correct'] = []
-      out['hint'] = []
-      out['comment'] = []
+      out['explanation'] = []
       # single, multiple, sort, matrix_sort_answer
       if isinstance(questions[q].get('answers'), list):
         for i, a in enumerate(questions[q].get('answers', [])):
-          out['hint'].append(a['hint'].strip())
-          if not out['hint']:
-            sys.exit('In question #%d the %d answer lacks hint.' % \
-                     (out['number'], i))
-          out['comment'].append(a['comments'].strip())
           # single, multiple
           if a['correctness'] == "+" or a['correctness'] == "-":
             out['answers'].append(a['answer'].strip())
             if a['correctness'] == "+":
+              explanation = a.get('explanation', '').strip()
+              if not explanation:
+                sys.exit('Explanation missing in question #%d answer %d' % (out['number'], i))
+              out["explanation"].append((i, explanation))
               out['correct'].append(i)
               # if answer debug flag is set append correct answer indicator
               if ANSWERS_DEBUG:
                 out['answers'][i] = markAnswerCh(out['answers'][i])
+              if SHOW_EXPLANATION:
+                out['answers'][i] += add_hint_comment("e", explanation)
           # sort
           elif a['correctness'].isdigit():
             out['answers'].append(a['answer'].strip())
             out['correct'].append(int(a['correctness']))
+
+            explanation = a.get('explanation', '').strip()
+            if not explanation:
+              sys.exit('Explanation missing in question #%d answer %s' % (out['number'], out['correct'][-1]))
+            out["explanation"].append((out['correct'][-1], explanation))
+
             # if answer debug flag is set append correct ordering
             if ANSWERS_DEBUG:
               out['answers'][i] = markAnswerOr(out['answers'][i],
                                                out['correct'][-1])
+            if SHOW_EXPLANATION:
+              out['answers'][i] += add_hint_comment("e", explanation)
           # matrix_sort_answer
           elif (isinstance(a['correctness'], str) or \
                 isinstance(a['correctness'], unicode)) and \
                len(a['correctness']) > 1:
             out['correct'].append(a['answer'].strip())
+
+            explanation = a.get('explanation', '').strip()
+            if not explanation:
+              sys.exit('Explanation missing in question #%d answer %s' % (out['number'], i))
+            out["explanation"].append((i, explanation))
+
             if ANSWERS_DEBUG:
               out['answers'].append(a['correctness'].strip() + " " + \
                                     markBlank(a['answer'].strip()))
             else:
               out['answers'].append(a['correctness'].strip())
-
-          if SHOW_HINTS:
-            out["answers"][-1] = out["answers"][-1] + add_hint_comment("h", out["hint"][-1])
-          if SHOW_COMMENTS:
-            out["answers"][-1] = out["answers"][-1] + add_hint_comment("c", out["comment"][-1])
+            if SHOW_EXPLANATION:
+              out['answers'][i] += add_hint_comment("e", explanation)
       # contingency table
       elif isinstance(questions[q].get('answers'), dict):
         out['answers'] = None
-        out['hint'] = [questions[q].get('answers', {}).get('hint', "")]
-        out['comment'] = [questions[q].get('answers', {}).get('comments', "")]
+        explanation = a.get('explanation', '').strip()
+        if not explanation:
+          sys.exit('Explanation missing in question #%d' % out['number'])
+        out['explanation'] = [explanation]
 
-        if SHOW_HINTS:
-          out["prompt"] += add_hint_comment("h", out['hint'][-1])
-        if SHOW_COMMENTS:
-          out["prompt"] += add_hint_comment("c", out['comment'][-1])
+        if SHOW_EXPLANATION:
+          out["prompt"] += add_hint_comment("e", explanation)
 
         answer = "\n".join(questions[q].get('answers', {}).get('answer', []))
         answer += "\n"
@@ -330,8 +375,7 @@ def parseQuestions(filename):
     elif out['answer_type'].lower() == 'blank_answer':
       out['answers'] = None
       out['correct'] = []
-      out['hint'] = []
-      out['comment'] = []
+      out['explanation'] = []
 
       prompt = questions[q].get('question', [])
       if not prompt:
@@ -339,14 +383,21 @@ def parseQuestions(filename):
 
       answer = {}
       for a in questions[q].get("answers", []):
+        explanation = a.get('explanation', '').strip()
+        if not explanation:
+          sys.exit('Explanation missing in question #%d' % out['number'])
         answer[a["correctness"]] = a["answer"]
-        out['comment'].append((a["correctness"], a["comments"]))
-        out['hint'].append((a["correctness"], a["hint"]))
+        out['explanation'].append((a["correctness"], explanation))
 
+      out['prompt'] = []
       if SHOW_COMMENTS:
-        out['prompt'] = [add_hint_comment('c', out['comments'])]
-      else:
-        out['prompt'] = []
+        out['prompt'] += [add_hint_comment('c', out['comments'])]
+      if SHOW_HINTS:
+        out['prompt'] += [add_hint_comment('h', out['hint'])]
+      if SHOW_WORKINGS:
+        out['prompt'] += [add_hint_comment('w', out['workings'])]
+      if SHOW_SOURCE:
+        out['prompt'] += [add_hint_comment('s', out['source'])]
       for a in prompt:
         if isinstance(a, str) or isinstance(a, unicode):
           out['prompt'].append(a)
@@ -356,16 +407,11 @@ def parseQuestions(filename):
           out['prompt'].append(len(out['correct']))
           out['correct'].append(answer[a])
 
-      if SHOW_HINTS:
+      if SHOW_EXPLANATION:
         hhs = []
-        for hh in out["hint"]:
+        for hh in out["explanation"]:
           hhs.append("%s blank: %s" % hh)
-        out["prompt"] += add_hint_comment("h", "<br>".join(hhs))
-      if SHOW_COMMENTS:
-        ccs = []
-        for cc in out["comment"]:
-          ccs.append("%s blank: %s" % cc)
-        out["prompt"] += add_hint_comment("c", "<br>".join(ccs))
+        out["prompt"] += add_hint_comment("e", "<br>".join(hhs))
     else:
       sys.exit("Unrecognised type of question: \"%s\" in question #%d." % \
                (out['answer_type'], out['number']))
@@ -754,6 +800,9 @@ if __name__ == '__main__':
   ANSWERS_DEBUG = args.debug
   SHOW_HINTS = args.hints
   SHOW_COMMENTS = args.comments
+  SHOW_SOURCE = args.source
+  SHOW_WORKINGS = args.workings
+  SHOW_EXPLANATION = args.explanation
   quizFilename = args.filename[0]
   # check if given file exists
   if os.path.exists(quizFilename):
