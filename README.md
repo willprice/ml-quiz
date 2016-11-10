@@ -25,7 +25,7 @@ The following parameters are required for each question:
     * "2" - easy-medium,
     * "3" - medium,
     * "4" - medium-hard,
-    * "5" - hard;
+    * "5" - hard;  
 where:
     * an easy question is one that can be answered by looking up a specific passage in the book,
     * a medium question is one that requires some degree of problem-solving,
@@ -35,10 +35,10 @@ where:
  - `"answer_type":` defines type of the question; see section **Types of question** below for more details.
  - `"question":` defines the question text that will be displayed; both *in-line* LaTeX (i.e. `$\LaTeX$`) and *display* LaTeX (i.e. `$$\LaTeX$$`) are supported.
  - `"answers":` are answers to the question; each **correct** answer requires an `"explanation":` field, which explains why this particular answer is correct.
-- `"hint":` should provide a hint that helps solving the question.
-- `"workings":` show in detail how to arrive at the correct answer.
-- `"source":` is a reference to a book (with chapter and section) or a web page that inspired the question.
-- `"comments":` should briefly describe what knowledge it tests, and what your rationale for classifying it with given difficulty is. Additionally, you may want to include any other comments that might be relevant while marking the question.
+ - `"hint":` should provide a hint that helps solving the question.
+ - `"workings":` show in detail how to arrive at the correct answer.
+ - `"source":` is a reference to a book (with chapter and section) or a web page that inspired the question.
+ - `"comments":` should briefly describe what knowledge it tests, and what your rationale for classifying it with given difficulty is. Additionally, you may want to include any other comments that might be relevant while marking the question.
 
 ### Optional parameters ###
 You can optionally attach image(s) to your question with `"images":` field being a list of dictionaries, each containing `"url":` and *optionally* `"caption":`, e.g.
