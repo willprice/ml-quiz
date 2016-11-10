@@ -187,8 +187,10 @@ def parseQuestions(filename):
   question_indeces = []
 
   difficulty_count = [0, 0, 0, 0, 0]
-  used_sections = []
+  used_sections = {}
   unique_sections = 0
+
+  used_question_types = {}
 
   for q in questions:
     out = {}
@@ -210,6 +212,11 @@ def parseQuestions(filename):
       sys.exit("Unknown answer type \"%s\" for question #%d" % \
                (out['answer_type'], out['number'])
               )
+
+    if out['answer_type'] not in used_question_types:
+      used_question_types[out['answer_type']] = 1
+    else:
+      used_question_types[out['answer_type']] += 1
 
     out['problem_type'] = questions[q].get('problem_type', '').strip()
     if not out['problem_type']:
@@ -259,8 +266,10 @@ def parseQuestions(filename):
     # count unique sections
     current_section = str(out['chapter']) + "." + str(out['section'])
     if current_section not in used_sections:
-      used_sections.append(current_section)
       unique_sections += 1
+      used_sections[current_section] = 1
+    else:
+      used_sections[current_section] += 1
 
     difficulty = questions[q].get('difficulty', '').strip()
     if not difficulty:
@@ -430,7 +439,7 @@ def parseQuestions(filename):
 
     results.append(out)
 
-  return(results, title, url, uid, unique_sections, difficulty_count)
+  return(results, title, url, uid, unique_sections, difficulty_count, used_sections, used_question_types)
 
 # return HTML image environment
 def insertImage(path, caption):
@@ -681,7 +690,7 @@ def updateIndex(dirname, jsonPath):
 #
 # generate feedback for given user
 #
-def toFeedback( rootDir, uid, results, sectionCoverage, difficulty ):
+def toFeedback( rootDir, uid, results, sectionCoverage, difficulty, quantifiedSections, questionTypes ):
   d = []
   for r in results:
     d.append('#' + str(r['number']).zfill(2) + ': ' + r['text'])
@@ -689,7 +698,7 @@ def toFeedback( rootDir, uid, results, sectionCoverage, difficulty ):
 
   feedbackFile = rootDir + "feedback_" + '_'.join(uid) + ".txt"
   with open(feedbackFile, 'w') as ffile:
-    ffile.write( quizStats(uid, len(results), sectionCoverage, difficulty) )
+    ffile.write( quizStats(uid, len(results), sectionCoverage, difficulty, quantifiedSections, questionTypes) )
     ffile.write('\n\n')
     ffile.write( '\n'.join(d) )
 
@@ -759,42 +768,92 @@ def orderQuestions(filename, order, uid, questions, to_file):
 #
 # produce quiz statistics#
 #
-def quizStats(uid, questionCount, sectionCoverage, difficulty):
+def quizStats(uid, questionCount, sectionCoverage, difficulty, quantifiedSections, questionTypes):
+  # split book coverage
+  book_chapters = {}
+  for i in quantifiedSections:
+    ch = i.split(".")[0]
+    if ch in book_chapters:
+      book_chapters[ch] += 1
+    else:
+      book_chapters[ch] = 1
+  ch_number = len(book_chapters)
+  m = difficulty[4]+difficulty[3]*2+difficulty[2]*3+difficulty[1]*4+difficulty[0]*5
+  m /= float(sum(difficulty))
+
+  categories = ""
+  for i in questionTypes:
+    categories += " -%s%2d |\n" % (i.ljust(24), questionTypes[i])
+
   stats =("-----------------------------|\n" +\
-          "^ hard:             %2d (%2d%%) |\n" +\
-          "| hard-medium:      %2d (%2d%%) |\n" +\
-          "| medium:           %2d (%2d%%) |\n" +\
-          "| medium-easy:      %2d (%2d%%) |\n" +\
-          "v easy:             %2d (%2d%%) |\n" +\
+          "^ (5) hard:         %2d (%2d%%) |\n" +\
+          "| (4) hard-medium:  %2d (%2d%%) |\n" +\
+          "| (3) medium:       %2d (%2d%%) |\n" +\
+          "| (2) medium-easy:  %2d (%2d%%) |\n" +\
+          "v (1) easy:         %2d (%2d%%) |\n" +\
+          "-----------------------------|\n" +\
+          "~ average difficulty: %.2f   |\n" +\
           "-----------------------------|\n" +\
           "~ total:            %2d       |\n" +\
           "-----------------------------|\n" +\
-          "@ section coverage: %2d       |\n" +\
+          "@ chapter coverage: %2d       |\n" +\
+          "-----------------------------|\n" +\
+          "# categories count:          |\n" +\
+          "%s" +\
           "-----------------------------|\n" ) %\
           (difficulty[0], 100.0*difficulty[0]/questionCount, \
           difficulty[1], 100.0*difficulty[1]/questionCount, \
           difficulty[2], 100.0*difficulty[2]/questionCount, \
           difficulty[3], 100.0*difficulty[3]/questionCount, \
           difficulty[4], 100.0*difficulty[4]/questionCount, \
-          questionCount, sectionCoverage)
+          m, questionCount, ch_number, categories)
 
   difficultyRequirements = "\n"
 
   authors = ' & '.join(uid)
   authorsNo = len(uid)
-
-  if authorsNo == 2:
-    if questionCount < 50: difficultyRequirements += "& too little questions &"
-    if sectionCoverage < 25: difficultyRequirements += "& too few sections &"
-  elif authorsNo == 1:
-    if questionCount < 30: difficultyRequirements += "& too little questions &"
-    if sectionCoverage < 15: difficultyRequirements += "& too few sections &"
-  else:
+  if authorsNo > 2:
     print "Too many candidate numbers detected (", authorsNo, ") : ", authors
     sys.exit(1)
 
-  if 100.0*difficulty[2]/questionCount > 40: difficultyRequirements += "& too many easy &"
-  if 100.0*difficulty[0]/questionCount < 20: difficultyRequirements += "& too few hard &"
+  q_requirements = 6 * authorsNo
+  if questionCount < q_requirements:
+    difficultyRequirements += "& you need at least %d questions for 40%% &\n" % q_requirements
+    difficultyRequirements += "& all of the questions need to be of difficulty 2 at least &\n"
+    difficultyRequirements += "& you need at least %d questions for each type of question &\n" % authorsNo
+  elif questionCount < q_requirements*2:
+    difficultyRequirements += "& you have %d questions (%d are required for 40%% mark) &\n" % (questionCount, q_requirements*2)
+    if difficulty[3]+difficulty[2]+difficulty[1]+difficulty[0] < q_requirements*2:
+        difficultyRequirements += "& all of the questions need to be of difficulty 2 at least &\n"
+    if ch_number < 12:
+      difficultyRequirements += "& you need at least one question for each chapter &\n"
+    if len(questionTypes) < 6:
+      difficultyRequirements += "& you need at least %d questions for each type of question &\n" % authorsNo
+    else:
+      for i in questionTypes:
+        if questionTypes[i] < authorsNo:
+          difficultyRequirements += "& you need at least %d questions for each type of question &\n" % authorsNo
+          break
+  elif questionCount < q_requirements*3:
+    difficultyRequirements += "& you have %d questions (%d are required for 70%% mark) &\n" % (questionCount, q_requirements*3)
+    if m <= 3:
+      difficultyRequirements += "& the average question difficulty needs to be at least 3 &\n"
+    if ch_number < 12:
+      difficultyRequirements += "& you need at least two questions for each chapter &\n"
+    else:
+      for i in book_chapters:
+        if book_chapters[i] < 2:
+          difficultyRequirements += "& you need at least two questions for each chapter &\n"
+          break
+    if len(questionTypes) < 6:
+      difficultyRequirements += "& you need at least %d questions for each type of question &\n" % authorsNo
+    else:
+      for i in questionTypes:
+        if questionTypes[i] < 2 * authorsNo:
+          difficultyRequirements += "& you need at least %d questions for each type of question &\n" % authorsNo
+          break
+  else:
+    difficultyRequirements += "& you have %d questions (%d are required for 100%% mark) &\n" % (questionCount, q_requirements*3)
 
   detection = "\n"
   if difficultyRequirements != "\n":
@@ -803,8 +862,7 @@ def quizStats(uid, questionCount, sectionCoverage, difficulty):
       detection += " author: "
     else:
       detection += " authors: "
-    detection += str(authors) + "\nDifficulty requirements broken:" +\
-      difficultyRequirements
+    detection += str(authors) + "\nComments:" + difficultyRequirements.replace("\n", "\n  ")
 
   return stats + detection
 
@@ -862,7 +920,7 @@ if __name__ == '__main__':
     link = "<a href=\"%s\">%s</a><br>\n"
     body = ""
     for i in quizs:
-      results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+'special/'+i)
+      results, title, url, uid, sectionCoverage, difficulty, quantifiedSections, questionTypes = parseQuestions(rootDir+'special/'+i)
 
       # bog O ordering
       results = orderQuestions(rootDir+'special/'+i, 'O', uid, results, True)
@@ -871,7 +929,7 @@ if __name__ == '__main__':
       new_qfilenames = [os.path.basename(j) for j in qfilenames]
 
       # write stat file
-      stat = quizStats(uid, len(results), sectionCoverage, difficulty)
+      stat = quizStats(uid, len(results), sectionCoverage, difficulty, quantifiedSections, questionTypes)
       with open(rootDir+'special/'+i[:-5]+'.stat', 'w') as stat_file:
         stat_file.write(stat)
 
@@ -896,10 +954,10 @@ if __name__ == '__main__':
       os.makedirs(rootDir+'extract')
     quizs = [i for i in os.listdir(rootDir) if '_^O.quiz' in i]
     for i in quizs:
-      results, title, url, uid, sectionCoverage, difficulty = parseQuestions(rootDir+os.path.basename(i))
+      results, title, url, uid, sectionCoverage, difficulty, quantifiedSections, questionTypes = parseQuestions(rootDir+os.path.basename(i))
       # bog O ordering
       results = orderQuestions(rootDir+i, 'O', uid, results, False)
-      toFeedback( rootDir+'feedback/', uid, results, sectionCoverage, difficulty )
+      toFeedback( rootDir+'feedback/', uid, results, sectionCoverage, difficulty, quantifiedSections, questionTypes )
       # extract all marked questions with graphics
       imgs = extract(rootDir+'extract/', uid, results)
       for img in imgs:
@@ -908,7 +966,7 @@ if __name__ == '__main__':
         shutil.copy(rootDir+img, os.path.dirname(rootDir+'extract/'+img))
     sys.exit(0)
 
-  results, title, url, uid, sectionCoverage, difficulty = parseQuestions(quizFilename)
+  results, title, url, uid, sectionCoverage, difficulty, quantifiedSections, questionTypes = parseQuestions(quizFilename)
 
   # order questions if needed
   if args.tarball:
@@ -974,7 +1032,7 @@ if __name__ == '__main__':
 
   if args.feedback:
     print( "Generating feedback for " + ' & '.join(uid) )
-    toFeedback( rootDir, uid, results, sectionCoverage, difficulty )
+    toFeedback( rootDir, uid, results, sectionCoverage, difficulty, quantifiedSections, questionTypes )
   elif args.question:
     print( "Generating question #" + str(args.question[-1]) )
     toHtml(quizFilename, results, title, args.question)
@@ -999,4 +1057,4 @@ if __name__ == '__main__':
     sys.exit(1)
 
   if args.count:
-    print quizStats(uid, len(results), sectionCoverage, difficulty),
+    print quizStats(uid, len(results), sectionCoverage, difficulty, quantifiedSections, questionTypes),
