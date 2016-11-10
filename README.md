@@ -5,7 +5,7 @@ To generate a quiz create a text file with extension `.quiz` in the root of this
 
 Each quiz file must contain definition of:
 
- - `"candidate_number:"` - your University of Bristol candidate number (a 5-digit number that you can find on your SAFE profile page under Candidate, e.g. `"candidate_number": [12345]`, if more than one person is working on a quiz please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
+ - `"candidate_number:"` - your University of Bristol candidate number (a 5-digit number that you can find on your SAFE profile page next to **Candidate** keyword) e.g. `"candidate_number": [12345]`; if more than one person is working on a quiz please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
  - `"title:"` - the title of your quiz e.g. `"title": "Quick-quiz show-off."`;
  - `"url:"` - url to your quiz; if you host it on GitHub give a link to your GitHub repository otherwise put `"url": "127.0.0.1"`.
 
@@ -20,12 +20,25 @@ Each question is a `JSON` dictionary placed at the top level of the document wit
 ### Required parameters ###
 The following parameters are required for each question:
 
- - `"difficulty":` defines difficulty of the questions; possibilities are: **easy**, **medium** and **hard**.
+ - `"difficulty":` defines difficulty of the question; possible values are:
+    * "1" - easy,
+    * "2" - easy-medium,
+    * "3" - medium,
+    * "4" - medium-hard,
+    * "5" - hard;
+where:
+    * an easy question is one that can be answered by looking up a specific passage in the book,
+    * a medium question is one that requires some degree of problem-solving,
+    * a hard question is one that requires some thinking beyond what was discussed in the lectures.
  - `"reference":` defines ML book chapter and section that the question corresponds to; it is given in format **chapter<dot>section** e.g. `5.12`.
  - `"problem_type":` is a brief description of the problem e.g. **definition**, **calculations**; this is entirely up to you.
  - `"answer_type":` defines type of the question; see section **Types of question** below for more details.
  - `"question":` defines the question text that will be displayed; both *in-line* LaTeX (i.e. `$\LaTeX$`) and *display* LaTeX (i.e. `$$\LaTeX$$`) are supported.
- - `"answers":` are answers to the question; each answer requires a `"hint":` which should explain why this particular answer is correct or incorrect, and optionally `"comments":` if you fill that some more explanation is necessary.
+ - `"answers":` are answers to the question; each **correct** answer requires an `"explanation":` field, which explains why this particular answer is correct.
+- `"hint":` should provide a hint that helps solving the question.
+- `"workings":` show in detail how to arrive at the correct answer.
+- `"source":` is a reference to a book (with chapter and section) or a web page that inspired the question.
+- `"comments":` should briefly describe what knowledge it tests, and what your rationale for classifying it with given difficulty is. Additionally, you may want to include any other comments that might be relevant while marking the question.
 
 ### Optional parameters ###
 You can optionally attach image(s) to your question with `"images":` field being a list of dictionaries, each containing `"url":` and *optionally* `"caption":`, e.g.
@@ -49,56 +62,43 @@ You can specify the following types of question:
 You define the type of a question with `"answer_type":` keyword e.g. `"answer_type": "single"` - see the example attached below for more details.
 
 ### Specifying answer to each type of question ###
-Each type of the question needs properly formated answers.  
-For *single choice* questions the answer is defined by a list of dictionaries with `-` marking incorrect answer and `+` indicating the correct one, e.g.:
+Each type of the question needs properly formatted answers.  
+For *single choice* questions the answer is defined by a list of dictionaries with `-` indicating all incorrect answers and `+` indicating a correct one, e.g.:
 ```
 "answer_type": "single",
 "answers": [
   { "correctness": "-",
-    "answer": "False",
-    "hint": "Just because it's False",
-    "comments": ""
+    "answer": "False"
   },
   { "correctness": "-",
-    "answer": "Another False",
-    "hint": "Just because it's False",
-    "comments": ""
+    "answer": "Another False"
   },
   { "correctness": "+",
     "answer": "True",
-    "hint": "Just because it's True",
-    "comments": ""
+    "explanation": "why this answer is correct"
   },
   { "correctness": "-",
-    "answer": "One more False",
-    "hint": "Just because it's False",
-    "comments": ""
+    "answer": "One more False"
   }
 ]
 ```
-For the *miltiple choice* follow the same strategy but with multiple `+` indicators, e.g.:
+For the *miltiple choice* follow the same strategy, but you can use multiple `+` indicators, e.g.:
 ```
 "answer_type": "multiple",
 "answers": [
   { "correctness": "-",
-    "answer": "False",
-    "hint": "Just because it's False",
-    "comments": ""
+    "answer": "False"
   },
   { "correctness": "-",
-    "answer": "Another False",
-    "hint": "Just because it's False",
-    "comments": ""
+    "answer": "Another False"
   },
   { "correctness": "+",
     "answer": "True",
-    "hint": "Just because it's True",
-    "comments": ""
+    "explanation": "why this answer is correct"
   },
   { "correctness": "+",
     "answer": "One More True ",
-    "hint": "Just because it's True",
-    "comments": ""
+    "explanation": "why this answer is correct"
   }
 ]
 ```
@@ -108,27 +108,23 @@ For *ordering questions* please specify the correct order with integers `1`, `2`
 "answers": [
   { "correctness": "2",
     "answer": "This is the second element",
-    "hint": "second = 2",
-    "comments": ""
+    "explanation": "why this order is correct"
   },
   { "correctness": "4",
     "answer": "This is the fourth element",
-    "hint": "fourth = 4",
-    "comments": ""
+    "explanation": "why this order is correct"
   },
   { "correctness": "1",
     "answer": "This is the first element",
-    "hint": "first = 1",
-    "comments": ""
+    "explanation": "why this order is correct"
   },
   { "correctness": "3",
     "answer": "This is the third element",
-    "hint": "third = 3",
-    "comments": ""
+    "explanation": "why this order is correct"
   }
 ]
 ```
-For the *filling-in blanks* question is defined as a list of *strings* (that will appear) and *integers* (blanks in the text that correspond to correct answer). `"answer:"` field is a list of dictionaries containing the missing text and blank identifier, e.g.
+For the *filling-in blanks* question is defined as a list of *strings* (that will appear) and *integers* (blanks in the text that correspond to correct answer). `"answer:"` field is a list of dictionaries containing the missing text and blanks identifier, e.g.
 ```
 "answer_type": "blank_answer",
 "question": [
@@ -137,13 +133,11 @@ For the *filling-in blanks* question is defined as a list of *strings* (that wil
 "answers": [
   { "correctness": 1,
     "answer": "word",
-    "hint": "just the WORD",
-    "comments": ""
+    "explanation": "why this answer is correct"
   },
   { "correctness": 2,
     "answer": "this,that",
-    "hint": "it's obvious, isn't it?",
-    "comments": ""
+    "explanation": "why this answer is correct"
   }
 ]
 ```
@@ -151,9 +145,8 @@ If more than one answer is correct please separate them by comma e.g. `blue,yell
 
 For *filling-in contingency matrix* in the `"answers":` field is a dictionary of with the following elements:
 
-- `"answer":` - a list, one string per row, formated as shown below;
-- `"hint":` - same as above;
-- `"comments":` - same as above.
+- `"answer":` - a list, one string per row, formatted as shown below;
+- `"explanation":` - gives reasoning behind the correct answer.
 
 Here's an example:
 ```
@@ -164,8 +157,7 @@ Here's an example:
              "2 | 5 | 7 ",
              "----------",
              "3 | 9 | 12"],
-  "hint": "1+4=5; 2+5=7; 3+9=12; etc.",
-  "comments": "just do the math"
+  "explanation": "why this answer is correct"
 }
 ```
 Where the numbers are as follows:
@@ -176,24 +168,21 @@ Where the numbers are as follows:
 | Actual - | 2           | 5           | 7  |
 |          | 3           | 9           | 12 |
 
-Finally, for *object matching* `"correctness":` is left part of the text and `"answer:` is the right part, e.g.
+Finally, for *object matching* `"correctness":` is left part of the text, `"answer:` is the right part, `"explanation":` is the same as in the examples above, e.g.
 ```
 "answer_type": "matrix_sort_answer",
 "answers": [
   { "correctness": "The letter after 'a' is ",
     "answer": "'B'.",
-    "hint": "go through the alphabet",
-    "comments": ""
+    "explanation": "why this answer is correct"
   },
   { "correctness": "The letter after 'g' is ",
     "answer": "'H'.",
-    "hint": "go through the alphabet",
-    "comments": ""
+    "explanation": "why this answer is correct"
   },
   { "correctness": "I like ",
     "answer": "alphabet.",
-    "hint": "the bird is the word",
-    "comments": ""
+    "explanation": "why this answer is correct"
   }
 ]
 ```
@@ -201,13 +190,13 @@ Finally, for *object matching* `"correctness":` is left part of the text and `"a
 For more details please see `.quiz` file attached below.
 
 ## Restrictions ##
-The `.quiz` files are compiled to HTML with use of *regular expressions* and *JSON parsing*. This means that if any of your question does not follow the syntax rules it will be omitted. Most of the time you will get an error mesage which should be self explanatory. Unfortunately, regex matcher cannot produce any error messages therefore some mistakes may cause a question to fail quietly.
+The `.quiz` files are translated into HTML with use of *regular expressions* and *JSON parsing*. This means that if any of your question does not follow the syntax rules it will be omitted. Most of the time you will get an error message, which should be self explanatory. Unfortunately, regex matcher cannot produce any error messages therefore some mistakes may cause a question to fail quietly.
 
 To make sure that your questions get compiled please follow the example given below as close as possible.  
-As most of the keywords and answers will be placed as a string in the quiz file any special character must be escaped.  
+As most of the keywords and answers will be placed as a string in the quiz file **any special character must be escaped**.  
 Finally, your quiz file must have `.quiz` extension and need to be placed in the root folder of this repository.
 
-The quiz compiler requires `Python 2.x` and works on Linux (2.11MVB machines) and Unix (OS X).
+The quiz compiler requires `Python 2.x` and works on most Linux (2.11MVB machines) and Unix (OS X) machines.
 
 ## Syntax ##
 As the quiz file is translated into HTML the questions and answers support HTML tags e.g. `<br>` for new line; feel free to use them but please avoid complicated structures.
@@ -218,8 +207,8 @@ Moreover, both *in-line* LaTeX (introduced by `$` environment e.g. `$\LaTeX$`) a
 See an [example quiz](http://so-cool.github.io/quick-quiz/my_quiz.html).
 
 ## Not compiling questions ##
-If your question is not compiling and you have followed all the rules given in this document you can email me for help.  
-The recommended approach to developing your questions is one question per file during their creation and then combining them into one file before submission.
+If your question is not compiling and you have followed all the guidelines given in this document you can email me for help.  
+The recommended approach for developing your questions is one question per file during their creation, and then combining them into one file before submission.
 
 # Usage #
 ## Create `.quiz` file ##
@@ -237,14 +226,14 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
   "candidate_number": [12345, 54321],
 
   // this is the title of the quiz
-  "title": "Quick-quiz show-off.",
+  "title": "Quizk-quiz show-off.",
 
   // this is an example question.
   // the number signifies the question order,
   // meaning questions can be placed in random order
   // within the file
   "1": {
-    "difficulty": "easy",
+    "difficulty": "1",
     "reference": "5.2",
     "problem_type": "definitions",
     "question": "Which of the following is $\\LaTeX$ \
@@ -261,31 +250,27 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answer_type": "single",
     "answers": [
       { "correctness": "-",
-        "answer": "2 * 2",
-        "hint": "multiplication",
-        "comments": ""
+        "answer": "2 * 2"
       },
       { "correctness": "-",
-        "answer": "2 - 3",
-        "hint": "subtraction",
-        "comments": ""
+        "answer": "2 - 3"
       },
       { "correctness": "+",
         "answer": "$\\frac{7}{2} + 3$",
-        "hint": "addition",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "-",
-        "answer": "seven plus two",
-        "hint": "addition",
-        "comments": ""
+        "answer": "seven plus two"
       }
     ],
+    "hint": "you do the math",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "wikipedia url",
     "comments": "What's special about this question?"
   },
 
   "2": {
-    "difficulty": "medium",
+    "difficulty": "5",
     "reference": "2.2",
     "problem_type": "calculations",
     "question": "Mark all the letters:",
@@ -293,35 +278,31 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "+",
         "answer": "T",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "+",
         "answer": "F",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "-",
-        "answer": "7",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "answer": "7"
       },
       { "correctness": "-",
-        "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "answer": "<img src=\"img/unicorn.jpg\" style=\"width:304px;height:228px;\">"
       },
       { "correctness": "+",
         "answer": "W",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "3": {
-    "difficulty": "hard",
+    "difficulty": "2",
     "reference": "12.2",
     "problem_type": "beyond scope of the book",
     "question": "Order the following numbers:",
@@ -329,25 +310,25 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "2",
         "answer": "26",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       },
       { "correctness": "1",
         "answer": "19",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       },
       { "correctness": "3",
         "answer": "70",
-        "hint": "common knowledge",
-        "comments": ""
+        "explanation": "why this order is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "4": {
-    "difficulty": "hard",
+    "difficulty": "4",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "answer_type": "blank_answer",
@@ -358,20 +339,21 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": 1,
         "answer": "4",
-        "hint": "2+2=4",
-        "comments": "just arithmetics"
+        "explanation": "why this answer is correct"
       },
       { "correctness": 2,
         "answer": "red",
-        "hint": "R.E.D.",
-        "comments": "just colours"
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "5": {
-    "difficulty": "hard",
+    "difficulty": "3",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Fill in contingency matrix.<br><br>1TP<br>5TN<br>12 in total<br>5 actual positive",
@@ -382,14 +364,16 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
                  "2 | 5 | 7 ",
                  "----------",
                  "3 | 9 | 12"],
-      "hint": "do the math",
-      "comments": "just arithmetics"
+      "explanation": "why this answer is correct"
     },
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   },
 
   "6": {
-    "difficulty": "hard",
+    "difficulty": "5",
     "reference": "3.3",
     "problem_type": "beyond scope of the book",
     "question": "Match the following sentences.",
@@ -397,20 +381,20 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
     "answers": [
       { "correctness": "The letter after 'a' is ",
         "answer": "'B'.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "The letter after 'g' is ",
         "answer": "'H'.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       },
       { "correctness": "I like ",
         "answer": "alphabet.",
-        "hint": "look at the alphabet",
-        "comments": ""
+        "explanation": "why this answer is correct"
       }
     ],
+    "hint": "you do the alphabet",
+    "workings": "how to arrive at the correct answer and why all the others are incorrect",
+    "source": "some book",
     "comments": "What's special about this question?"
   }
 }
@@ -430,39 +414,31 @@ To see the compiler options do `./resources/compile_quiz.py -h`. The options are
 ```bash
 optional arguments:
   -h, --help            show this help message and exit
-  -q QUESTION, --question QUESTION
-                        the # of question to be generated (all questions are
+  -q #Q, --question #Q  the # of question to be generated (all questions are
                         generated by default)
   -a, --all             generate all of the questions
   -s, --separate        generate all of the questions in separate files
   -i, --iframe          generate all of the question on one page (iframe)
   -o, --order           order the questions first on book section then on
                         difficulty
-  -O, --Order           order the questions first on difficulty then on book
-                        section
+  -O, --Order           order the questions first on difficulty then on
+                        book section
   -d, --debug           indicate the correct answer in the question
   --comments            show *comments* in each question
   --hints               show *hints* in each question
-  -f, --feedback        generate feedback for all questions
-  -e, --extract         export marked questions to separate file
+  --source              show *source* in each question
+  --workings            show *workings* in each question
+  --explanation         show *explanation* in each answer
   -c, --count           show difficulty statistics of the quiz file
   -t, --tarball         tarball the quiz for submissions
 ```
 
-Therefore, flag `-a` compiles all of the questions in given `.quiz` file into one HTML. `-q 7` compiles only question `#7`. `-s` will compile all of the questions and place each one in a separate HTML file. `-i` generates `iframe` based HTML displaying all questions on a single page.  
-`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics; and `-o`/`-O` will create additional `.quiz` file with questions sorted as described above. `--comments` and `--hints` will display comments and hints in the rendered HTML.  
-Finally, `-t` creates a *tarball* (archive) with all files necessary for submission.
+Therefore, flag `-a` compiles all of the questions in given `.quiz` file into one HTML. `-q 7` compiles only question `#7`. `-s` will compile all of the questions and place each one in a separate HTML file. `-i` generates `iframe` based HTML displaying all questions on a single web page.  
+`-d` will generate an HTML with correct answers indicated by *chevron* symbol - really useful feature for questions development. `-c` will produce question difficulty statistics; and `-o`/`-O` will create additional `.quiz` file with questions sorted as described above. `--comments`, `--hints`, `--source`, `--workings` and `--explanation` will display respectively comments, hints, source, workings and explanation in the rendered HTML.  
+Finally, `-t` creates a *tarball* (archive) with all the files necessary for submission.
 
 # Submission #
-Please submit only the following files:
-
-- A tarball with your quiz created with `-t` option.
-- `"command":` (**compulsory**) field in each question should briefly describe what knowledge it tests, and what your rationale for classifying it as easy/medium/hard is. Your submission will primarily be marked on the diversity and originality of your questions, as well as your assessment of their difficulty level.
-    * An easy question is one that can be answered by looking up a specific passage in the book;
-    * a medium question is one that requires some degree of problem-solving;
-    * a hard question is one that requires some thinking beyond what was discussed in the lectures.
-
-Finally, `"hint":` field for each answer is **compulsory** as well and marks will be cut for not including it.
+Please submit only a tarball with your quiz created with `-t` option. Your submission will primarily be marked on the diversity and originality of your questions, as well as your assessment of their difficulty level.
 
 # Assignment description #
 Full assignment description is available [here](https://github.com/So-Cool/quick-quiz/wiki/Option-3:-ML-Quiz).
