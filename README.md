@@ -1,20 +1,20 @@
 # Quick quiz generator
 A quick quiz generator focused on content; not platform.
 
-To generate a quiz create a text file with `.quiz` extension in the root of this folder structure (where `README.md` is located).
+To generate a quiz create a text file with extension `.quiz` in the root of this folder structure (where `README.md` is located).
 
 Each quiz file must contain definition of:
 
- - `"candidate_number:"` - your University of Bristol candidate number e.g. `"candidate_number": [12345]`, if more than one person is working on a quiz please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
- - `"title:"` - the title of your quiz e.g. `"title": "Quizk-quiz show-off."`;
+ - `"candidate_number:"` - your University of Bristol candidate number (a 5-digit number that you can find on your SAFE profile page under Candidate, e.g. `"candidate_number": [12345]`, if more than one person is working on a quiz please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
+ - `"title:"` - the title of your quiz e.g. `"title": "Quick-quiz show-off."`;
  - `"url:"` - url to your quiz; if you host it on GitHub give a link to your GitHub repository otherwise put `"url": "127.0.0.1"`.
 
-The syntax of the `.quiz` file closely follow the one of `JSON`. There are two enhancements though:
+The syntax of the `.quiz` file closely follows `JSON` syntax. There are two enhancements though:
 
 - comments in the quiz file are introduced in a single line starting with `//`;  
 - strings can be multi-line by appending `\` at the very end of the line.
 
-Each question is a dictionary placed at the top level of the document with keyword being string representing the number of the question. Numbers given to the questions don't have to be in order; they will be randomised before displaying.
+Each question is a `JSON` dictionary placed at the top level of the document with keyword being a string representing the number of the question. Numbers given to the questions don't have to be in order; they will be randomised before displaying.
 
 ## Question flags ##
 ### Required parameters ###
@@ -237,7 +237,7 @@ First, create a quiz text file using the following format (named `my_quiz.quiz` 
   "candidate_number": [12345, 54321],
 
   // this is the title of the quiz
-  "title": "Quizk-quiz show-off.",
+  "title": "Quick-quiz show-off.",
 
   // this is an example question.
   // the number signifies the question order,
