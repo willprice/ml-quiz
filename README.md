@@ -5,7 +5,7 @@ To generate a quiz create a text file with extension `.quiz` in the root of this
 
 Each quiz file must contain definition of:
 
- - `"candidate_number:"` - your University of Bristol candidate number (a 5-digit number that you can find on your SAFE profile page next to **Candidate** keyword) e.g. `"candidate_number": [12345]`; if more than one person is working on a quiz please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
+ - `"candidate_number:"` - your University of Bristol candidate number (a 5-digit number that you can find on your SAFE profile page next to **Candidate** keyword) e.g. `"candidate_number": [12345]`; if you are working in a pair please expand the list appropriately e.g. `"candidate_number": [12345, 54321]`;
  - `"title:"` - the title of your quiz e.g. `"title": "Quick-quiz show-off."`;
  - `"url:"` - url to your quiz; if you host it on GitHub give a link to your GitHub repository otherwise put `"url": "127.0.0.1"`.
 
@@ -20,18 +20,19 @@ Each question is a `JSON` dictionary placed at the top level of the document wit
 ### Required parameters ###
 The following parameters are required for each question:
 
- - `"difficulty":` defines difficulty of the question; possible values are:
-    * "1" - easy,
-    * "2" - easy-medium,
-    * "3" - medium,
-    * "4" - medium-hard,
-    * "5" - hard;  
-where:
-    * an easy question is one that can be answered by looking up a specific passage in the book,
-    * a medium question is one that requires some degree of problem-solving,
-    * a hard question is one that requires some thinking beyond what was discussed in the lectures.
- - `"reference":` defines ML book chapter and section that the question corresponds to; it is given in format **chapter<dot>section** e.g. `5.12`.
- - `"problem_type":` is a brief description of the problem e.g. **definition**, **calculations**; this is entirely up to you.
+ - `"difficulty":` integer on a scale from 1 (very easy) to 5 (very hard), with the following meaning:
+    * "1" - can be answered by looking up a specific passage in the book (e.g., match the following impurity measures with their mathematical definition); 
+    * "2" - requires some straightforward reasoning or calculation (e.g., complete the following contingency table); 
+    * "3" - requires more involved reasoning or calculation (e.g., a question involving some training data); 
+    * "4" - requires reasoning beyond what was discussed in the lectures (e.g., material on starred slides such as kernel methods); 
+    * "5" - a question on an advanced topic that was not discussed in the book (e.g., topics discussed in the epilogue).  
+ - `"reference":` defines ML book chapter and section that the question corresponds to; it is given in format **chapter.section** e.g. `5.12`.
+ - `"problem_type":` choose the most applicable one from the following list, or you can supply your own: 
+    * "definition" - tests definitional knowledge;  
+    * "calculation" - the answer needs to be derived by means of calculation;  
+    * "problem-solving" - the question requires reasoning beyond calculation;  
+    * "training" - the question is about training particular models;  
+    * "evaluation" - the question is about evaluating particular models;  
  - `"answer_type":` defines type of the question; see section **Types of question** below for more details.
  - `"question":` defines the question text that will be displayed; both *in-line* LaTeX (i.e. `$\LaTeX$`) and *display* LaTeX (i.e. `$$\LaTeX$$`) are supported.
  - `"answers":` are answers to the question; each **correct** answer requires an `"explanation":` field, which explains why this particular answer is correct.
@@ -82,7 +83,7 @@ For *single choice* questions the answer is defined by a list of dictionaries wi
   }
 ]
 ```
-For the *miltiple choice* follow the same strategy, but you can use multiple `+` indicators, e.g.:
+For the *multiple choice* follow the same strategy, but you can use multiple `+` indicators, e.g.:
 ```
 "answer_type": "multiple",
 "answers": [
