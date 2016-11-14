@@ -21,6 +21,7 @@ mv "${QUIZ_HTML}" "${QUIZ_TEMP}"
 "$GIT" fetch --all
 "$GIT" checkout --orphan gh-pages
 mv "${QUIZ_TEMP}" index.html
+"$GIT" remote add deploy "git@github.com:willprice/ml-quiz.git"
 "$GIT" add index.html
 "$GIT" commit -m "Generate quiz ($(date))"
-"$GIT" push -u origin gh-pages
+"$GIT" push -u deploy gh-pages
