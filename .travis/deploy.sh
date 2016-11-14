@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -o errexit
 PYTHON="${PYTHON:-python2}"
 GIT="${GIT:-git}"
 
