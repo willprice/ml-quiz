@@ -1,8 +1,8 @@
 {
   "url": "http://willprice.github.io/ml-quiz/",
 
-  // Will, Sandra (TBD)
-  "candidate_number": [64496, 54321],
+  // Will, Sandra
+  "candidate_number": [64496, 15444],
 
   // this is the title of the quiz
   "title": "Machine Learning Quiz",
