@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 PYTHON="${PYTHON:-python2}"
 GIT="${GIT:-git}"
 
