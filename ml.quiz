@@ -1,17 +1,12 @@
 {
-  // example quiz text
-  // <- (this is a comment and will be ignored)
+  "url": "http://willprice.github.io/ml-quiz/",
 
-  // this is the url for your quiz
-  "url": "http://so-cool.github.io/quick-quiz/",
-
-  // this are your UoB candidate numbers as a comma separated list
-  "candidate_number": [12345, 54321],
+  // Will, Sandra (TBD)
+  "candidate_number": [64496, 54321],
 
   // this is the title of the quiz
-  "title": "Quizk-quiz show-off.",
+  "title": "Machine Learning Quiz",
 
-  // this is an example question.
   // the number signifies the question order,
   // meaning questions can be placed in random order
   // within the file
