@@ -1,0 +1,14 @@
+language: python
+branches:
+  - master
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_e7fcb99ed69c_key -iv $encrypted_e7fcb99ed69c_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
+  - ./.travis/git-setup.sh
+  - eval "$(ssh-agent -s)"
+  - chmod 600 .travis/id_rsa
+  - ssh-add .travis/id_rsa
+
+script:
+  - ./.travis/deploy.sh
+
