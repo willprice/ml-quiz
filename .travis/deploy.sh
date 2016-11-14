@@ -18,10 +18,8 @@ QUIZ_TEMP="$(mktemp)"
 [[ ! -f "$QUIZ_HTML" ]] && exit 1;
 mv "${QUIZ_HTML}" "${QUIZ_TEMP}"
 
-"$GIT" fetch --all
-"$GIT" checkout --orphan gh-pages
 mv "${QUIZ_TEMP}" index.html
 "$GIT" remote add deploy "git@github.com:willprice/ml-quiz.git"
-"$GIT" add index.html
+"$GIT" add .
 "$GIT" commit -m "Generate quiz ($(date))"
-"$GIT" push -u deploy gh-pages
+"$GIT" push --force --quiet deploy master:gh-pages
