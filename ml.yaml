@@ -1,0 +1,33 @@
+{
+    "url": "http://willprice.github.io/ml-quiz/",
+    "1": {
+        "images": [
+
+        ],
+        "problem_type": "calculation",
+        "answers": [
+            {
+                "correctness": "+",
+                "explanation": "The nearest points to $(0, 1)$ are $(1, 0)$, $(1, 2)$ and $(2, 1)$",
+                "answer": "$\\oplus$"
+            },
+            {
+                "correctness": "-",
+                "answer": "$\\ominus$"
+            }
+        ],
+        "workings": "how to arrive at the correct answer and why all the others are incorrect",
+        "hint": "you do the maths",
+        "reference": "1.2",
+        "source": "wikipedia url",
+        "comments": "What's special about this question",
+        "answer_type": "single",
+        "difficulty": "3",
+        "question": "Given the training data $$\\mathbf{x} =\n  \\begin{pmatrix}\n  3 & 3 \\\\\n  1 & 0 \\\\\n  1 & 2 \\\\\n  2 & 3 \\\\\n  2 & 1 \\\\\n  \\end{pmatrix}$$\n\nwith the labels: $$\\mathbf{y} =\n  \\begin{pmatrix}\n  0 \\\\\n  1 \\\\\n  0 \\\\\n  0 \\\\\n  1 \\\\\n  \\end{pmatrix}$$\n\nwhere an instance belonging to the $\\oplus$ class is\nrepresented by $1$ in $\\mathbf{y}$, and an instance belonging\nto the $\\ominus$ class by $0$.\n\nClassify the test instance\n$(0, 1)$ using the 3 nearest neighbours classifier by\ncalculation\n"
+    },
+    "title": "Machine Learning Quiz",
+    "candidate_number": [
+        "64496",
+        "54321"
+    ]
+}
