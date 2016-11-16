@@ -5,7 +5,7 @@ candidate_number:
   - "54321"
 "1":
   question: |
-    Given the training data $$\\mathbf{x} =
+    Given the training data $$\mathbf{x} =
       \begin{pmatrix}
         3 & 3 \\
         1 & 0 \\
@@ -13,7 +13,7 @@ candidate_number:
         2 & 3 \\
         2 & 1 \\
       \end{pmatrix}$$
-    with the labels: $$\\mathbf{y} =
+    with the labels: $$\mathbf{y} =
       \begin{pmatrix}
         0 \\
         1 \\
