@@ -367,7 +367,7 @@ def parseQuestions(filename):
       # contingency table
       elif isinstance(questions[q].get('answers'), dict):
         out['answers'] = None
-        explanation = a.get('explanation', '').strip()
+        explanation = questions[q].get('answers', {}).get('explanation', '').strip()
         if not explanation:
           sys.exit('Explanation missing in question #%d' % out['number'])
         out['explanation'] = [explanation]
