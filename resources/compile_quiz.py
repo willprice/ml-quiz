@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # Update brief.html, wiki, readme, gh-pages
 # Update question requirements
