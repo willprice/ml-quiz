@@ -5,7 +5,9 @@ candidate_number:
   - "54321"
 "1":
   question: |
-    Given the training data $$\mathbf{x} =
+    Given the training data
+
+    $$\mathbf{x} =
       \begin{pmatrix}
         3 & 3 \\
         1 & 0 \\
@@ -13,20 +15,24 @@ candidate_number:
         2 & 3 \\
         2 & 1 \\
       \end{pmatrix}$$
-    with the labels: $$\mathbf{y} =
-      \begin{pmatrix}
+
+    with the labels:
+
+    $$\mathbf{y} =
+    \begin{pmatrix}
         0 \\
         1 \\
         0 \\
         0 \\
         1 \\
       \end{pmatrix}$$
-    where an instance belonging to the $\oplus$ class is represented
-    by $1$ in $\mathbf{y}$, and an instance belonging to the
-    $\ominus$ class by $0$.
 
-    Classify the test instance $(0, 1)$
-    using the 3 nearest neighbours classifier by calculation
+    where an instance belonging to the $\oplus$ class is represented by
+    $1$ in $\mathbf{y}$, and an instance belonging to the $\ominus$
+    class by $0$.
+
+    Classify the test instance $(0, 1)$ using the 3 nearest neighbours
+    classifier with Euclidean distances by calculation
   images: []
   problem_type: calculation
   answers:
@@ -35,10 +41,55 @@ candidate_number:
       answer: "$\\oplus$"
     - correctness: "-"
       answer: "$\\ominus$"
-  workings: "how to arrive at the correct answer and why all the others are incorrect"
-  hint: "you do the maths"
+  workings: |
+    We need to find the distance between our test point and every point
+    in the training data set.
+
+    First we find the distance between the test point and training
+    points in each dimension.
+
+    $$\mathbf{x} - (0, 1) =
+    \begin{pmatrix}
+      3 & 2 \\
+      1 & -1 \\
+      1 & 1 \\
+      2 & 2 \\
+      2 & 0 \\
+    \end{pmatrix}$$
+
+    We can then apply our distance measure to work out the distances.
+
+    $$\mathbf{D(x, (0, 1))} =
+    \begin{pmatrix}
+      \sqrt{(3^2 + 2^2)} \\
+      \sqrt{(1^2 + {(-1)}^2)} \\
+      \sqrt{(1^2 + 1^2)} \\
+      \sqrt{(2^2 + 2^2)} \\
+      \sqrt{(2^2 + 0^2)} \\
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      3.6 \\
+      1.4 \\
+      1.4 \\
+      2.8 \\
+      2 \\
+    \end{pmatrix}$$
+
+    The 2nd, 3rd and 5th entries are the closest to the test point,
+    looking this up in our training data vector $\mathbf{x}$ we see they
+    correspond to the following points, $(1, 0)$, $(1, 2)$ and $(2, 1)$,
+    which each have the classes $\oplus$, $\ominus$, $\oplus$ respectively.
+    We take the majority class as the prediction for our test point, $\oplus$.
+
+  hint: |
+    First plot the data then see whether you can visually identify the
+    points that are closest.
   reference: "1.2"
-  source: "wikipedia url"
-  comments: What's special about this question
+  source: "http://www.csd.uwo.ca/courses/CS9840a/Lecture2_knn.pdf"
+  comments: |
+    KNN can be modified to produce probabilities by calcuating the
+    $\frac{\#\mathrm{positive}}{\#\mathrm{positive} + \#\mathrm{negative}}$
+
   answer_type: single
   difficulty: "3"
