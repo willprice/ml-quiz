@@ -10,6 +10,12 @@ QUIZ_JSON_SRC="${QUIZ_YAML_SRC%%.yaml}.quiz"
 }
 
 "$YAML_TO_JSON" < "$QUIZ_YAML_SRC" > "$QUIZ_JSON_SRC" || exit 2
-./resources/compile_quiz.py "${QUIZ_JSON_SRC}" || exit 3
+./resources/compile_quiz.py --comments \
+                            --hints \
+                            --workings \
+                            --explanation \
+                            --feedback \
+                            --count \
+                            "${QUIZ_JSON_SRC}" || exit 3
 rm "$QUIZ_JSON_SRC"
 exit 0
