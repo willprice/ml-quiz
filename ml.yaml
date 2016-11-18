@@ -4,6 +4,11 @@ candidate_number:
   - "64496"
   - "54321"
 "1":
+  images: []
+  problem_type: training
+  difficulty: "3"
+  reference: "1.2"
+  source: "http://www.csd.uwo.ca/courses/CS9840a/Lecture2_knn.pdf"
   question: |
     Given the training data
 
@@ -33,8 +38,7 @@ candidate_number:
 
     Classify the test instance $(0, 1)$ using the 3 nearest neighbours
     classifier with Euclidean distances by calculation
-  images: []
-  problem_type: calculation
+  answer_type: single
   answers:
     - correctness: "+"
       explanation: "The nearest points to $(0, 1)$ are $(1, 0)$, $(1, 2)$ and $(2, 1)$"
@@ -81,15 +85,9 @@ candidate_number:
     correspond to the following points, $(1, 0)$, $(1, 2)$ and $(2, 1)$,
     which each have the classes $\oplus$, $\ominus$, $\oplus$ respectively.
     We take the majority class as the prediction for our test point, $\oplus$.
-
   hint: |
     First plot the data then see whether you can visually identify the
     points that are closest.
-  reference: "1.2"
-  source: "http://www.csd.uwo.ca/courses/CS9840a/Lecture2_knn.pdf"
   comments: |
     KNN can be modified to produce probabilities by calcuating the
     $\frac{\#\mathrm{positive}}{\#\mathrm{positive} + \#\mathrm{negative}}$
-
-  answer_type: single
-  difficulty: "3"
