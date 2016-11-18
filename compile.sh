@@ -14,7 +14,6 @@ QUIZ_JSON_SRC="${QUIZ_YAML_SRC%%.yaml}.quiz"
                             --hints \
                             --workings \
                             --explanation \
-                            --feedback \
                             --count \
                             "${QUIZ_JSON_SRC}" || exit 3
 rm "$QUIZ_JSON_SRC"
