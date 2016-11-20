@@ -89,8 +89,11 @@ candidate_number:
     First plot the data then see whether you can visually identify the
     points that are closest.
   comments: |
-    KNN can be modified to produce probabilities by calcuating the
-    $\frac{\#\mathrm{positive}}{\#\mathrm{positive} + \#\mathrm{negative}}$
+    Tests the student's knowledge of training and using a KNN model.
+    <br>
+
+    Since the student has to both train and test using classifier, a
+    fair amount of calculation, this question scores a 3 in difficulty.
 
 
 "2":
