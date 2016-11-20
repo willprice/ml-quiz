@@ -91,3 +91,118 @@ candidate_number:
   comments: |
     KNN can be modified to produce probabilities by calcuating the
     $\frac{\#\mathrm{positive}}{\#\mathrm{positive} + \#\mathrm{negative}}$
+
+
+"2":
+  image: []
+  problem_type: problem-solving
+  difficulty: "3"
+  reference: "2.1"
+  source: "https://en.wikipedia.org/wiki/Precision_and_recall"
+  question: |
+    Fill in the contingency table.
+    <table>
+      <tr>
+        <th>Measure</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>$\sum_{x \in Te}\left[ I(\hat{c}(x) = \oplus \right] = 45$</td>
+        <td>45</td>
+      </tr>
+      <tr>
+        <td>$\sum_{x \in Te}\left[ I(\hat{c}(x) = \ominus \right] = 20$</td>
+        <td>20</td>
+      </tr>
+      <tr>
+        <td>Precision</td>
+        <td>$\frac{8}{9}$</td>
+      </tr>
+      <tr>
+        <td>False positive rate</td>
+        <td>$\frac{1}{4}$</td>
+      </tr>
+    </table>
+  answer_type: cloze_answer
+  answers:
+    answer:
+      - "40 | 5  | 45"
+      - "------------"
+      - "5  | 15 | 20"
+      - "------------"
+      - "45 | 20 | 65"
+    explanation: See the workings for derivation
+  workings: |
+    Recall the following defintions
+    $$\text{Precision} = \frac{TP}{TP + FP}$$
+    $$\text{False positive rate} = \frac{FP}{Neg} = \frac{FP}{FP + TN}$$
+    <br>
+
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Predicted +</th>
+          <th>Predicted -</th>
+          <th>Marginals</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Actual +</td>
+          <td>$TP$</td>
+          <td>$FN$</td>
+          <td>$TP + FN$</td>
+        </tr>
+        <tr>
+          <td>Actual -</td>
+          <td>$FP$</td>
+          <td>$TN$</td>
+          <td>$FP + TN$</td>
+        </tr>
+        <tr>
+          <td>Marginals</td>
+          <td>$TP + FP$</td>
+          <td>$FN + TN$</td>
+          <td>$|Te| = TP + FP + FN + TN$</td>
+        </tr>
+      </tbody>
+    </table>
+
+    We need to derive set of simultaneous equations describing the
+    information given.
+
+    $$
+    \mathrm{precision} = \frac{8}{9} \Leftrightarrow \frac{TP}{TP + FP}
+      = \frac{8}{9} \Leftrightarrow TP = 8 \cdot FP$$
+    $$\mathrm{fpr} = \frac{1}{4} \Leftrightarrow \frac{FP}{FP + TN} = \frac{1}{4}
+      \Leftrightarrow TN = 3 \cdot FP$$
+
+    Using the above with the sums of predicted classes we have the
+    following four equations, numbered 1 to 4 from top to bottom.
+
+    $$
+    \begin{align}
+    TP + FP &= 45 \\
+    TN + FN &= 20 \\
+    TP &= 8 \cdot FP \\
+    TN &= 3 \cdot FP \\
+    \end{align}
+    $$
+
+    Substituting eq. 3 into eq. 1 yields $FP = 5$ and hence $TP = 40$,
+    we then solve for $TN$ using eq. 4, $TN = 15$, finally solving for
+    $FN$ using eq. 2, $FN = 5$
+
+  hint: |
+    What are the definitions of *precision* and *false positive rate*?
+    Try to derive them in terms of the individual elements of the
+    contingency table.
+  comments: |
+    Tests the student's knowledge of contingency tables: what does each
+    cell mean, how are the marginals calculated. It also tests the
+    definitions of precision and false positive rate in terms of true
+    positives, true negatives, and false positives.
+    <br>
+    The additional twist of solving with simultaneous equations bumps
+    the complexity up from a 2 to 3.
