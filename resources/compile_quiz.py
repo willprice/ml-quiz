@@ -240,28 +240,32 @@ def parseQuestions(filename):
 
     book = questions[q].get('reference', '')
     book_split = book.split('.')
-    if len(book_split) != 2:
+    if len(book_split) != 2 and int(book) != 0:
         sys.exit('Incorrect book reference format \"%s\" in question #%d' % \
                  (book, out['number'])
                 )
-    if not book_split[0].isdigit():
-        sys.exit('Incorrect format of book chapter \"%s\" in question #%d' % \
-                 (book_split[0].strip(), out['number'])
-                )
-    if int(book_split[0]) not in questionCategories:
-        sys.exit('Unknown book chapter \"%s\" in question #%d' % \
-                 (book_split[0].strip(), out['number'])
-                )
-    out['chapter'] = int(book_split[0])
-    if not book_split[1].isdigit():
-        sys.exit('Incorrect format of book section \"%s\" in question #%d' % \
-                 (book_split[1].strip(), out['number'])
-                )
-    if int(book_split[1]) not in questionCategories[out['chapter']]:
-        sys.exit('Unknown book section \"%s\" in question #%d' % \
-                 (book_split[1].strip(), out['number'])
-                )
-    out['section'] = int(book_split[1])
+    elif len(book_split) != 2 and int(book) == 0:
+        out['chapter'] = 0
+        out['section'] = 1
+    else:
+        if not book_split[0].isdigit():
+            sys.exit('Incorrect format of book chapter \"%s\" in question #%d' % \
+                     (book_split[0].strip(), out['number'])
+                    )
+        if int(book_split[0]) not in questionCategories:
+            sys.exit('Unknown book chapter \"%s\" in question #%d' % \
+                     (book_split[0].strip(), out['number'])
+                    )
+        out['chapter'] = int(book_split[0])
+        if not book_split[1].isdigit():
+            sys.exit('Incorrect format of book section \"%s\" in question #%d' % \
+                     (book_split[1].strip(), out['number'])
+                    )
+        if int(book_split[1]) not in questionCategories[out['chapter']]:
+            sys.exit('Unknown book section \"%s\" in question #%d' % \
+                     (book_split[1].strip(), out['number'])
+                    )
+        out['section'] = int(book_split[1])
 
     # count unique sections
     current_section = str(out['chapter']) + "." + str(out['section'])

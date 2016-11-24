@@ -26,7 +26,7 @@ The following parameters are required for each question:
     * "3" - requires more involved reasoning or calculation (e.g., a question involving some training data); 
     * "4" - requires reasoning beyond what was discussed in the lectures (e.g., material on starred slides such as kernel methods); 
     * "5" - a question on an advanced topic that was not discussed in the book (e.g., topics discussed in the epilogue).  
- - `"reference":` defines ML book chapter and section that the question corresponds to; it is given in format **chapter.section** e.g. `5.12`.
+ - `"reference":` defines ML book chapter and section that the question corresponds to; it is given in format **chapter.section** e.g. `5.12`. If the question is beyond the scope of the book put `0` as the reference.
  - `"problem_type":` choose the most applicable one from the following list, or you can supply your own: 
     * "definition" - tests definitional knowledge;  
     * "calculation" - the answer needs to be derived by means of calculation;  
