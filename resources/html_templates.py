@@ -2,7 +2,7 @@
 questionCategories = {\
   0:\
     {\
-     0:"Beyond the scope of the book"
+     0:"Beyond the scope of the book",
      1:"See category for details"
     },
   1:\
