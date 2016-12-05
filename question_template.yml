@@ -1,0 +1,20 @@
+"3":
+  image: []
+  problem_type: problem-solving
+  difficulty: "5"
+  reference: "3.3"
+  source: "URL"
+  question: |
+    Something about Bias and variance
+  answer_type: cloze_answer
+  answers:
+    answer: Blah
+    explanation: See the workings for derivation
+  workings: |
+    Working
+  hint: |
+    Blah
+  comments: |
+    Tests the student's knowledge of ...
+    <br>
+    Complexity 5 because
