@@ -209,3 +209,323 @@ candidate_number:
     <br>
     The additional twist of solving with simultaneous equations bumps
     the complexity up from a 2 to 3.
+"3":
+  image: []
+  problem_type: problem-solving
+  difficulty: "3"
+  reference: "3.3"
+  source: "URL"
+  question:
+    - |
+      <p>
+      We're trying to find out the characteristics of rodents, so a
+      variety of animals were sampled and certain features about them
+      were recorded. We'd like to come up with some conjunctive concepts
+      to determine whether a certain animal is a rodent based on it's
+      features.
+      </p>
+
+      <p>
+      The examples below cover the full range of feature values, (i.e.
+      there is no 'Very long' value for ear size)
+      </p>
+
+      <table>
+      <thead>
+        <tr>
+          <th>Eye size</th>
+          <th>Tail length</th>
+          <th>Ear size</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <!-- mouse -->
+          <td>Large</td>
+          <td>Long</td>
+          <td>Very Large</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>Small</td>
+          <td>Short</td>
+          <td>Large</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <!-- vole -->
+          <td>Small</td>
+          <td>Short</td>
+          <td>Small</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <!-- shrew -->
+          <td>Small</td>
+          <td>Short</td>
+          <td>Small</td>
+          <td>+</td>
+        </tr>
+      
+        <tr>
+          <td>Small</td>
+          <td>Long</td>
+          <td>Large</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <!-- possum -->
+          <td>Large</td>
+          <td>Long</td>
+          <td>Small</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>Small</td>
+          <td>Short</td>
+          <td>Large</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Small</td>
+          <td>Short</td>
+          <td>Small</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+      </table>
+
+      <p>
+      The following sets of hypotheses are defined
+      <ul>
+       <li>$A$, the set of complete hypotheses</li>
+       <li>$B$, the set of consistent hypotheses, covering at least one positive example</li>
+       <li>$V$, the version space</li>
+      </ul>
+    - |
+      <br />
+      What is $|A|$
+    - 1
+    - |
+      <br />
+      What is $|B|$
+    - 2
+    - |
+      <br />
+      What is $|V|$
+    - 3
+    - </p>
+
+  answer_type: blank_answer
+  answers:
+    - correctness: 1
+      answer: "2"
+      explanation: The number of hypotheses that cover all the positive examples
+    - correctness: 2
+      answer: "16"
+      explanation: |
+        The number of hypotheses that cover none of the negative
+        examples and at least one of the positive examples
+    - correctness: 3
+      answer: "0"
+      explanation: There are no complete AND consistent hypotheses
+  workings: |
+    <p>
+    The hypothesis space of all conjunctive concepts needs to be
+    computed, then for each conjunctive concept we have to count the
+    number of positive and negative examples, from that we can derive
+    the size of each of the sets of hypotheses.
+    </p>
+
+    <p>
+    First it's sensible to reoder the table to separate positive and
+    negative examples to help ease counting.
+    </p>
+
+    <table>
+    <thead>
+      <tr>
+        <th>Eye size</th>
+        <th>Tail length</th>
+        <th>Ear size</th>
+        <th>Class</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <!-- mouse -->
+        <td>Large</td>
+        <td>Long</td>
+        <td>Very Large</td>
+        <td>+</td>
+      </tr>
+      <tr>
+        <!-- vole -->
+        <td>Small</td>
+        <td>Short</td>
+        <td>Small</td>
+        <td>+</td>
+      </tr>
+      <tr>
+        <!-- shrew -->
+        <td>Small</td>
+        <td>Short</td>
+        <td>Small</td>
+        <td>+</td>
+      </tr>
+      <tr>
+        <!-- possum -->
+        <td>Large</td>
+        <td>Long</td>
+        <td>Small</td>
+        <td>+</td>
+      </tr>
+
+      <tr>
+        <td>Small</td>
+        <td>Short</td>
+        <td>Large</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Small</td>
+        <td>Long</td>
+        <td>Large</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Small</td>
+        <td>Short</td>
+        <td>Large</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Small</td>
+        <td>Short</td>
+        <td>Small</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+    </table>
+
+    <p>
+      Each feature can take on one of several values, each conjunctive
+      literal will use an internal disjunction of these values. The
+      possible internal disjunctions are calculated as they are
+      necessary to build the hypothesis space.
+
+      We denote the internal disjuction of all possible values with '-'
+      as this functions as a wildcard, a "don't care" value, since the
+      feature can take on any value and we will still match the instance.
+    </p>
+
+
+    <p>
+     Every possible hypothesis is computed by the combination over all
+     the possible interal disjunctions of each feature, this forms
+     something similar to a truth table and can be constructed in a
+     similar fashion.
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>Eye size</th><th>Tail length</th><th>Ear size</th><th>#Pos</th><th>#Neg</th></tr>
+      </thead>
+      <tbody> 
+        <tr><td>-</td><td>-</td><td>-</td><td>4</td><td>4</td></tr>
+         <tr><td>-</td><td>-</td><td>Small</td><td>3</td><td>1</td></tr>
+         <tr><td>-</td><td>-</td><td>Large</td><td>0</td><td>3</td></tr>
+         <tr><td>-</td><td>-</td><td>Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>-</td><td>-</td><td>Small, Large</td><td>3</td><td>4</td></tr>
+         <tr><td>-</td><td>-</td><td>Small, Very Large</td><td>4</td><td>1</td></tr>
+         <tr><td>-</td><td>-</td><td>Large, Very Large</td><td>1</td><td>3</td></tr>
+         <tr><td>-</td><td>Long</td><td>-</td><td>2</td><td>1</td></tr>
+         <tr><td>-</td><td>Long</td><td>Small</td><td>1</td><td>0</td></tr>
+         <tr><td>-</td><td>Long</td><td>Large</td><td>0</td><td>1</td></tr>
+         <tr><td>-</td><td>Long</td><td>Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>-</td><td>Long</td><td>Small, Large</td><td>1</td><td>1</td></tr>
+         <tr><td>-</td><td>Long</td><td>Small, Very Large</td><td>2</td><td>0</td></tr>
+         <tr><td>-</td><td>Long</td><td>Large, Very Large</td><td>1</td><td>1</td></tr>
+         <tr><td>-</td><td>Short</td><td>-</td><td>2</td><td>3</td></tr>
+         <tr><td>-</td><td>Short</td><td>Small</td><td>2</td><td>1</td></tr>
+         <tr><td>-</td><td>Short</td><td>Large</td><td>0</td><td>2</td></tr>
+         <tr><td>-</td><td>Short</td><td>Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>-</td><td>Short</td><td>Small, Large</td><td>2</td><td>3</td></tr>
+         <tr><td>-</td><td>Short</td><td>Small, Very Large</td><td>2</td><td>1</td></tr>
+         <tr><td>-</td><td>Short</td><td>Large, Very Large</td><td>0</td><td>2</td></tr>
+         <tr><td>Large</td><td>-</td><td>-</td><td>2</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Small</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Small, Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Small, Very Large</td><td>2</td><td>0</td></tr>
+         <tr><td>Large</td><td>-</td><td>Large, Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>-</td><td>2</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Small</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Small, Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Small, Very Large</td><td>2</td><td>0</td></tr>
+         <tr><td>Large</td><td>Long</td><td>Large, Very Large</td><td>1</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>-</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Small</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Small, Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Small, Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Large</td><td>Short</td><td>Large, Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>-</td><td>-</td><td>2</td><td>4</td></tr>
+         <tr><td>Small</td><td>-</td><td>Small</td><td>2</td><td>1</td></tr>
+         <tr><td>Small</td><td>-</td><td>Large</td><td>0</td><td>3</td></tr>
+         <tr><td>Small</td><td>-</td><td>Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>-</td><td>Small, Large</td><td>2</td><td>4</td></tr>
+         <tr><td>Small</td><td>-</td><td>Small, Very Large</td><td>2</td><td>1</td></tr>
+         <tr><td>Small</td><td>-</td><td>Large, Very Large</td><td>0</td><td>3</td></tr>
+         <tr><td>Small</td><td>Long</td><td>-</td><td>0</td><td>1</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Small</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Large</td><td>0</td><td>1</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Small, Large</td><td>0</td><td>4</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Small, Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>Long</td><td>Large, Very Large</td><td>0</td><td>1</td></tr>
+         <tr><td>Small</td><td>Short</td><td>-</td><td>2</td><td>3</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Small</td><td>2</td><td>1</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Large</td><td>0</td><td>3</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Very Large</td><td>0</td><td>0</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Small, Large</td><td>2</td><td>4</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Small, Very Large</td><td>2</td><td>1</td></tr>
+         <tr><td>Small</td><td>Short</td><td>Large, Very Large</td><td>0</td><td>3</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Now the hypothesis space has be computed, the sizes of the sets
+      $A, B, V$ can be derived.  
+    </p>
+
+    <p>
+      $A$, the set of all complete hypotheses will contain all
+      hypothesis the cover all positive examples; they will has a
+      positive count of 4. Counting the hypotheses above there are only
+      2 hypotheses covering all positive examples.
+    </p>
+
+    <p>
+      $B$, the set of all consistent hypotheses that cover 1 or more
+      positive examples can be computed by counting all hypotheses that
+      cover no negative examples (the definition of consistent) and then
+      counting the number of selected hypotheses that have 1 or more
+      positive examples. There are 16 of these.
+    </p>
+    
+  hint: |
+    Enumerate the possible conjunctive hypotheses and count how many
+    positive and negative examples are covered
+  comments: |
+    Tests the student's knowledge of conjunctive concepts, how to form
+    the hypothesis space of conjunctive concepts, the definitions of
+    complete and consistent hypotheses and version space.
+    <br>
+    Complexity 3 because it involves enumerating the hypothesis space
+    then building some sets of hypotheses based on definitional knolwedge.
