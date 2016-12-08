@@ -542,7 +542,7 @@ candidate_number:
       caption: |-
         Fig 3: Neural network from Fig 1 drawn as a circuit diagram,
         showing how to calculate intermediate values in back propagation
-  problem_type: problem-solving
+  problem_type: training
   difficulty: "5"
   reference: "0"
   source: "https://cs231n.github.io/optimization-1/"
