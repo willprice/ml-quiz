@@ -1,0 +1,60 @@
+images: []
+difficulty: "3"
+reference: "3.1"
+problem_type: evaluation
+source: "https://www.cs.bris.ac.uk/Teaching/Resources/COMS30301/slides/slides2_3.pdf"
+question: |
+  <p>
+  Given the score of six pairwise clssifiers
+  $$
+  \begin{align}
+  ( C1, C2, C3, C4, C5, C6)=( +5, -0.5, +4, -0.5, +4 , +0.5)\\
+  \end{align}
+  $$
+  compute their asymmetric one-versus-one scheme. Fallowing this, compute their
+  distances to the word w = +1 -1 +1 -1 +1 +1 using the exponential loss functions
+  and the voting-based scheme and sort the classes according to your results
+  in descending order of their favoritism.
+  </p>
+
+answer_type: sort
+answers:
+  - correctness: "1"
+    answer: "0.7"
+    explanation: The accuracy of the best classifier
+  - correctness: "2"
+    answer: "0.7"
+    explanation: |
+      The average recall of the best classifier
+
+workings: |
+  <p>
+  In a one-versus-one scheme each column of the matrice describes a binary
+  classification task, using the class coressponding to the row with +1 entry
+  as positive class and the class with the -1 entry as the negative class.
+  Therefore, we train k(k-1)/2 binary classifiers, one for each pair of
+  different classes. If a binary classifier treats the classes asymmetrically,
+  we will train two classes for each pair, leading to a total of k(k-1)
+  classifiers, where k is the number of total classes given.
+  </p>
+
+
+hint: |
+  <p>
+  Computing their asymmetric one-versus-one scheme should aid the interpretation
+  of the votes for the classes reprsented such that every c{i} character of the
+  word equal with an entry on collumn i row j will represent a vote for the
+  classifier C{j}.
+  </p>
+  <p>
+  The same asymmetric one-versus-one scheme, but taking into consideration the
+  score vector given, should aid the computation of L(z) = exp(-z).
+  </p>
+
+comments: |
+  Test student knowledge on using one-versus-one schemes to turn binary
+  classifiers into multi-class classifiers.
+  <br>
+  Complexity 3 because it requires interpretation of the voting scheme in
+  parallel with computing the distances to the word using the exponential
+  loss formula and outputing their possibly different results.

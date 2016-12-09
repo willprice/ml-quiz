@@ -1,0 +1,91 @@
+images: []
+problem_type: training
+difficulty: "3"
+reference: "1.2"
+source: "http://www.csd.uwo.ca/courses/CS9840a/Lecture2_knn.pdf"
+question: |
+  Given the training data
+
+  $$\mathbf{x} =
+    \begin{pmatrix}
+      3 & 3 \\
+      1 & 0 \\
+      1 & 2 \\
+      2 & 3 \\
+      2 & 1 \\
+    \end{pmatrix}$$
+
+  with the labels:
+
+  $$\mathbf{y} =
+  \begin{pmatrix}
+      0 \\
+      1 \\
+      0 \\
+      0 \\
+      1 \\
+    \end{pmatrix}$$
+
+  where an instance belonging to the $\oplus$ class is represented by
+  $1$ in $\mathbf{y}$, and an instance belonging to the $\ominus$
+  class by $0$.
+
+  Classify the test instance $(0, 1)$ using the 3 nearest neighbours
+  classifier with Euclidean distances by calculation
+answer_type: single
+answers:
+  - correctness: "+"
+    explanation: "The nearest points to $(0, 1)$ are $(1, 0)$, $(1, 2)$ and $(2, 1)$"
+    answer: "$\\oplus$"
+  - correctness: "-"
+    answer: "$\\ominus$"
+workings: |
+  We need to find the distance between our test point and every point
+  in the training data set.
+
+  First we find the distance between the test point and training
+  points in each dimension.
+
+  $$\mathbf{x} - (0, 1) =
+  \begin{pmatrix}
+    3 & 2 \\
+    1 & -1 \\
+    1 & 1 \\
+    2 & 2 \\
+    2 & 0 \\
+  \end{pmatrix}$$
+
+  We can then apply our distance measure to work out the distances.
+
+  $$\mathbf{D(x, (0, 1))} =
+  \begin{pmatrix}
+    \sqrt{(3^2 + 2^2)} \\
+    \sqrt{(1^2 + {(-1)}^2)} \\
+    \sqrt{(1^2 + 1^2)} \\
+    \sqrt{(2^2 + 2^2)} \\
+    \sqrt{(2^2 + 0^2)} \\
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    3.6 \\
+    1.4 \\
+    1.4 \\
+    2.8 \\
+    2 \\
+  \end{pmatrix}$$
+
+  The 2nd, 3rd and 5th entries are the closest to the test point,
+  looking this up in our training data vector $\mathbf{x}$ we see they
+  correspond to the following points, $(1, 0)$, $(1, 2)$ and $(2, 1)$,
+  which each have the classes $\oplus$, $\ominus$, $\oplus$ respectively.
+  We take the majority class as the prediction for our test point, $\oplus$.
+hint: |
+  First plot the data then see whether you can visually identify the
+  points that are closest.
+comments: |
+  Tests the student's knowledge of training and using a KNN model.
+  <br>
+
+  Since the student has to both train and test using classifier, a
+  fair amount of calculation, this question scores a 3 in difficulty.
+
