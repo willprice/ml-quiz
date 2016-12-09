@@ -531,13 +531,13 @@ candidate_number:
     then building some sets of hypotheses based on definitional knolwedge.
 
 "4":
-  images: 
+  images:
     - url: img/nn-backprop-question-network.png
       caption: "Fig 1: Example neural network"
     - url: img/nn-backprop-question-circuit.png
       caption: |-
         Fig 2: Neural network from Fig 1 drawn as a circuit diagram,
-        showing how to calculate intermediate values in forward propagation 
+        showing how to calculate intermediate values in forward propagation
     - url: img/nn-backprop-question-circuit-answer-abstract.png
       caption: |-
         Fig 3: Neural network from Fig 1 drawn as a circuit diagram,
@@ -680,10 +680,10 @@ candidate_number:
       <p>
       The input to each neuron has been labelled with a variable name on
       Fig 2, the partial derivatives of the loss with respect to the weights are:
-      $$\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial b} 
+      $$\frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial b}
                                           \frac{\partial b}{\partial a_1}
                                           \frac{\partial a_1}{\partial w_1}$$
-      $$\frac{\partial L}{\partial w_2} = \frac{\partial L}{\partial b} 
+      $$\frac{\partial L}{\partial w_2} = \frac{\partial L}{\partial b}
                                           \frac{\partial b}{\partial a_2}
                                           \frac{\partial a_2}{\partial w_2}$$
       If we compute the analytical derivative of the output of each
@@ -718,15 +718,15 @@ candidate_number:
       What are the following partial derivatives?
 
       <ul>
-      <li>$\frac{\partial L}{\partial w_1}$ = 
+      <li>$\frac{\partial L}{\partial w_1}$ =
     - 6
     - |
       </li>
-      <li>$\frac{\partial L}{\partial w_2}$ = 
+      <li>$\frac{\partial L}{\partial w_2}$ =
     - 7
     - |
       </li>
-      <li>$\frac{\partial L}{\partial w_3}$ = 
+      <li>$\frac{\partial L}{\partial w_3}$ =
     - 8
     - |
       </li>
@@ -853,8 +853,9 @@ candidate_number:
     both calculation and insight to derive the derivative of
     $$\sigma(x)$$ in terms of itself
 "5":
-  image:
-    - img/coveragePlot.png
+  images:
+    - url: img/coveragePlot.png
+      caption: Blah
   problem_type: evaluation
   difficulty: "3"
   reference: "2.1"
@@ -951,11 +952,11 @@ candidate_number:
     a competent decision having no representation of a equivalent ROC plot .
 
 
-  "6":
-    image:
-      - img/coveragePlot.png
+"6":
+    images: []
     difficulty: "3"
     reference: "3.1"
+    problem_type: evaluation
     source: "https://www.cs.bris.ac.uk/Teaching/Resources/COMS30301/slides/slides2_3.pdf"
     question: |
       <p>
@@ -973,10 +974,10 @@ candidate_number:
 
     answer_type: sort
     answers:
-      - correctness: 1
+      - correctness: "1"
         answer: "0.7"
         explanation: The accuracy of the best classifier
-      - correctness: 2
+      - correctness: "2"
         answer: "0.7"
         explanation: |
           The average recall of the best classifier
