@@ -9,6 +9,8 @@ before_install:
   - chmod 600 .travis/id_rsa
   - ssh-add .travis/id_rsa
 
+install:
+  - pip install -r requirements.txt
+
 script:
   - ./.travis/deploy.sh
-
