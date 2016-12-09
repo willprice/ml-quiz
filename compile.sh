@@ -12,7 +12,7 @@ COMPILATION_ARGS="--comments --hints --workings --explanation --count"
 
 "$YAML_TO_JSON" < "$QUIZ_YAML_SRC" > "$QUIZ_JSON_SRC" || exit 2
 
-./resources/compile_quiz.py ${COMPILATION_ARGS} "${QUIZ_JSON_SRC}" || exit 3
+./resources/compile_quiz.py ${COMPILATION_ARGS} --iframe "${QUIZ_JSON_SRC}" || exit 3
 ./resources/compile_quiz.py ${COMPILATION_ARGS} --separate "${QUIZ_JSON_SRC}" &>/dev/null || exit 3
 
 rm "$QUIZ_JSON_SRC"
