@@ -1,0 +1,78 @@
+images:
+  - url: img/decision-tree.png
+    caption: "Fig 1: Decision Tree"
+problem_type: calculation
+difficulty: "3"
+reference: "5.2"
+source: "5.2 - Turning trees into classifier p. 142"
+question: |
+  An unlabelled decision tree is given in Fig 1. You are asked to label
+  each leaf of the tree based on different cost assessments, for each
+  assessment you are given $c$, the ratio of the cost of false negatives
+  to false positives. Match the leaf class labellings with the costs.
+answer_type: matrix_sort_answer
+answers:
+  - correctness: $c = 0.1$
+    answer: "++++"
+    explanation: |
+      Cost adjusted counts: $(5+, 1-), (8+, 2-), (1+, 0.5-), (6+, 2.5-)$
+  - correctness: $c = 0.2$
+    answer: "++-+"
+    explanation: |
+      Cost adjusted counts: $(5+, 2-), (8+, 4-), (1+, 1-), (6+, 5-)$
+  - correctness: $c = 0.4$
+    answer: "+---"
+    explanation: |
+      Cost adjusted counts: $(5+, 4-), (8+, 8-), (1+, 2-), (6+, 10-)$
+      <br />
+      The second leaf is classified as $\ominus$ since $c \cdot 20 = 8$
+      which gives an equal number of weighted positives and negatives,
+      so we use the majority class, in this case negative to choose the
+      class label.
+  - correctness: $c= 1$
+    answer: "----"
+    explanation: |
+      Cost adjusted counts: $(5+, 10-), (8+, 20-), (1+, 5-), (6+, 25-)$
+workings: |
+  <p>
+  To derive the labelling of each leaf we need to take into account the
+  cost ratio and the class distribution.
+  </p>
+
+  <p>
+  For $c = 1$, false negatives are as costly as false positives, so we
+  don't have to manipulate the class distribution in any way, we simple
+  label the leaf with the majority class, from left to right this is: "----".
+  </p>
+
+  <p>
+  Generally, for an arbitrary $c$, false negatives are $c$ times more
+  costly than false positives, we manipulate each leaf distribution to
+  take this into account by weighting the negative count with $c$. For
+  example, take the left most leaf with $c = 0.2$, $10 \cdot 0.2 = 2$.
+  Having taken into account the cost ratio we can now perform the same
+  technique above and predict the majority class which is "++--" for $c
+  = 0.2$.
+  </p>
+
+  <p>
+  In the case where the leaf class distribution is uniform, we predict
+  the majority class of the full dataset.
+  </p>
+hint: |
+  Recall the definition of $c = \frac{c_{FN}}{c_{FP}}$, consider how
+  this additional information affects the class distributions in each
+  leaf.
+comments: |
+  <p>
+  Tests the student's knowledge of decision tree labelling given skewed
+  FN-FP costs.
+  </p>
+
+  <p>
+  Complexity 3 because it's more involved than simply labelling a tree
+  based on majority class, the added complexity of having to break ties
+  in the leaf by predicting majority class pushes this up a bit more as
+  it requires the student to have a good understanding of how
+  distributions effect predictions.
+  </p>
