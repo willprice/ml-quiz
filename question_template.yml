@@ -75,7 +75,9 @@
 #     answer: The correct second part of the pair
 #     explanation: Why these match up
 #   ```
-images: []
+images:
+  - url: img/nn-backprop-question-network.png
+    caption: "Fig 1: Example neural network"
 problem_type: problem-solving
 difficulty: "5"
 reference: "3.3"
@@ -84,8 +86,9 @@ question: |
   Something about Bias and variance
 answer_type: cloze_answer
 answers:
-  answer: Blah
-  explanation: See the workings for derivation
+  - correctness: 1
+    answer: Blah
+    explanation: See the workings for derivation
 workings: |
   Working
 hint: |
