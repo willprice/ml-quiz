@@ -352,8 +352,7 @@ def parseQuestions(filename):
               out['answers'][i] += add_hint_comment("e", explanation)
           # matrix_sort_answer
           elif (isinstance(a['correctness'], str) or \
-                isinstance(a['correctness'], unicode)) and \
-               len(a['correctness']) > 1:
+                isinstance(a['correctness'], unicode)):
             out['correct'].append(a['answer'].strip())
 
             explanation = a.get('explanation', '').strip()
