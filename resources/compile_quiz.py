@@ -73,7 +73,7 @@ SHOW_WORKINGS = False
 SHOW_EXPLANATION = False
 
 def add_hint_comment(ctype, comment):
-  colour_box = '<p style="border-style:solid; border-width:5px; border-color:#ff0000 #0000ff;">%s:<br>%s</p><hr>'
+  colour_box = '<div style="border-style:solid; border-width:5px; border-color:#ff0000 #0000ff;">%s:<br>%s</div><hr>'
   if ctype == 'c':
     return colour_box % ("comment", comment)
   elif ctype == 'h':
