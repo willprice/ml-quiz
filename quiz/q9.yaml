@@ -1,0 +1,199 @@
+# Guidance
+# 
+# `problem_type`:
+# * definition: tests definition knowledge
+# * calculation: answer to be derived by means of calculation
+# * problem-solving: question requires reasoning beyond calculation
+# * training: train a particular model
+# * evaluation: evaluate a particular model
+#
+# `answer_type`:
+# * single: Single choice
+#   ```
+#   - correctness: + # The correct answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   - correctness: - # An incorrect answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   - correctness: - # An incorrect answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   ```
+# * multiple: Multiple choice
+#   ```
+#   - correctness: + # One correct answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   - correctness: + # Another correct answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   - correctness: - # An incorrect answer
+#     answer: Answer text show to student
+#     explanation: Why this is so
+#   ```
+# * sort: Order elements
+#   ```
+#   - correctness: "1" # The top item 
+#     answer: Element text
+#     explanation: Why this is so
+#   - correctness: "2" # The second top item
+#     answer: Element text
+#     explanation: Why this is so
+#   - correctness: "3" # The bottom item
+#     answer: Element text
+#     explanation: Why this is so
+#   ```
+# * blank_answer: Fill in the blanks
+#   ```
+#   - correctness: 1 # The answer to the first gap
+#     answer: expected answer student should have written
+#     explanation: Why this is so
+#   - correctness: 2 # The answer to the second gap
+#     answer: expected answer student should have written
+#     explanation: Why this is so
+#   - correctness: 3 # The answer to the third gap
+#     answer: expected answer student should have written
+#     explanation: Why this is so
+#   ```
+# * cloze_answer: Fill in contingency matrix
+#   ```
+#   answer: 
+#     - "1 | 2 | 3"
+#     - "---------"
+#     - "1 | 2 | 3"
+#     - "---------"
+#     - "2 | 4 | 3"
+#   explanation: Why this contingency table looks like it does
+#   ```
+# * matrix_sort_answer: Match up pairs of objects
+#   ```
+#   - correctness: First part of the pair
+#     answer: The correct second part of the pairt
+#     explanation: Why these match up
+#   - correctness: First part of the pair
+#     answer: The correct second part of the pair
+#     explanation: Why these match up
+#   ```
+images: []
+problem_type: problem-solving
+difficulty: "3"
+reference: "6.2"
+source: |
+  Machine Learning: Learning unordered rule sets - Rule sets for
+  ranking and probability estimation (p173-174)
+question: |
+  <p>
+  You are a devops engineer in a company acting as an intermediary
+  between banks and online stores facilitating credit card payments.
+  </p>
+
+  <p>
+  The company has been losing revenue because their system is buggy.
+  About once a day one of the nodes supporting the service crashes
+  causing payments to be lost, you've been tasked to analyse the root
+  cause of the bug.
+  </p>
+
+  <p>
+  To analyse the bug you've written some scripts to collect data about
+  the node when a service raises an exception. You hope to be able to
+  use rule set learning to find the combination of factors that trigger
+  the bug to help guide your debugging process.
+  </p>
+
+  <p>
+  Over the period of a week, you collect data on the exceptions raised
+  by the services, this data is shown below.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Node</th><th>Load > 50%</th><th>Service</th><th>Fatal</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>2</td><td>Yes</td><td>HTTP Server</td><td>No</td></tr>
+      <tr><td>1</td><td>Yes</td><td>HTTP Server</td><td>Yes</td></tr>
+      <tr><td>1</td><td>Yes</td><td>Messaging</td><td>Yes</td></tr>
+      <tr><td>2</td><td>Yes</td><td>Messaging</td><td>Yes</td></tr>
+      <tr><td>3</td><td>No</td><td>Messaging</td><td>No</td></tr>
+      <tr><td>1</td><td>No</td><td>HTTP Server</td><td>Yes</td></tr>
+      <tr><td>2</td><td>Yes</td><td>HTTP Server</td><td>No</td></tr>
+      <tr><td>2</td><td>No</td><td>Messaging</td><td>No</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+  Using rule set learning on this data, you produce the following set of rules
+  </p>
+
+  <ul>
+    <li>A: if Node == 2 and Load > 50% then non fatal</li>
+    <li>B: if Node == 3 then non fatal</li>
+    <li>C: if Load < 50% then non fatal</li>
+    <li>D: if Load > 50% and Service == Messaging then fatal</li>
+  </ul>
+
+  <p>
+  The next day another fatal crash occurs with the properties:
+  </p>
+
+  <ul>
+    <li>Node = 2</li>
+    <li>Load > 50%</li>
+    <li>Service = Messaging</li>
+  </ul>
+
+  <p>
+  You want to test the rules learnt the day before to see whether they
+  are consistent with this new datum, or whether you need to collect more
+  data to learn better rules for predicting fatal crashes.
+  </p>
+
+  <p>
+  What does the rule set predict?
+  </p>
+answer_type: single
+answers:
+  - correctness: '+'
+    answer: '+'
+    explanation: |
+      $\dot{p} = \frac{3}{5}$, $\dot{p} > 0.5$ so we predict positive
+      (assuming the class ratio is the same for test, which it should be
+      given the context). This is assumes a cost ratio $c = 1$, i.e.
+      false positives are as costly as false negatives.
+  - correctness: '-'
+    answer: '-'
+workings: |
+  <p>
+  We evaluate the head of each rule to see if it applies, in this case
+  rules A and D are relevant, if the rules predict the same class then
+  we're done, however this is not the case! Since the rules disagree in
+  the class prediction we need some way of reconciling these
+  differences, which class should we choose?
+  </p>
+
+  <p>
+  First we check the coverage over the training set for each rule.
+  </p>
+
+  <ul>
+    <li>Rule A: [2+, 0-]</li>
+    <li>Rule D: [1+, 2-]</li>
+  </ul>
+
+  <p>
+  Average the coverages: [1.5+, 1-], then make a prediction based on
+  this, $\dot{p} = \frac{1.5}{2.5} = \frac{3}{5}$
+  </p>
+
+
+hint: |
+  Work out which training examples the rules cover, then think about
+  what would happen if a rule covered all of those examples, which class
+  would you predict? 
+comments: |
+  Tests the student's knowledge of how to use rule sets to predict the
+  class of a new instance, and what to do when those rules disagree
+  <br>
+  Complexity 3 because it is not a straight forward prediction.

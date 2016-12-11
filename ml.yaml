@@ -11,3 +11,4 @@ candidate_number:
 "6": !include quiz/q6.yaml
 "7": !include quiz/q7.yaml
 "8": !include quiz/q8.yaml
+"9": !include quiz/q9.yaml
