@@ -1,7 +1,7 @@
 images: []
 problem_type: training
 difficulty: "3"
-reference: "1.2"
+reference: "8.3"
 source: "http://www.csd.uwo.ca/courses/CS9840a/Lecture2_knn.pdf"
 question: |
   Given the training data
