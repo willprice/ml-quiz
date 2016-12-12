@@ -1,0 +1,9 @@
+Node,Load > 50%,Microservice,Fatal
+2,Yes,HTTP Server,Yes
+1,Yes,HTTP Server,Yes
+1,Yes,Messaging API,Yes
+2,Yes,Messaging API,Yes
+3,No,Messaging API,No
+1,No,HTTP Server,No
+2,Yes,HTTP Server,No
+2,No,Messaging API,No
