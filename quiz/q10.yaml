@@ -2,7 +2,7 @@ images: []
 problem_type: definition
 difficulty: "2"
 reference: "1.2"
-source: ": "https://arbital.com/p/bayes_rule/"
+source: "https://arbital.com/p/bayes_rule/"
 question: |
   <p>
   An air squadron maintain a large number of Apache attack helicopters,
