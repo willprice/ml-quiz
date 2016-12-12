@@ -1,0 +1,142 @@
+"11":
+    images:
+      - url: img/hypspace.jpg
+        caption: hyphothesis space
+      - url: img/cvplot_1.jpg
+        caption: Coverage Plots
+      - url: img/cvplot_2.jpg
+        caption: Coverage Plots
+    difficulty: "2"
+    reference: "4.1"
+    problem_type: evaluation
+    source: "https://mlbook.cs.bris.ac.uk/"
+    question: |
+      <p>
+      Given the fallowing hyphothesis space and the below table of instances belonging
+      to 2 different species of fish, associate each red colored path with its
+      corresponding coverage plot.
+      </p>
+
+      <table>
+      <thead>
+        <tr>
+          <th>Instance</th>
+          <th>Class</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>p1 : length = 3 & weight = 5 & scales = few</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>p2 : length = 4 & weight = 5 & scales = few</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>p3 : length = 3 & weight = 6 & scales = few</td>
+          <td>+</td>
+        </tr>
+        <tr>
+          <td>n1 : length = 3 & weight = 6 & scales = many</td>
+          <td>-</td>
+        </tr>
+
+        <tr>
+          <td>n2 : length = 4 & weight = 6 & scales = many</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>n3 : length = 4 & weight = 6 & scales = few</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+      </table>
+
+      <p>
+      Each level of the hypothesis space will labelled as fallows for
+      representation purposes: the most general generalisation with 1 to the
+      least general generalisation labbeled with 4.
+      </p>
+
+      <p>
+      Fallowing this find the most general consistent hyphotesis using the
+      MGConsistent(C,N) algorithm and output the label of that node given that
+      they are labelled in ascending order form the most general hypothesis to
+      the least general one, from left to right.
+      </p>
+      <p>
+      (eg.The most general hypothesis will be labelled as 1.)
+      </p>
+
+    answer_type: matrix_sort_answer
+    answers:
+      - correctness: "Path 1 corresponds to"
+        answer: "cover plot 3"
+        explanation: Associated cover plot
+      - correctness: "Path 2 corresponds to"
+        answer: "cover plot 4"
+        explanation: Associated cover plot
+      - correctness: "Path 3 corresponds to"
+        answer: "cover plot 2"
+        explanation: Associated cover plot
+      - correctness: "Path 4 corresponds to"
+        answer: "cover plot 1"
+        explanation: Associated cover plot
+
+    workings: |
+      <p>
+      Concept learning can be seen as the search for the most optimal path through
+      the hypothesis space. Therefore, we are concerned of the most general hypothesis
+      that best separates the postive instances from the negatives ones.
+      </p>
+      <p>
+      To aid our understanding of each path separability of the data we dispalyed
+      their ROC curves by fallowing each path in the hypothesis space from the
+      least general generalisation to the most general one, the empty concept.
+      That means that each path's corresponding coverage plot will customary pass
+      through ROC buttom in the case of not covering any examples and ROC heaven
+      in the case of an empty concept.
+      </p>
+      <p>
+      The task will require taking each sample and classifying it using each hypothesis.
+      In the end we will count the number of positives and negatives that are classified
+      by each logical expression in the hypothesis space and for each path we will
+      represent those values using a ROC curve where the most general hypothesis will
+      be found in ROC heaven.
+      </p>
+
+      <p>
+      Taking as an example Path 1 we start from the logical expression
+      length = 3 & weight=5 & scales =many that classifies 0+ and 0- and
+      represent it at the origin of our coverage curve. Then we move on to its
+      upper bound length = 3 & scales=many that classifies 0+ 1- misslabelling
+      n1 as being positive and so on untill we reach the hypothesis that is
+      represented as ROC heaven.
+      </p>
+
+      <p>
+      As a method to check our results, we can notice that while adding extra
+      specialisation our samples will also decrease in their number as the hypothesis
+      will become stricter.
+      </p>
+
+
+    hint: |
+      <p>
+      The task will require taking each sample and classifying it using the hypothesis
+      space. Ouputing each hypotesis number of true and false positives will
+      later aid the conversion of each path's results to the corresponding ROC curve in
+      order to visualise their accuracy.
+      </p>
+
+    comments: |
+      The task in hand requires acknowledging the ability of concept learning to
+      identify an optimal path through the hypothesis space. Therefore, we test
+      the ability of assesing the accuracy of different hypothesis using as
+      their reprsentations ROC curves and given labbelled examples.
+      <br>
+      Moreover, as finding more general consistent hypothesis is considerably
+      more involved than finding least general complete ones, we also tested the
+      ability of using the MGConsistent(C,N) algorithm to find the most general
+      consistent specialisations of a concept.
