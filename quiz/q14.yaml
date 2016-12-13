@@ -1,0 +1,240 @@
+images: []
+difficulty: "3"
+reference: "6.2"
+problem_type: training
+source: "https://mlbook.cs.bris.ac.uk/"
+question: |
+  <p>
+  Given the fallowing instance space :
+
+  <table>
+  <thead>
+    <tr>
+      <th>Instance</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>p1 : Length = 3 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p2 :  Length = 4 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p3 :  Length = 3 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p4 :  Length = 5 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    tr>
+      <td>p5 :  Length = 5 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>n1 : Length = 5 & Gills=yes & Beak=yes & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n2 : Length = 4 & Gills=yes & Beak=yes & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n3 : Length = 5 & Gills=yes & Beak=no & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n4 : Length = 4 & Gills=yes & Beak=no & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n5 : Length = 4 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+  </table>
+  construct an unordered rule model for the positive class using the LearnRuleSet
+  and LearnRuleForClass algorithms while employing a beam serach to deal with the
+  'myopia' of precision.
+  </p>
+  <p>
+  For each equivalent rules within a beam we will preffer the ones that are shorter.
+  </p>
+  <p>
+  Moreover, in order to deal with nosiy data we will establish our stopping
+  criteria as fallows: a homogeneous set of data will be considered the ones that have
+  the proportion of positives at least twice than the negatives(exception being
+  the case when we have 0 negatives).
+  </p>
+  <p>
+  Taking into consideration that all the other elements that are not classified as
+  positives will be labelled as negatives, compute the accuracy of the rule model in
+  the case of a pure homogeneous set and in parallel with the stopping condition:
+  </p>
+
+answer_type: single
+answers:
+  - correctness: "-"
+    answer: "1, 0.8"
+  - correctness: "-"
+    answer: "0.9, 0.8"
+  - correctness: "+"
+    answer: "1 , 0.9"
+    explanation: |
+      "the first rule classifies all data correctly, while the second one mislabbeles one of the negatives"
+  - correctness: "-"
+    answer: "1, 1"
+
+workings: |
+  In unordered rule sets we learn on class at a time. This is why in the LearnRuleSet
+  algorithm, described in the "Machine learning" by Peter Flach, we will iterate
+  through all the classes given. However, the problem restricts the computation of
+  only the positive class so we therefore have the next algorithm:
+
+  <pre>
+  <code class="python">
+  LearnRuleSet(D)
+
+  Input: labelled training data D.
+  Output: rule set R.
+  R <- {}
+  D{i} <- D;
+  while D{i} contains examples of class C{i} do
+    r <- LearnRuleForClass(D{i}, C{i})
+    R <- R U {r}
+    D{i} <- D{i} \ {x from C{i} | x is covered by r};
+  end
+  return R
+  </code>
+  </pre>
+
+  <p>
+  As it can be seen in the algorithm, after each iteration we will remove all
+  positive instances covered by the rule in constrast with the algorithm for
+  ordered list when we were eliminating all instances covered including the
+  negatives ones. Moreover, in LeranRuleForClass we will now assess the best
+  literals on only the respective class instances while also labelling the head
+  of the rule with the positive class as fallows:.
+  </p>
+
+  <pre>
+  <code class="python">
+  LearnRuleForClass(D, C{i})
+
+  Input: labelled training data D; class C{i};
+  Output: rule r.
+  b <- true;
+  L <- set of available literals;
+  while not Homogeneous(D) do
+    l <- BestLiteral(D, L, C{i});
+    b <- b & l;
+    D <- {x from D | x is covered by b};
+    L <- L \ {l' from L | l' uses same features as l };
+  end
+  r <- if b then Class = C{i}
+  return r
+  </code>
+  </pre>
+
+  <p>
+  However, in our case the BestLiteral implementation will differ to allow
+  a beam search. A beam search will be usefull to also consider in our literal
+  choosing process the occassionally near-pure rules that can be speciliased
+  into a more general pure rule.
+  </p>
+  <p>
+  Each possible pure features will be added in the beam and after adding all
+  possible specialisations, we stop when all beams elements are homogeneous
+  (pure or proportion of + instances is double that the - instances) and pick
+  the one that contains the most well classified positives. In case we have 2
+  equivalent definitions we will choose the shorter one.
+  </p>
+  <p>
+  So starting with our first rule serach we decompose the total instance space
+  5+ 5- using all individual possible literals obtaining:
+  $$
+  \begin{align}
+  [5+, 5-] distributed as fallows:\\
+  Length = 3 -> [2+, 0-]\\
+  Length = 4 -> [1+, 3-]\\
+  Length = 5 -> [0+, 2-]\\
+  Gills = yes -> [0+, 4-]\\
+  Gills = no -> [1+, 1-]\\
+  Beak = yes -> [1+, 3-]\\
+  Beak = no -> [0+, 2-]\\
+  Teeth = many -> [1+, 4-]\\
+  Teeth = few -> [0+, 1-]\\
+  \end{align}
+  $$
+  </p>
+
+  <p>
+  The first chosen literal in the case of homogeneous described by purity will be
+  length = 3 as it classifies [2+ ,0-] while in the second case we will direcly
+  choose Gills = no as it achieves the classification [5+, 1-] where 5\1 = 5 > 2.
+  </p>
+
+  <p>
+  While in the second case the iteration will stop, in the first one we will have next
+  the fallowing:
+  $$
+  \begin{align}
+  [3+, 5-] distributed as fallows:\\
+  Length = 4 -> [1+, 3-]\\
+  Length = 5 -> [2+, 2-]\\
+  Gills = yes -> [0+, 4-]\\
+  Gills = no -> [3+, 1-]\\
+  Beak = yes -> [3+, 3-]\\
+  Beak = no -> [0+, 2-]\\
+  Teeth = many -> [2+, 4-]\\
+  Teeth = few -> [1+, 1-]\\
+  \end{align}
+  $$
+  </p>
+  <p>
+  This time using the beam serach we will choose Gill=no & Length=5 as it achieves
+  [2+, 0-] with an equivalent of Gills=no & Teeth = many that will be consequenly
+  choose at the next iteration.
+  </p>
+
+  <p>
+  In the end the rule for the positive class is:
+  $$
+  \begin{align}
+  if Length = 3 then Class = +
+  If Gills = no & Length = 5 then Class = +
+  If Gills = no & Teeth = many then Class = +
+  \end{align}
+  $$
+  classifying every example correctly and therefore having the accuracy of 1.
+  However, in the second case we will classify all positives, but we will alos
+  have one false positive the accuracy being therefore equal to 9/10 = 0.9 where
+  the accuracy definition is as fallows:
+  </p>
+  <br>
+  $$
+  \begin{align}
+  accuracy &= \frac{1}{|T{e}|} * \sum_{x \in Te}\left[ I(\hat{c}(x) = c(x) \right]\\
+  \end{align}
+  $$
+
+hint: |
+  <p>
+  Each possible pure features will be added in the beam and after adding all
+  possible specialisations, we stop when all beams elements are homogeneous
+  (pure or proportion of + instances is double that the - instances) and pick
+  the one that contains the most well classified positives. In case we have 2
+  equivalent definitions we will choose the shorter one.
+  </p>
+
+comments: |
+  The question involves the knowledge of new concepts on rule models and its
+  parameters in which they can vary,such as ways to deal with 'myopia' or
+  stoping criterias to improve generalisation.
+  <br>
+  It is a level 3 question because it requires not only reasoning, but also
+  computation of the best feature to split on and the output rule models accuracies.
