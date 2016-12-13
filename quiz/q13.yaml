@@ -1,0 +1,547 @@
+images:
+  - url: img/perceptron-kernel-training-data.png
+    caption: "Fig 1: Training data"
+problem_type: training
+difficulty: "4"
+reference: "3.3"
+source: Machine Learning (P. Flach) p 225-226
+question: |
+  <p>
+  A perceptron model with a polynomial kernel of degree 2 is being
+  trained on the data below (from top to bottom), at the end of the 8th
+  iteration during training, $\alpha = (4, 3, 2, 6)$.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+         <td>$i$</td>
+         <td>$x_0^{(i)}$</td>
+         <td>$x_1^{(i)}$</td>
+         <td>$y^{(i)}$</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+         <td>0</td>
+         <td>1</td>
+         <td>0</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>1</td>
+         <td>1</td>
+         <td>2</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>2</td>
+         <td>3</td>
+         <td>0</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>3</td>
+         <td>2</td>
+         <td>1</td>
+         <td>-1</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+  $x_0^{(i)}$ denotes feature $x_0$ for the $i$th training example.
+  </p>
+
+  <p>
+  Does the perceptron algorithm terminate?
+  </p>
+answer_type: single
+answers:
+   - correctness: '+'
+     answer: 'Yes'
+     explanation: |
+       The perceptron algorithm does not perform any updates to the
+       $\alpha$ array, hence the algorithm converges.
+   - correctness: '-'
+     answer: 'No'
+# Add the following to `workings` to get syntax highlighting
+#<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+#<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+#<script>hljs.initHighlightingOnLoad();</script>
+workings: |
+
+  <p>
+  Recall the dual form perceptron training algorithm, the version here
+  is executable python, so feel free to have a play around this and
+  print out intermediate value to get a feel for the it. $X$ is a matrix
+  with a column per feature, and a row per training example. $y$ is a
+  column vector of the classification of each training example.
+  </p>
+
+  <pre>
+  <code class="python">
+  def perceptron(X, y, k=(lambda x0, x1: np.dot(x0, x1)**2)):
+    converged = False
+    while converged == False:
+       converged = True
+       for i in range(len(X)):
+           s = 0
+           for j in range(len(X)):
+               s += alphas[j] * y[j] * k(X[i], X[j])
+           s = s * y[i]
+           if s <= 0:
+               alphas[i] += 1
+               converged = False
+  </code>
+  </pre>
+
+  <p>
+  Several observations can be made to save us from having to reevaluate
+  certain expressions repeatedly. $k(x_0^{(i)}, x_1^{(i)})$ will be
+  constant throughout the training. If we evaluate this then we can
+  reduce the number of (tedious) steps to take
+  </p>
+
+  <table>
+     <thead>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\mathbf{x}^{(i)}$</td>
+        <td>$\mathbf{x}^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     </thead>
+     <tbody>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>(1, 0)</td>
+        <td>(1, 0)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>(1, 0)</td>
+        <td>(1, 2)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>(1, 0)</td>
+        <td>(3, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>(1, 0)</td>
+        <td>(2, 1)</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>(1, 2)</td>
+        <td>(1, 0)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>(1, 2)</td>
+        <td>(1, 2)</td>
+        <td>25</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>(1, 2)</td>
+        <td>(3, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>(1, 2)</td>
+        <td>(2, 1)</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>(3, 0)</td>
+        <td>(1, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>(3, 0)</td>
+        <td>(1, 2)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>(3, 0)</td>
+        <td>(3, 0)</td>
+        <td>81</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>(3, 0)</td>
+        <td>(2, 1)</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>(2, 1)</td>
+        <td>(1, 0)</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>(2, 1)</td>
+        <td>(1, 2)</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>(2, 1)</td>
+        <td>(3, 0)</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>(2, 1)</td>
+        <td>(2, 1)</td>
+        <td>25</td>
+     </tr>
+     </tbody>
+  </table>
+
+  <p>
+  There are duplicates in the table, since $k(i, j) = k(j, i)$, but for
+  the sake of ones sanity in calculating the next table it's handy to be
+  able to go to the exact $(i, j)$ pair of interest.
+  </p>
+
+  <p>
+  Now for a single iteration of the while loop we need to calculate
+  $y^{i} \sum_{j} \left( \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2 \right)$
+  </p>
+
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\alpha^{(j)}y^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$\alpha^{(j)}y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>4</td>
+        <td>-24</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>3</td>
+        <td>25</td>
+        <td>75</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>16</td>
+        <td>-96</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>4</td>
+        <td>9</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>3</td>
+        <td>9</td>
+        <td>27</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
+        <td>81</td>
+        <td>162</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>36</td>
+        <td>-216</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>4</td>
+        <td>4</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+        <td>16</td>
+        <td>48</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>2</td>
+        <td>36</td>
+        <td>72</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>25</td>
+        <td>-150</td>
+     </tr>
+  </table>
+
+  <p>
+  For each iteration of $i$, we compute $y^{i} \sum_{j} \left(
+  \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2 \right)$ by summing the
+  individual terms we calculated in the previous step
+  </p>
+
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\alpha^{(j)}y^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$\alpha^{(j)}y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>4</td>
+        <td>-24</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>3</td>
+        <td>25</td>
+        <td>75</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>16</td>
+        <td>-96</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>4</td>
+        <td>9</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>3</td>
+        <td>9</td>
+        <td>27</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
+        <td>81</td>
+        <td>162</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>36</td>
+        <td>-216</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>4</td>
+        <td>4</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+        <td>16</td>
+        <td>48</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>2</td>
+        <td>36</td>
+        <td>72</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>25</td>
+        <td>-150</td>
+     </tr>
+  </table>
+
+  <p>
+  For each iteration of $i$, we compute 
+  </p>
+
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$\sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$y^{(i)}$</td>
+        <td>$y^{(i)} \sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>9</td>
+        <td>1</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>-14</td>
+        <td>-1</td>
+        <td>14</td>
+     </tr>
+  </table>
+
+  Since for all $i$, $y^{(i)} \sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot
+  \mathbf{x}^{(j)})^2 \geq 0$ the algorithm terminates.
+hint: |
+  On what condition does the perceptron algorithm terminate?
+comments: |
+  Tests the student's knowledge of training a perceptron model in dual
+  form, replacing the dot product in a linear model with a kernel.
+  <br />
+  Complexity 4 because kernels are starred material.
+hint: |
+  On what condition does the perceptron algorithm terminate?
+comments: |
+  Tests the student's knowledge of training a perceptron model in dual
+  form, replacing the dot product in a linear model with a kernel. The
+  diagram tries to through the student off by visualising demonstrating
+  the data is not linearly separable.
+  <br />
+  Complexity 4 because kernels are starred material.
