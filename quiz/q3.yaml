@@ -117,7 +117,7 @@ answers:
       examples and at least one of the positive examples
   - correctness: 3
     answer: "0"
-    explanation: There are no complete AND consistent hypotheses
+    explanation: The number of complete AND consistent hypotheses
 workings: |
   <p>
   The hypothesis space of all conjunctive concepts needs to be
