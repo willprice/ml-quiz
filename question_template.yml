@@ -10,25 +10,25 @@
 # `answer_type`:
 # * single: Single choice
 #   ```
-#   - correctness: + # The correct answer
+#   - correctness: '+' # The correct answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
-#   - correctness: - # An incorrect answer
+#   - correctness: '-' # An incorrect answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
-#   - correctness: - # An incorrect answer
+#   - correctness: '-' # An incorrect answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
 #   ```
 # * multiple: Multiple choice
 #   ```
-#   - correctness: + # One correct answer
+#   - correctness: '+' # One correct answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
-#   - correctness: + # Another correct answer
+#   - correctness: '+' # Another correct answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
-#   - correctness: - # An incorrect answer
+#   - correctness: '-' # An incorrect answer
 #     answer: Answer text show to student
 #     explanation: Why this is so
 #   ```
