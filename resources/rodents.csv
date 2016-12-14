@@ -1,0 +1,9 @@
+eye_size,tail_length,ear_size,class
+large,long,very long,+
+small,short,small,+
+small,short,small,+
+large,long,small,+
+small,short,large,-
+small,long,large,-
+small,short,large,-
+small,short,small,-
