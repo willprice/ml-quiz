@@ -6,44 +6,43 @@ difficulty: "3"
 reference: "2.1"
 source: "https://www.cs.bris.ac.uk/Teaching/Resources/COMS30301/slides/slides2_3.pdf"
 question:
+  - Given the coverage plot in Fig. 1 depicting the performance of three classifiers and
+    the details below, determine the dominant class by considering their mapping to
+    a ROC curve. Then compute its accuracy and average recall.
 
-  Given the above coverage plot depecting the performance of three classifiers and
-  the details below, determine the dominant class by considerating their mapping to
-  a ROC curve. Then compute its accuracy and average recall.
+    $$
+    \begin{align}
+    Pos&= 25\\
+    Neg&= 75\\
+    \end{align}
+    $$
 
-  $$
-  \begin{align}
-  Pos&= 25\\
-  Neg&= 75\\
-  \end{align}
-  $$
+    $$
+    \begin{align}
+    TP1&= 10\\
+    TP2&=20\\
+    TP3&= 20\\
+    \end{align}
+    $$
 
-  $$
-  \begin{align}
-  TP1&= 10\\
-  TP2&=20\\
-  TP3&= 20\\
-  \end{align}
-  $$
+    $$
+    \begin{align}
+    FP1&= 15\\
+    FP2&= 25\\
+    FP3&= 40\\
+    \end{align}
+    $$
 
-  $$
-  \begin{align}
-  FP1&= 15\\
-  FP2&= 25\\
-  FP3&= 40\\
-  \end{align}
-  $$
-
-  <p>
-  <br />
-  Accuracy of the best classifier is
+    <p>
+    <br />
+    Accuracy of the best classifier is
   - 1
   - |
-  <br />
-  The average recall of the best classifier is
+    <br />
+    The average recall of the best classifier is
   - 2
   - |
-  - </p>
+    </p>
 
 answer_type: blank_answer
 answers:
@@ -56,34 +55,36 @@ answers:
       The average recall of the best classifier
 
 workings: |
-    <p>
-    In a coverge plot, classifiers with the same accuracy are connected by line
-    segments with slope 1. However, coverage plots do not take account of different
-    class distributions. For this reason we should consider its normalised version
-    which is reffered to as a ROC plot that explicitly takes the class distribution
-    into account.
-    </p>
+  <p>
+  In a coverge plot, classifiers with the same accuracy are connected
+  by line segments with slope 1. However, coverage plots do not take
+  account of different class distributions. For this reason we should
+  consider its normalised version which is referred to as a ROC plot
+  that explicitly takes the class distribution into account.
+  </p>
 
-    <p>
-    From the given coverage plot we can therefore conclude that the C2 classifier is
-    supperior to the C3 one as, while they both have the same true positives number of
-    instances, C2 has a lower false positive number of instances. However, because of
-    the different class distributions we cannot affirm that C1 is equivalent to C2 even
-    if they have the same accuracy.
-    </p>
+  <p>
+  From the given coverage plot we can conclude that C2 is superior to
+  C3, while they both have the same number of true positives, C2 has a
+  lower number of false positives. However, because of the different
+  class distributions we cannot confirm that C1 is equivalent to C2
+  even if they have the same accuracy.
+  </p>
 
-    <p>
-    To be able to graffically represent their performance difference we have to normalise
-    the data which will make noticable that they have different average recalls.
-    This is due to the fact that even if the differences on the x and y axis do might include an equal
-    amount of false and true positives instances, because the number of negatives instances
-    is higher than the number of positive instances, the increase on the true positive axis
-    will have a higher weight. This can be also observed when computing for both C1 nad C2
-    their true positive / negatives rates that are included in the computation of average
-    recall as fallows:
-    </p>
+  <p>
+  To be able to graphically represent the classifier performance differences we
+  have to normalise the data which will make noticable that they have
+  different average recalls.  This is due to the fact that even if the
+  differences on the x and y axis do might include an equal amount of
+  false and true positives instances, because the number of negatives
+  instances is higher than the number of positive instances, the
+  increase on the true positive axis will have a higher weight. This
+  can be also observed when computing for both C1 nad C2 their true
+  positive / negatives rates that are included in the computation of
+  average recall as follows:
+  </p>
 
-    $$\text{average recall} = \frac{TPR + TNR}{2}$$
+  $$\text{average recall} = \frac{TPR + TNR}{2}$$
 hint: |
   For each classifier compute their accuracy and average recall to aid you with
   deciding whether your choice is indeed the best classifier.
@@ -94,4 +95,4 @@ comments: |
   <br>
   Complexity 3 because it requires a deep understanding of assessing classification
   performance and involves computing the accuracy and average recall in order to make
-  a competent decision having no representation of a equivalent ROC plot .
+  a competent decision having no representation of an equivalent ROC plot .
