@@ -11,11 +11,11 @@ question: |
       <th>Value</th>
     </tr>
     <tr>
-      <td>$\sum_{x \in Te}\left[ I(\hat{c}(x) = \oplus \right] = 45$</td>
+      <td>$\sum_{x \in Te}\left[ I(\hat{c}(x)) = \oplus \right] = 45$</td>
       <td>45</td>
     </tr>
     <tr>
-      <td>$\sum_{x \in Te}\left[ I(\hat{c}(x) = \ominus \right] = 20$</td>
+      <td>$\sum_{x \in Te}\left[ I(\hat{c}(x)) = \ominus \right] = 20$</td>
       <td>20</td>
     </tr>
     <tr>
@@ -99,7 +99,7 @@ workings: |
   $FN$ using eq. 2, $FN = 5$
 
 hint: |
-  What are the definitions of *precision* and *false positive rate*?
+  What are the definitions of <b>precision</b> and <b>false positive rate</b>?
   Try to derive them in terms of the individual elements of the
   contingency table.
 comments: |
