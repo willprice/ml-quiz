@@ -293,18 +293,25 @@ workings: |
   </p>
 
   <p>
-    $A$, the set of all complete hypotheses will contain all
-    hypothesis the cover all positive examples; they will has a
+    $|A|$, the size of the set of all complete hypotheses will contain all
+    hypothesis the cover all positive examples; each rule will have a
     positive count of 4. Counting the hypotheses above there are only
     2 hypotheses covering all positive examples.
   </p>
 
   <p>
-    $B$, the set of all consistent hypotheses that cover 1 or more
+    $|B|$, the size of the set of all consistent hypotheses that cover 1 or more
     positive examples can be computed by counting all hypotheses that
     cover no negative examples (the definition of consistent) and then
     counting the number of selected hypotheses that have 1 or more
     positive examples. There are 16 of these.
+  </p>
+
+  <p>
+    $|V|$, the sze of the version space (the set of all complete and
+    consistent hypotheses) can be computed by counting all rules that
+    cover all positive examples and no negative examples. There are no
+    complete AND consistent rules.
   </p>
 
 hint: |
