@@ -1,0 +1,32 @@
+images: []
+difficulty: "3"
+reference: "7.1"
+problem_type: training
+source: "https://mlbook.cs.bris.ac.uk/"
+question: |
+  Question
+
+
+answer_type: single
+answers:
+  - correctness: "-"
+    answer: "1, 0.8"
+  - correctness: "-"
+    answer: "0.9, 0.8"
+  - correctness: "+"
+    answer: "1 , 0.9"
+    explanation: |
+      "the first rule classifies all data correctly, while the second one mislabbeles one of the negatives"
+  - correctness: "-"
+    answer: "1, 1"
+
+workings: |
+  Workings
+
+hint: |
+  <p>
+  Hint
+  </p>
+
+comments: |
+  Comments

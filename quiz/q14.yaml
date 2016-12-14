@@ -205,9 +205,9 @@ workings: |
   In the end the rule for the positive class is:
   $$
   \begin{align}
-  if Length = 3 then Class = +
-  If Gills = no & Length = 5 then Class = +
-  If Gills = no & Teeth = many then Class = +
+  If Length = 3 then Class = +\\
+  If Gills = no & Length = 5 then Class = +\\
+  If Gills = no & Teeth = many then Class = +\\
   \end{align}
   $$
   classifying every example correctly and therefore having the accuracy of 1.
