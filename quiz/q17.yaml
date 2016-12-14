@@ -1,0 +1,46 @@
+images:
+  - url: img/bn-example.png
+    caption: "Fig 1: Bayesian (Belief) Network"
+problem_type: problem-solving
+difficulty: "5"
+reference: "3.3"
+source: "URL"
+question: |
+  <p>
+  Bayesian Networks (BNs) graphically model the conditional dependence
+  and independence of events. A BN is modelled as a directed acyclic
+  graph (DAG) where each node represents and event, and a directed edge
+  from node A to node B denotes that A is conditionally dependent upon
+  B.
+  </p>
+
+  <p>
+  Select the BNs that make the same conditional independence assumptions
+  as the BN in Fig 1.
+  </p>
+answer_type: multiple
+answers:
+  - correctness: '+'
+    answer: |
+      <img src="img/bn-1.png" />
+    explanation: See the workings for derivation
+  - correctness: '+'
+    answer: |
+      <img src="img/bn-2.png" />
+    explanation: See the workings for derivation
+  - correctness: '-'
+    answer: |
+      <img src="img/bn-3.png" />
+    explanation: See the workings for derivation
+  - correctness: '-'
+    answer: |
+      <img src="img/bn-4.png" />
+    explanation: See the workings for derivation
+workings: |
+  Working
+hint: |
+  Blah
+comments: |
+  Tests the student's knowledge of b
+  <br>
+  Complexity 5 because
