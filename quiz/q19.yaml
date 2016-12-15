@@ -1,0 +1,137 @@
+images: []
+difficulty: "3"
+reference: "9.2"
+problem_type: calculation
+source: "https://mlbook.cs.bris.ac.uk/"
+question:
+  Considerin the fallowing data set describing emails using count vectors for a
+  three word vocabulary
+
+  <table>
+  <thead>
+    <tr>
+      <th>E-mail</th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$e_1$</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>+ve</td>
+    </tr>
+    <tr>
+      <td>$e_2$</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1</td>
+      <td>+ve</td>
+    </tr>
+    <tr>
+      <td>$e_3$</td>
+      <td>3</td>
+      <td>1</td>
+      <td>0</td>
+      <td>+ve</td>
+    </tr>
+    <tr>
+      <td>$e_4$</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>+ve</td>
+    </tr>
+    tr>
+      <td>$e_5$</td>
+      <td>4</td>
+      <td>0</td>
+      <td>2</td>
+      <td>-ve</td>
+    </tr>
+    <tr>
+      <td>$e_6$</td>
+      <td>5</td>
+      <td>2</td>
+      <td>2</td>
+      <td>-ve</td>
+    </tr>
+    <tr>
+      <td>$e_7$</td>
+      <td>3</td>
+      <td>0</td>
+      <td>5</td>
+      <td>-ve</td>
+    </tr>
+    <tr>
+      <td>$e_8$</td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>-ve</td>
+    </tr>
+  </tbody>
+  </table>
+  estimate the multinomial model and use maximum likelihood decision rule to classify
+  the new email x = (3,0,1).
+
+
+  \begin{align}
+  P(x|\oplus) = , 1\\
+  P(x|\ominus) = , 2\\
+  \text{The label predicted will be}, 3\\
+  \end{align}
+
+answer_type: blank_answer
+answers:
+  - correctness: "1"
+    answer: "0.03"
+    explanation: "as computed in workings"
+  - correctness: "2"
+    answer: "0.24"
+    explanation: "as computed in workings"
+  - correctness: "3"
+    answer: "-"
+    explanation: "as computed in workings"
+
+workings: |
+  For the multinomial model we will need to sum up the count vectors for each class:
+  \begin{align}
+  +ve : ( 4, 6, 2)\\
+  -ve : ( 16, 2, 9)\\
+  \end{align}
+  We then add a pseudo-count for each word to dmooth the probability estimates. This
+  gives a total of 15 word occurences for the positives and 30 word occurences for
+  the negative class which gives the fallowing parameters estimates:
+  \begin{align}
+  theta \oplus = (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
+  theta \ominus = (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
+  \end{align}
+  Next we need to calculate $argmax_y P(X=x|Y=y):$
+  \begin{align}
+  P(x|\oplus) = 4! \frac{0.33{3}}{3!} \frac{0.47{0}}{0!} \frac{0.2{1}}{1!} = 0.03 \\
+  P(x|\ominus) = 4! \frac{0.57{3}}{3!} \frac{0.1{0}}{0!} \frac{0.33{1}}{1!} = 0.24 \\
+  \end{align}
+
+
+
+hint: |
+  <p>
+  For a specific e-mail x we calculate both
+  \begin{align}
+  P(X=x|Y=\oplus) \\
+  P(X=x|Y=\ominus) \\
+  \end{align}
+  and apply the makimum likelihood decision rule
+  \begin{align}
+  \text{predict }argmax_y P(X=x|Y=y) \\
+  \end{align}
+  </p>
+
+comments: |
+  The task assess the knowledge of using a naive Bayes multinomial model for classifying
+  new data relying on prior evidence
