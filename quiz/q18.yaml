@@ -45,8 +45,16 @@ workings: |
 hint: |
   Bagging is good for reducing variance and boosting for reducing bias.
 comments: |
+  <p>
   Tests the student's knowledge of which models are suitable for bagging
   or boosting.
-  <br>
+  </p>
+
+  <p>
   Since this is relatively straightforward with little complexity and no
   calculation it scores a difficulty of 2.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

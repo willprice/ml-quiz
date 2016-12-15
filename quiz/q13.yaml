@@ -539,9 +539,17 @@ comments: |
 hint: |
   On what condition does the perceptron algorithm terminate?
 comments: |
+  <p>
   Tests the student's knowledge of training a perceptron model in dual
   form, replacing the dot product in a linear model with a kernel. The
   diagram tries to through the student off by visualising demonstrating
   the data is not linearly separable.
-  <br />
+  </p>
+
+  <p>
   Complexity 4 because kernels are starred material.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

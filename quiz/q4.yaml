@@ -314,10 +314,17 @@ hint: |
   Blah
 
 comments: |
+  <p>
   Tests the student's knowledge of neural networks and the circuit
   interpretation of backpropagation.
+  </p>
 
-  <br />
+  <p>
   Complexity 5 because it is out the scope of the book and requires
   both calculation, and insight to derive the derivative of
   $\sigma(x)$ in terms of itself
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

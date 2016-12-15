@@ -103,10 +103,18 @@ hint: |
   Try to derive them in terms of the individual elements of the
   contingency table.
 comments: |
+  <p>
   Tests the student's knowledge of contingency tables: what does each
   cell mean, how are the marginals calculated. It also tests the
   definitions of precision and false positive rate in terms of true
   positives, true negatives, and false positives.
-  <br>
+  </p>
+
+  <p>
   The additional twist of solving with simultaneous equations bumps
   the complexity up from a 2 to 3.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

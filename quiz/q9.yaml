@@ -116,7 +116,15 @@ hint: |
   what would happen if a rule covered all of those examples, which class
   would you predict? 
 comments: |
+  <p>
   Tests the student's knowledge of how to use rule sets to predict the
   class of a new instance, and what to do when those rules disagree
-  <br>
+  </p>
+
+  <p>
   Complexity 3 because it is not a straight forward prediction.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

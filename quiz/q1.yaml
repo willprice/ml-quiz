@@ -83,9 +83,15 @@ hint: |
   First plot the data then see whether you can visually identify the
   points that are closest.
 comments: |
+  <p>
   Tests the student's knowledge of training and using a KNN model.
-  <br>
+  </p>
 
+  <p>
   Since the student has to both train and test using classifier, a
   fair amount of calculation, this question scores a 3 in difficulty.
+  </p>
 
+  <p>
+  Author: Will Price
+  </p>

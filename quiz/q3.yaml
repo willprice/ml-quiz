@@ -318,10 +318,17 @@ hint: |
   Enumerate the possible conjunctive hypotheses and count how many
   positive and negative examples are covered
 comments: |
+  <p>
   Tests the student's knowledge of conjunctive concepts, how to form
   the hypothesis space of conjunctive concepts, the definitions of
   complete and consistent hypotheses and version space.
-  <br>
+  </p>
+
+  <p>
   Complexity 3 because it involves enumerating the hypothesis space
   then building some sets of hypotheses based on definitional knolwedge.
+  </p>
 
+  <p>
+  Author: Will Price
+  </p>

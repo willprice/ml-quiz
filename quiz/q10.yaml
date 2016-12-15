@@ -121,8 +121,16 @@ hint: |
   probability you want to find and then think about what rules you can
   use to find this.
 comments: |
+  <p>
   Tests the student's ability to derive events and probabilities from
   English prose, then formulate a target probability which can be
   derived using Bayes rule.
-  <br>
-  Complexity 2 because
+  </p>
+
+  <p>
+  Complexity 2 because this is quite straight forward Bayes' rule question 
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>
