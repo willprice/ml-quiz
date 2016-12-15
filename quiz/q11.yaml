@@ -5,14 +5,15 @@ images:
     caption: Coverage Plots
   - url: img/cvplot_2.jpg
     caption: Coverage Plots
-difficulty: "2"
+difficulty: "3"
 reference: "4.1"
 problem_type: evaluation
 source: "https://mlbook.cs.bris.ac.uk/"
 question: |
   <p>
-  Given the fallowing hyphothesis space and the below table of instances belonging
-  to 2 different species of fish, associate each red colored path with its
+  Given the following conjunctive concept hypothesis space representing
+  concepts for categorising fish by species and the table of fish below,
+  match each coloured path through the hypothesis space with its
   corresponding coverage plot.
   </p>
 
@@ -53,89 +54,218 @@ question: |
   </table>
 
   <p>
-  Each level of the hypothesis space will labelled as fallows for
-  representation purposes: the most general generalisation with 1 to the
-  least general generalisation labbeled with 4.
+  Each level in the hypothesis space is labelled from top to bottom from 1 to 4.
   </p>
-
-  <p>
-  Fallowing this find the most general consistent hyphotesis using the
-  MGConsistent(C,N) algorithm and output the label of that node given that
-  they are labelled in ascending order form the most general hypothesis to
-  the least general one, from left to right.
-  </p>
-  <p>
-  (eg.The most general hypothesis will be labelled as 1.)
-  </p>
-
 answer_type: matrix_sort_answer
 answers:
-  - correctness: "Path 1 corresponds to"
-    answer: "cover plot 3"
+  - correctness: Path 1
+    answer: Coverage plot 3
     explanation: Associated cover plot
-  - correctness: "Path 2 corresponds to"
-    answer: "cover plot 4"
+  - correctness: Path 2
+    answer: Coverage plot 4
     explanation: Associated cover plot
-  - correctness: "Path 3 corresponds to"
-    answer: "cover plot 2"
+  - correctness: Path 3
+    answer: Coverage plot 2
     explanation: Associated cover plot
-  - correctness: "Path 4 corresponds to"
-    answer: "cover plot 1"
+  - correctness: Path 4
+    answer: Coverage plot 1
     explanation: Associated cover plot
 
 workings: |
   <p>
-  Concept learning can be seen as the search for the most optimal path through
-  the hypothesis space. Therefore, we are concerned of the most general hypothesis
-  that best separates the postive instances from the negatives ones.
-  </p>
-  <p>
-  To aid our understanding of each path separability of the data we dispalyed
-  their ROC curves by fallowing each path in the hypothesis space from the
-  least general generalisation to the most general one, the empty concept.
-  That means that each path's corresponding coverage plot will customary pass
-  through ROC buttom in the case of not covering any examples and ROC heaven
-  in the case of an empty concept.
-  </p>
-  <p>
-  The task will require taking each sample and classifying it using each hypothesis.
-  In the end we will count the number of positives and negatives that are classified
-  by each logical expression in the hypothesis space and for each path we will
-  represent those values using a ROC curve where the most general hypothesis will
-  be found in ROC heaven.
+  A path through hypothesis space corresponds to a coverage curve.
+  Starting at the most specialised concept and terminating at the empty
+  concept we count examples of each class that are covered by the
+  current hypothesis until reaching the root of the lattice.
   </p>
 
   <p>
-  Taking as an example Path 1 we start from the logical expression
-  length = 3 & weight=5 & scales =many that classifies 0+ and 0- and
-  represent it at the origin of our coverage curve. Then we move on to its
-  upper bound length = 3 & scales=many that classifies 0+ 1- misslabelling
-  n1 as being positive and so on untill we reach the hypothesis that is
-  represented as ROC heaven.
+  Once the hypotheses along the path have been traversed and the
+  examples covered counted, we can draw the coverage plots.
+  </p>
+
+  <table>
+     <tr>
+        <th rowspan="2">Rule id</td>
+        <th colspan="3">Concept</td>
+        <th rowspan="2">#pos covered</td>
+        <th rowspan="2">#neg covered</td>
+        <th rowspan="2">Path</td>
+     </tr>
+     <tr>
+        <td>Length</td>
+        <td>Weight</td>
+        <td>Scales</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>3</td>
+        <td>3</td>
+        <td>1,2,3,4</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>5</td>
+        <td>many</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>-</td>
+        <td>many</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>4</td>
+        <td>3</td>
+        <td>-</td>
+        <td>-</td>
+        <td>2</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>5</td>
+        <td>3</td>
+        <td>5</td>
+        <td>few</td>
+        <td>1</td>
+        <td>0</td>
+        <td>2</td>
+     </tr>
+     <tr>
+        <td>6</td>
+        <td>3</td>
+        <td>5</td>
+        <td>-</td>
+        <td>1</td>
+        <td>0</td>
+        <td>2</td>
+     </tr>
+     <tr>
+        <td>7</td>
+        <td>3</td>
+        <td>-</td>
+        <td>-</td>
+        <td>2</td>
+        <td>1</td>
+        <td>2</td>
+     </tr>
+     <tr>
+        <td>8</td>
+        <td>4</td>
+        <td>5</td>
+        <td>many</td>
+        <td>0</td>
+        <td>0</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>9</td>
+        <td>4</td>
+        <td>5</td>
+        <td>-</td>
+        <td>1</td>
+        <td>0</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>10</td>
+        <td>-</td>
+        <td>5</td>
+        <td>-</td>
+        <td>2</td>
+        <td>0</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>11</td>
+        <td>4</td>
+        <td>5</td>
+        <td>few</td>
+        <td>1</td>
+        <td>0</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>12</td>
+        <td>4</td>
+        <td>-</td>
+        <td>few</td>
+        <td>1</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>13</td>
+        <td>-</td>
+        <td>-</td>
+        <td>few</td>
+        <td>3</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+  </table>
+
+  <p>
+  We will reference hypotheses using the Rule Id in the table above to
+  save having to repetitiously write them out!
   </p>
 
   <p>
-  As a method to check our results, we can notice that while adding extra
-  specialisation our samples will also decrease in their number as the hypothesis
-  will become stricter.
+  A coverage curve is produced by traversing a path from the least
+  general hypothesis to most general. Initially a point at $(0,0)$ is added,
+  For each hypothesis traversed, a point for the number of positive and
+  negative examples covered is added. Finally the default rule covers
+  all examples so a point is added $(\#Pos, \#Neg)$
   </p>
 
+  <p>
+  For Path 1, the least general hypothesis, rule 2, covers no examples,
+  so we add a point at $(0, 0)$, the next hypothesis, rule 3, covers 1
+  negative example, so we add a point at $(1, 0)$, next the rule 4
+  covers 2 positives and 1 negative (the same one the previous rule
+  covered), we add a point $(2, 1)$, finally the default rule, rule 1,
+  covers all positive and negative examples so a point at $(3, 3)$ is
+  added. The coverage plot we have produced corresponds exactly to
+  coverage plot 3.
+  </p>
+
+  <p>
+  Path 2 gives the coverage curve: $(0, 0) - (0, 1) - (1, 2) - (3, 3)$
+  </p>
+
+  <p>
+  Path 3 gives the coverage curve: $(0, 0) - (0, 1) - (0, 2) - (3, 3)$
+  </p>
+
+  <p>
+  Path 4 gives the coverage curve: $(0, 0) - (0, 1) - (1, 1) - (1, 3) - (3, 3)$
+  </p>
 
 hint: |
   <p>
-  The task will require taking each sample and classifying it using the hypothesis
-  space. Ouputing each hypotesis number of true and false positives will
-  later aid the conversion of each path's results to the corresponding ROC curve in
-  order to visualise their accuracy.
+  For each hypothesis on a path count the number of positives and
+  negatives covered, how can this be used to construct a coverage plot?
   </p>
 
 comments: |
-  The task in hand requires acknowledging the ability of concept learning to
-  identify an optimal path through the hypothesis space. Therefore, we test
-  the ability of assesing the accuracy of different hypothesis using as
-  their reprsentations ROC curves and given labbelled examples.
-  <br>
-  Moreover, as finding more general consistent hypothesis is considerably
-  more involved than finding least general complete ones, we also tested the
-  ability of using the MGConsistent(C,N) algorithm to find the most general
-  consistent specialisations of a concept.
+  <p>
+  This question tests the students ability to derive coverage plots from
+  paths through a hypothesis lattice.
+  </p>
+
+  <p>
+  This question requires a reasonable amount of work, the student must
+  first calculate the instances covered by each hypothesis and then use
+  this information to construct a coverage plot
+  </p>
