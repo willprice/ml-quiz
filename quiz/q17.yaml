@@ -1,46 +1,165 @@
 images:
-  - url: img/bn-example.png
+  - url: img/bayes-balls/bayesian-network.png
     caption: "Fig 1: Bayesian (Belief) Network"
 problem_type: problem-solving
 difficulty: "5"
-reference: "3.3"
-source: "URL"
+reference: "0"
+source: "http://mlg.eng.cam.ac.uk/zoubin/course04/BayesBall.pdf"
 question: |
   <p>
   Bayesian Networks (BNs) graphically model the conditional dependence
   and independence of events. A BN is modelled as a directed acyclic
-  graph (DAG) where each node represents and event, and a directed edge
-  from node A to node B denotes that A is conditionally dependent upon
+  graph (DAG) where each node represents an event, a directed edge
+  from node A to node B denotes the conditional dependence of A upon
   B.
   </p>
 
   <p>
-  Select the BNs that make the same conditional independence assumptions
-  as the BN in Fig 1.
+  Each BN represents a class of probability distributions with certain
+  conditional independence properties. A distribution can be realised by
+  associating a conditional probability table with each node in the graph.
+  </p>
+
+  <p>
+  BNs can be used to model scenarios involving multiple random
+  variables. Random variables become nodes and edges represent
+  conditional dependence.  Once formulated, a network can be analysed to
+  find out whether two sets of variables $X_a, X_b$ are conditionally
+  independent conditioned upon a set of variables $X_c$, this is denoted
+  $X_a \cind X_b | X_c$.
+  </p>
+
+  <p>
+  $x_1$ is independent of $x_2$ conditioned on $x_3$ providing $x_1$ and
+  $x_2$ are <b>d-separated</b> by $x_3$. d-separation is a property of
+  three sets of nodes expressing certain properties about paths.
+  </p>
+
+  <b>Baye's Ball</b> is a method of determining d-separation, and hence
+  whether $X_a \cind X_b | X_c$
+  </p>
+
+  <p>
+  Using the Bayes-Ball algorithm determine whether the following
+  statements are true
   </p>
 answer_type: multiple
 answers:
-  - correctness: '+'
-    answer: |
-      <img src="img/bn-1.png" />
-    explanation: See the workings for derivation
-  - correctness: '+'
-    answer: |
-      <img src="img/bn-2.png" />
-    explanation: See the workings for derivation
   - correctness: '-'
     answer: |
-      <img src="img/bn-3.png" />
-    explanation: See the workings for derivation
-  - correctness: '-'
+      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$
+  - correctness: '+'
     answer: |
-      <img src="img/bn-4.png" />
-    explanation: See the workings for derivation
+      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_2, x_7}, X_c = {x_3, x_8}$
+    explanation: |
+      <p>
+      Path from $x_1$ to $x_2$: $x_1 - x_3 - x_2$
+      </p>
+      <p>
+      Path from $x_1$ to $x_7$: $x_1 - x_3 - x_2 - x_4 - x_5 - x_7$
+      </p>
+  - correctness: '+'
+    answer: |
+      $X_a \cind X_b | X_c$ where $X_a = {x_3, x_7}, X_b = {x_5, x_8}, X_c = {x_4}$
+    explanation: |
+      <p>
+      Path from $x_3$ to $x_8$: $x_3 - x_2 - x_4 - x_6 - x_8$
+      </p>
+      <p>
+      Path from $x_7$ to $x_5$: $x_7 - x_5$
+      </p>
 workings: |
-  Working
+  <div style="display:none">
+  $
+  \(
+    \newcommand\cind{\bot}
+  \)
+  $
+  </div>
+
+  <p>
+  To prove a statement $X_a \cind X_b | X_c$, the Bayes-Ball algorithm
+  plants a ball at each of the nodes in $X_a$, shades the nodes in $X_c$
+  then using rules derived from canonical graphs determines whether any
+  ball can reach a node in $X_b$, if no ball can reach any node in $X_b$, then the
+  statement holds.
+  </p>
+
+  <p>
+  The following table shows the rules for determining whether a Bayes
+  ball can traverse a given node given the context of the node (it's neighbours).
+  Nodes that are conditioned are in orange/yellow. A purple arrow from
+  $x_1$ to $x_2$ denotes the conditional dependence of $x_2$ on $x_1$.
+  The green arrows denote the travel of the Bayes ball, if a ball cannot
+  pass a node, the arrow is terminated with a vertical line.
+  </p>
+
+  <table>
+  <tr>
+  <td>Rule number</td>
+  <td>Rule</td>
+  <td>Dual conditioned rule</td>
+  </tr>
+
+  <tr>
+  <td>1</td>
+  <td><img width="200" alt="Bayes Balls rule 1" src="img/bayes-balls/rule-1.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 1 (conditioned)" src="img/bayes-balls/rule-1-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>2</td>
+  <td><img width="200" alt="Bayes Balls rule 2" src="img/bayes-balls/rule-2.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 2 (conditioned)" src="img/bayes-balls/rule-2-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td><img width="200" alt="Bayes Balls rule 3" src="img/bayes-balls/rule-3.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 3 (conditioned)" src="img/bayes-balls/rule-3-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>4</td>
+  <td><img width="200" alt="Bayes Balls rule 4" src="img/bayes-balls/rule-4.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 4 (conditioned)" src="img/bayes-balls/rule-4-conditioned.png"></td>
+  </tr>
+  </table>
+
+  <p>
+  $$X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$$
+
+  </p>
+
+  <table>
+    <tr>
+      <td><img width="300" alt="Q1 paths" src="img/bayes-balls/bayesian-network-q1.png"></td>
+      <td><img width="300" alt="Q2 paths" src="img/bayes-balls/bayesian-network-q2.png"></td>
+      <td><img width="300" alt="Q3 paths" src="img/bayes-balls/bayesian-network-q3.png"></td>
+    </tr>
+    <tr>
+      <td>Q1 paths starting from $X_a$</td>
+      <td>Q2 paths starting from $X_a$</td>
+      <td>Q3 paths starting from $X_a$</td>
+    </tr>
+  </table>
 hint: |
-  Blah
+  Write down the Bayes-ball node traversal rules and then begin applying
+  them from nodes in $X_a$. When can you conclude whether the two sets
+  are conditionally independent based on the node traversal?
 comments: |
-  Tests the student's knowledge of b
-  <br>
-  Complexity 5 because
+  <p>
+  Tests the student's knowledge of Bayesian Networks, what they
+  represent and how to determine whether two sets of variables are
+  conditionally independent on another set of variables using Bayes-Ball.
+  </p>
+
+  <p>
+  Complexity 5 because Bayesian networks aren't covered and there is a
+  lot of prerequisite knowledge necessary to be able to complete this
+  question.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>
