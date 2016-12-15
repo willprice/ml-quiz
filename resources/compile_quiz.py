@@ -7,7 +7,7 @@ import re
 import sys, os, shutil
 import json
 import argparse
-import tarfile
+import zipfile
 from html_templates import questionCategories,questionTemplate,quizTemplate
 from html_templates import singleTemplate
 from html_templates import sortTemplate
@@ -912,11 +912,11 @@ if __name__ == '__main__':
   # small p - based on big O ordering
   if args.peter:
     print "Entering Peter's special mode #1"
-    quiz_archives = [i for i in os.listdir(rootDir) if '.tar.gz' in i.lower()]
+    quiz_archives = [i for i in os.listdir(rootDir) if '.zip' in i.lower()]
     os.makedirs(rootDir+'special')
     for i in quiz_archives:
-      with tarfile.open(i, mode='r:gz') as f:
-        f.extractall(path=rootDir+'special')
+      with zipfile.ZipFile(i, 'r') as f:
+        f.extractall(rootDir+'special')
 
     # iframe
     quizs = [i for i in os.listdir(rootDir+'special') if '.quiz' in i.lower()]
@@ -1009,21 +1009,23 @@ if __name__ == '__main__':
         for line in quiz_file:
           quiz_img_r.write(line.replace('img/', 'img/'+'_'.join(uid)+'/'))
 
-    with tarfile.open('_'.join(uid)+".tar.gz", mode='w:gz') as f:
+    with zipfile.ZipFile('_'.join(uid)+".zip", 'w', zipfile.ZIP_DEFLATED) as f:
       # generate master copy - 1:1
       for i in qfilenames:
-        f.add(i, arcname='1to1/'+'_'.join(uid)+i[1:])
-      f.add(quizFilename[:-5]+"_iFrame.html", arcname='1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename)[:-5]+"_iFrame.html")
-      f.add(quizFilename, arcname='1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename))
-      f.add(rootDir+'img', arcname='1to1/'+'_'.join(uid)+'/img')
+        f.write(i, '1to1/'+'_'.join(uid)+i[1:])
+      f.write(quizFilename[:-5]+"_iFrame.html", '1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename)[:-5]+"_iFrame.html")
+      f.write(quizFilename, '1to1/'+'_'.join(uid)+'/'+os.path.basename(quizFilename))
+      for imfile in os.listdir(rootDir+'img'):
+        f.write(rootDir+'img/'+imfile, '1to1/'+'_'.join(uid)+'/img/'+imfile)
 
       # copy images into img/uid/*
-      f.add(rootDir+'img', arcname='img/'+'_'.join(uid))
+      for imfile in os.listdir(rootDir+'img'):
+        f.write(rootDir+'img/'+imfile, 'img/'+'_'.join(uid)+'/'+imfile)
       # copy and rename .quiz - alter img paths
-      f.add(quizFilename[:-5]+'_imgCdV', arcname='_'.join(uid)+'.quiz')
+      f.write(quizFilename[:-5]+'_imgCdV', '_'.join(uid)+'.quiz')
 
     os.remove(quizFilename[:-5]+'_imgCdV')
-    print "\nPlease submit *", '_'.join(uid)+".tar.gz", "* file"
+    print "\nPlease submit *", '_'.join(uid)+".zip", "* file"
     sys.exit(0)
 
   if args.order:
