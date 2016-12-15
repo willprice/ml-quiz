@@ -1,0 +1,164 @@
+images: []
+difficulty: "3"
+reference: "10.2"
+problem_type: calculation
+source: "https://mlbook.cs.bris.ac.uk/"
+question: |
+  $Agglomerative merging$
+  <br>
+  Given the set of labelled instances:
+
+  \begin{align}
+  \oplus \oplus \ominus \oplus \oplus \oplus \ominus \ominus \oplus \ominus\\
+  \end{align}
+
+  perform supervised discretisation by means of aglomerative merging with Q being
+  the $X{2}$ statistic scoring function ( chi square statistic function) and with
+  the stoping criterion of having in the end only 3 bins.
+
+  If we start with:
+  \begin{align}
+  |\oplus |\oplus |\ominus |\oplus |\oplus |\oplus |\ominus |\ominus |\oplus |\ominus|\\
+  \end{align}
+  what are the numbers of delimitars that will dissapear during the merging process?
+  <br>
+  (e.g they range from the first one labelled 1 to tha last one labelled 11)
+
+
+answer_type: multiple
+answers:
+  - correctness: "-"
+    answer: "3, 4"
+  - correctness: "-"
+    answer: "7, 9"
+  - correctness: "+"
+    answer: "5, 6"
+    explanation: "as computed in workings"
+  - correctness: "+"
+    answer: "8"
+    explanation: "as computed in workings"
+  - correctness: "+"
+    answer: "9, 10"
+    explanation: "as computed in workings"
+
+workings: |
+
+  Fallowing the algorithm:
+
+  <pre>
+  <code class="python">
+  AggloMerge(S, f, Q)
+
+  Input: set of labelled instances S ranked on features values f(x);scoring function Q.
+  Output: sequences of threshold.
+
+  initialise bins to data points with the same scores;
+  merge consecutives pure bins;
+  repeat
+    evaluate Q on consecutive bin pairs;
+    merge the pairs with best Q (unless they invoke the stopping criterion);
+  untill no futher merges are possible;
+  return thresholds between bins;
+  </code>
+  </pre>
+
+  we will start out with the beans:
+  \begin{align}
+  |\oplus |\oplus |\ominus |\oplus |\oplus |\oplus |\ominus |\ominus |\oplus |\ominus|\\
+  \end{align}
+  and then merge the consecutives pure bins as:
+  \begin{align}
+  |\oplus \oplus |\ominus |\oplus \oplus \oplus |\ominus \ominus |\oplus |\ominus|\\
+  \end{align}
+
+  The fallowing step will be to evaluate the consecutives bin using the $X{2}$ statistic.
+  <br>
+  To ease our competition we will introduce the next method do compute the $X{2}$ score.
+  <br>
+  Given the fallowing contingency table:
+    <table>
+    <thead>
+      <tr>
+        <th> </th>
+        <th>Left bin</th>
+        <th>Right bin</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>$\oplus$</td>
+        <td>a</td>
+        <td>b</td>
+        <td>a + b</td>
+      </tr>
+      <tr>
+        <td>$\ominus$</td>
+        <td>c</td>
+        <td>d</td>
+        <td>c + d</td>
+      </tr>
+      <tr>
+        <td> </td>
+        <td>a + c</td>
+        <td>b + d</td>
+        <td>a + b + c + d</td>
+      </tr>
+    </tbody>
+    </table>
+    then
+    \begin{align}
+    X{2} = \frac{(ad - bc){2} (a + b + c + d)}{(a + b)(c + d)(a + c)(b + d)} \\
+    \end{align}
+
+    So applying the above method to our example we will obtain:
+    \begin{align}
+    X{2}(1,2) = \frac{2{2}*3}{2*2} = 3;\\
+    X{2}(2,3) = \frac{(-3){2}*4}{3*3} = 4; \\
+    X{2}(3,4) = \frac{6{2}*5}{2*2*3*3} = 5;\\
+    X{2}(4,5) = \frac{(-2){2}*3}{2*2} = 3;\\
+    X{2}(5,6) = \frac{1*2}{1} = 2;\\
+    \end{align}
+
+    This tell us that the fifth and sixth bins are first to be merged, leading to:
+    \begin{align}
+    |\oplus \oplus |\ominus |\oplus \oplus \oplus |\ominus \ominus |\oplus \ominus|\\
+    \end{align}
+    We then recompute the $X{2}$ values, in fact only those involving the newly
+    merged bins need to be re-computed:
+    \begin{align}
+    X{2}(1,2) = \frac{2{2}*3}{2*2} = 3; (already computed)\\
+    X{2}(2,3) = \frac{(-3){2}*4}{3*3} = 4; (already computed)\\
+    X{2}(3,4) = \frac{6{2}*5}{2*2*3*3} = 5;(already computed)\\
+    X{2}(4,5) = \frac{(1-2){2}*4}{2*2*3} = 0.3; (re-computed)\\
+    \end{align}
+    to conclude that this time we will merge the fourth and fifth bins into:
+    \begin{align}
+    |\oplus \oplus |\ominus |\oplus \oplus \oplus |\ominus \ominus \oplus \ominus|\\
+    \end{align}
+
+    We then recompute the $X{2}$ values:
+    \begin{align}
+    X{2}(1,2) = \frac{2{2}*3}{2*2} = 3; (already computed)\\
+    X{2}(2,3) = \frac{(-3){2}*4}{3*3} = 4; (already computed)\\
+    X{2}(3,4) = \frac{(9-1){2}*7}{3*3*4*4} = 3.11;(re-computed)\\
+    \end{align}
+    so we will merge the first and the second bins obtaining:
+    \begin{align}
+    |\oplus \oplus \ominus |\oplus \oplus \oplus |\ominus \ominus \oplus \ominus|\\
+    \end{align}
+    and stop according to our stoping condition.
+
+
+
+hint: |
+  Make use of the AggloMerge(S, f, Q) algorithm to perform the supervised discreditation
+  by means of aglomerative merging.
+
+comments: |
+  Tests the students knowledge to improve the utility of features using means of
+  feature transformations.
+  <br>
+  Problem of complexity 3 because of the introduction of the chi square statistic
+  as a scoring function on the basis of the AggloMerge algorithm described on page
+  312 in the Machine Learning book by Peter Flach.
