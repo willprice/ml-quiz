@@ -5,7 +5,7 @@ problem_type: training
 source: "https://mlbook.cs.bris.ac.uk/"
 question: |
   <p>
-  Given the fallowing instance space :
+  Given the following instance space :
 
   <table>
   <thead>
@@ -66,7 +66,7 @@ question: |
   </p>
   <p>
   Moreover, in order to deal with nosiy data we will establish our stopping
-  criteria as fallows: a homogeneous set of data will be considered the ones that have
+  criteria as follows: a homogeneous set of data will be considered the ones that have
   the proportion of positives at least twice than the negatives(exception being
   the case when we have 0 negatives).
   </p>
@@ -118,7 +118,7 @@ workings: |
   ordered list when we were eliminating all instances covered including the
   negatives ones. Moreover, in LeranRuleForClass we will now assess the best
   literals on only the respective class instances while also labelling the head
-  of the rule with the positive class as fallows:.
+  of the rule with the positive class as follows:.
   </p>
 
   <pre>
@@ -158,7 +158,7 @@ workings: |
   5+ 5- using all individual possible literals obtaining:
   $$
   \begin{align}
-  [5+, 5-] distributed as fallows:\\
+  [5+, 5-] distributed as follows:\\
   Length = 3 -> [2+, 0-]\\
   Length = 4 -> [1+, 3-]\\
   Length = 5 -> [0+, 2-]\\
@@ -180,10 +180,10 @@ workings: |
 
   <p>
   While in the second case the iteration will stop, in the first one we will have next
-  the fallowing:
+  the following:
   $$
   \begin{align}
-  [3+, 5-] distributed as fallows:\\
+  [3+, 5-] distributed as follows:\\
   Length = 4 -> [1+, 3-]\\
   Length = 5 -> [2+, 2-]\\
   Gills = yes -> [0+, 4-]\\
@@ -213,7 +213,7 @@ workings: |
   classifying every example correctly and therefore having the accuracy of 1.
   However, in the second case we will classify all positives, but we will alos
   have one false positive the accuracy being therefore equal to 9/10 = 0.9 where
-  the accuracy definition is as fallows:
+  the accuracy definition is as follows:
   </p>
   <br>
   $$

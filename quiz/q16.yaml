@@ -5,7 +5,7 @@ problem_type: calculation
 source: "https://mlbook.cs.bris.ac.uk/"
 question:
   <p>
-  Considering the fallowing data points
+  Considering the following data points
   \begin{align}
   (2, 3, 2) (1, 4, 3) (0, 2, 3) (-1, 3, -1) (-2, 2, -2) (0, 0, -2)\\
   \end{align}
@@ -42,7 +42,7 @@ workings: |
   </p>
   <p>
   Even if visually it is easy to identify the clusters that will predict two different
-  classes, an automatated distance-based cluster will have to fallow the fallowing
+  classes, an automatated distance-based cluster will have to follow the following
   KMeans algorithm:
   </p>
 
@@ -74,7 +74,7 @@ workings: |
   <p>
   We will then proceed to partition the given data D into K subsets and let q{i}
   denote the mean of a cluster D{i}. Let S{j} be the scatter matrices of D{j} having
-  the fallowing relationship:
+  the following relationship:
   </p>
 
   \begin{align}
@@ -84,7 +84,7 @@ workings: |
   scatter matrix and describes the spread of the cluster centroids.
 
   <p>
-  Therefore, we can next compute the cluster means as fallows:
+  Therefore, we can next compute the cluster means as follows:
   </p>
 
   <ul>

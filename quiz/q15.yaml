@@ -4,7 +4,7 @@ reference: "7.1"
 problem_type: training
 source: "https://mlbook.cs.bris.ac.uk/"
 question: |
-  Given the fallowing instance table:
+  Given the following instance table:
   <table>
   <thead>
     <tr>
@@ -100,7 +100,7 @@ workings: |
   </p>
 
   <p>
-  Therefore having the fallowing polynomial definition of the fitting line:
+  Therefore having the following polynomial definition of the fitting line:
   \begin{align}
   y = a_0 +a_1x + a_2x{2}\\
   \end{align}
@@ -136,7 +136,7 @@ workings: |
   \end{pmatrix}$$.
 
   <p>
-  To solve the least squares we will use the fallowing deductions:
+  To solve the least squares we will use the following deductions:
 
   \begin{align}
   \text{minimise } R(a) = ||y - Xa_L||{2} => ||y - Xa_L||{2} =0 => y - Xa_L = 0 =>
@@ -151,7 +151,7 @@ workings: |
   <br>
   $(1,1) (3,2) (5,2) (6,4) (7,4) (8,3) (9,4) (10,5)$
   <br>
-  we will constuct the fallowing matrices:
+  we will constuct the following matrices:
   </p>
 
   $$\mathbf{y} =
@@ -276,7 +276,7 @@ workings: |
   </p>
 hint: |
   <p>
-  Generalise the definition of the linear function to be under the fallowing form
+  Generalise the definition of the linear function to be under the following form
   $y = a_0 +a_1x + a_2x{2}$. Then compute the slope and the y-intercept trying to
   minimise the residual.
   </p>

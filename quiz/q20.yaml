@@ -71,11 +71,11 @@ workings: |
   |\oplus \oplus |\ominus |\oplus \oplus \oplus |\ominus \ominus |\oplus |\ominus|\\
   \end{align}
 
-  The fallowing step will be to evaluate the consecutives bin using the $X{2}$ statistic.
+  The following step will be to evaluate the consecutives bin using the $X{2}$ statistic.
   <br>
   To ease our competition we will introduce the next method do compute the $X{2}$ score.
   <br>
-  Given the fallowing contingency table:
+  Given the following contingency table:
     <table>
     <thead>
       <tr>

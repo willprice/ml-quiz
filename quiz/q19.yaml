@@ -4,7 +4,7 @@ reference: "9.2"
 problem_type: calculation
 source: "https://mlbook.cs.bris.ac.uk/"
 question:
-  Considerin the fallowing data set describing emails using count vectors for a
+  Considerin the following data set describing emails using count vectors for a
   three word vocabulary
 
   <table>
@@ -106,7 +106,7 @@ workings: |
   \end{align}
   We then add a pseudo-count for each word to dmooth the probability estimates. This
   gives a total of 15 word occurences for the positives and 30 word occurences for
-  the negative class which gives the fallowing parameters estimates:
+  the negative class which gives the following parameters estimates:
   \begin{align}
   theta \oplus = (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
   theta \ominus = (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
