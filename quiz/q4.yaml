@@ -16,14 +16,14 @@ source: "https://cs231n.github.io/optimization-1/"
 question:
   - |
     <p>
-    Neural networks (NNs) are a versatile of model used to great success
-    in many different domains. A neural network is a directed graph of
-    nodes and edges. Nodes (neurons), either represent inputs or compute
-    some function of their inputs. Edges represent connections between
-    adjacent neurons, they have a weight associated with them. Most
-    neurons compute the weighted sum of their inputs followed by a
-    non-linear function application (such as the $\sigma$, or
-    $\tanh$ function.
+    Neural networks (NNs) are a class versatile models used to great
+    success in many different domains. A neural network is a directed
+    graph of nodes and edges. Nodes (neurons), either represent inputs
+    to the model or compute some function of their inputs. Edges
+    represent connections between adjacent neurons, they have a weight
+    associated with them. Most neurons compute the weighted sum of their
+    inputs followed by a non-linear function application (such as the
+    $\sigma$, or $\tanh$ function).
     </p>
 
     <p>
@@ -42,9 +42,11 @@ question:
     leading to a very complex gradient function, however the chain rule
     means we can decompose this into a series of simple calculations
     evaluating the derivative of the output of each neuron with respect
-    to its input, these can then be combined to through successive
+    to its input, these can then be combined through successive
     multiplications to calculate the change in loss with respect to a
-    specific weight.
+    specific weight (see <a
+    href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic
+    differentiation</a>).
     </p>
 
     <p>
@@ -71,8 +73,8 @@ question:
     <p>
     The network in Fig 1 has been redrawn as a circuit in Fig 2. Forward
     propagation is accomplished by applying the function specified in
-    the neuron to its inputs, the calculations necessary to compute the
-    output of each neuron are specified on the arrow between adjacent
+    the node to its inputs, the calculations necessary to compute the
+    output of each node are specified on the arrow between adjacent
     neurons. For the initial weights values $(w_1, w_2, w_3) = (2, -3,
     -3)$, and training example $(x_1, x_2) = (-1, -2)$, compute the
     top labelled values (those computed during forward propagation) in
@@ -107,12 +109,12 @@ question:
     Having got a feel for how forward propagation works, we'll now
     show you how to backpropagate. When training the network we need
     some way of quantifying the difference in predicted output to the
-    ground truth. Loss functions are used to compute this difference,
-    some common examples of loss functions include cross-entropy loss; and
-    euclidean loss, the scaled sum of the squared error of each output
-    neuron. Our example only has a single output neuron, so for the
-    sake of simplicity we'll define loss as the difference between the
-    output and the expected output.
+    expected output (ground truth). Loss functions are used to compute
+    this difference, some common examples of loss functions include
+    cross-entropy loss; and euclidean loss, the scaled sum of the
+    squared error of each output neuron. Our example only has a single
+    output neuron, so for the sake of simplicity we'll define loss as
+    the difference between the output and the expected output.
 
     Our goal is to find
     $$\nabla_{w} L = \left[
@@ -317,5 +319,5 @@ comments: |
 
   <br />
   Complexity 5 because it is out the scope of the book and requires
-  both calculation and insight to derive the derivative of
-  $$\sigma(x)$$ in terms of itself
+  both calculation, and insight to derive the derivative of
+  $\sigma(x)$ in terms of itself

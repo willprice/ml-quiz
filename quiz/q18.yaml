@@ -1,0 +1,52 @@
+images: []
+problem_type: problem-solving
+difficulty: "2"
+reference: "11.2"
+source: |
+  Machine Learning (P. Flach): Model ensembles (p 332, 334)
+question: |
+  <p>
+  Order the following learning algorithms from those most applicable to
+  boosting to those most applicable to bagging.
+  </p>
+answer_type: sort
+answers:
+  - correctness: "1"
+    answer: Decision tree stumps
+    explanation: |
+      Decision tree stumps have extremely high bias as they only split
+      on a single feature hence graphically they separate the instance
+      space with an axis parallel decision boundary.
+  - correctness: "2"
+    answer: Linear regression
+    explanation: |
+      Linear regression is high bias due to the simplicity of the model,
+      although it can express more complex decision boundaries than
+      decision tree stumps
+  - correctness: "3"
+    answer: SVM
+    explanation: |
+      SVMs have high bias, similar to that of linear regression, however
+      since a SVM's decision boundary is defined soley by support
+      vectors, it cannot be used with boosting as weights cannot be
+      accounted for with SVMs.
+  - correctness: "4"
+    answer: KNN with small K.
+    explanation: |
+      When K is small KNN produces models with high variance that are
+      prone to overfitting the training data. This model is most suited
+      to bagging
+workings: |
+  The algorithms' bias and variance characteristics are enumerated,
+  those with bias issues are more suitable to boosting providing they
+  support weighted training examples. Bagging helps reduce variance so
+  is suitable for high variance methods and does not require weight
+  training example support.
+hint: |
+  Bagging is good for reducing variance and boosting for reducing bias.
+comments: |
+  Tests the student's knowledge of which models are suitable for bagging
+  or boosting.
+  <br>
+  Since this is relatively straightforward with little complexity and no
+  calculation it scores a difficulty of 2.

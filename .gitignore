@@ -1,5 +1,7 @@
 # Python files
 *.pyc
+**.ropeproject
+**.ipynb_checkpoints
 
 # generated json and index
 ./*.json
