@@ -1,136 +1,147 @@
 images: []
-problem_type: definition
-difficulty: "2"
-reference: "1.2"
-source: "https://arbital.com/p/bayes_rule/"
+difficulty: "3"
+reference: "11.2"
+problem_type: calculation
+source: |
+  Machine Learning: Model ensembles: Boosting
 question: |
-  <p>
-  An air squadron maintain a large number of Apache attack helicopters,
-  it has been reported that the sensor pods on 5% of the helicopters
-  has been malfunctioning. A diagnostics team had been tasked with
-  coming up with a quick test to determine whether a helicopter has
-  malfunctioning sensor pods. You have been asked to determine the
-  efficacy of the test, you decide that an informative statistic to
-  report would be the probability the test is positive (the sensor pods
-  are faulty) given the helicopter has faulty sensor pods.
-  </p>
+  Given the below contingency matrix:
+  <table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Predicted $\oplus$</th>
+      <th>Predicted $\ominus$</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual $\oplus$</td>
+      <td>21</td>
+      <td>19</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Actual $\ominus$</td>
+      <td>13</td>
+      <td>47</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>34</td>
+      <td>66</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+  </table>
+  update the weighted misclassified examples using the error rate and complete
+  the associated contingency table.
 
-  <p>
-  The test is evaluated on a sample of helicopters and you are given the
-  following statistics: 2 of the 30 helicopters without faulty sensor
-  pods test positive, only 1 out of the 40 helicopters with faulty
-  sensor pods tests negative.
-  </p>
 
-  <p>
-  What is the probability that a helicopter has faulty sensor pods given
-  the test result is positive (i.e. says it has faulty sensor pods)
-  </p>
-answer_type: single
+answer_type: cloze_answer
 answers:
-  - correctness: '+'
-    answer: $0.44$
-    explanation: See the workings for derivation
-  - correctness: '-'
-    answer: $0.98$
-  - correctness: '-'
-    answer: $0.93$
-  - correctness: '-'
-    answer: $0.11$
+  answer:
+    - "17 | 29  | 46"
+    - "------------"
+    - "20 | 34 | 54"
+    - "------------"
+    - "37 | 63 | 100"
+  explanation: |
+    multiply misclassified examples with 1/(2*e) and correctly classified examples
+    with 1/(2*(1-e))
+
+
 workings: |
-  <p>
-  The first step when given a problem like this is to condense the
-  information provided into a table
-  </p>
-
-
-  <p>
-  Defining relevant events:
-  </p>
-
-  <ul>
-    <li>$F = \text{Helicopter has faulty sensor pod}$</li>
-    <li>$R = \text{Helicopter has a positive test result}$</li>
-  </ul>
-
-  <p>
-  Helicopter population information
-  </p>
-  <table>
-    <thead>
-        <tr><td>Working sensor pods</td><td>Faulty sensor pods</td></tr>
-    </thead>
-    <tbody>
-        <tr><td>95%</td><td>5%</td></tr>
-    </tbody>
-  </table>
-
-  <p>
-  Quick test information
-  </p>
-  <table>
-    <tbody>
-        <tr><td></td><td>Working sensor pods</td><td>Faulty pods</td></tr>
-        <tr><td>Positive test result</td><td>$\frac{2}{30}$</td><td>$\frac{39}{40}$</td></tr>
-        <tr><td>Negative test result</td><td>$\frac{28}{30}$</td><td>$\frac{1}{40}$</td></tr>
-    </tbody>
-  </table>
-
-  <p>
-  We want to find $P(F|R)$
+  Suppose we train a linear classifier on a data set and find that its training error
+  rate is e where
 
   $$
   \begin{align}
-  P(F|R) &= \frac{P(F \land R)}{P(R)} \\
-         &= \frac{P(R|F) \cdot P(F)}{P(R)} \\
+  e = \frac{1}{|T_e|}*\sum_{x \in Te}\left[ I(\hat{c}(x)) <> c(x) \right]\\
   \end{align}
   $$
-  </p>
+
+  We want to add another classifier to the ensemble that does better on the
+  misclassifications of the best classifier. One way to do that is to duplicate
+  the misclassified instances, but a better way is to give the misclassified
+  instances a higher weight of 1/2e and the correctly classified ones 1/(2*(1-e)).
+  <br>
+  Same concept is also implemented within the Boosting algorithm defined below:
+
+  <pre>
+  <code class="python">
+  Boosting(D, T, A)
+
+  Input: data set D; ensemble size T; learning algorithm A.
+  Output: weighted ensemble of models.
+
+  $w_1_i$ <- 1/|D| for all $x_i$ from D;
+  for t from 1 to T do
+    run A on D with weights $w_t_i$ to produce a model $M_t$;
+    calculate weighted error $e_t$;
+    if $e_t$ >= 1/2 then
+      set T<- t-1 and break
+    end
+    alpha <- 1/2 * ln((1-e_t)/e_t);
+    increase weight for each misclassified instance x from D;
+    decrease weight for each classified instance x from D;
+  end
+  return M(x)=sum of alpha*M_t(x)
+  </code>
+  </pre>
 
   <p>
-  We need to find $P(R|F)$, $P(F)$, $P(R)$.
+  So fallowing the algorithm above we will compute the error:
+  <br>
+  e = $\frac{19+13}{100}$ = $\frac{32}{100}$ = 0.32
+  <br>
+  and we will modify the mislabelled instances by 1/2e = 1.56 and the correctly
+  labelled one bt 1/2(1-e)= 0.735.
   </p>
 
-  <ul>
-    <li>
-      $P(R|F) = \frac{39}{40}$, the probability of obtaining a
-      positive result given the helicopter has faulty sensor pods.
-    </li>
-    <li>
-      $P(F) = 0.05$, the probability that any given helicopter has faulty sensor pods.
-    </li>
-    <li>
-      $P(R) = P(R \land F) + P(R \land \lnot F) = P(F) \cdot P(R|F) +
-      P(\lnot F) \cdot P(R|\lnot F) = 0.05 \cdot \frac{39}{40} + 0.95 \cdot \frac{2}{30} = 0.112$, 
-      the probability of obtaining a positive test result
-    </li>
-  </ul>
+  Applying the above concept to our contingency matrix we will obtain:
+  <table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Predicted $\oplus$</th>
+      <th>Predicted $\ominus$</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual $\oplus$</td>
+      <td>21 * 0.735 =17</td>
+      <td>19 * 1.562 =29</td>
+      <td>46</td>
+    </tr>
+    <tr>
+      <td>Actual $\ominus$</td>
+      <td>13 * 1.562 =20</td>
+      <td>47 * 0.735 =34</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>37</td>
+      <td>63</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+  </table>
 
-
-  <p>
-  Finally we can find $P(F|R)$.
-
-  $$
-  P(F|R) = \frac{\frac{39}{40} \cdot 0.05}{0.112} = 0.435
-  $$
-  </p>
 
 hint: |
-  Note down all the information you have in a table, label each cell of
-  the table with the probability it represents. Write down the
-  probability you want to find and then think about what rules you can
-  use to find this.
+  Multiply misclassified examples with 1/(2*e) and correctly classified examples
+  with 1/(2*(1-e)) here e is the error rate.
+
 comments: |
-  <p>
-  Tests the student's ability to derive events and probabilities from
-  English prose, then formulate a target probability which can be
-  derived using Bayes rule.
-  </p>
-
-  <p>
-  Complexity 2 because this is quite straight forward Bayes' rule question 
-  </p>
-
-  <p>
-  Author: Will Price
-  </p>
+  The question tackels the reconstruction of models from adapted versions of the
+  training data by reweighting the samples in accordence with the results on the
+  weak classifers.
+  <br>
+  The task has complexity 3 as requires along with a general understanding of the
+  concept, also means of applying the knowledge on a given example based on calculations.

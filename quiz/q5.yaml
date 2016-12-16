@@ -1,99 +1,241 @@
-images:
-  - url: img/coveragePlot.png
-    caption: "Figure 1: Coverage plot of 3 classifiers"
-problem_type: evaluation
+images: []
 difficulty: "3"
-reference: "2.1"
+reference: "6.2"
+problem_type: training
 source: |
-  Machine Learning: Binary classification and related tasks
-question:
-  - Given the coverage plot in Fig. 1 depicting the performance of three classifiers and
-    the details below, determine the dominant class by considering their mapping to
-    a ROC curve. Then compute its accuracy and average recall.
+  Machine Learning: Rule Models - Learning unordered rule sets
+question: |
+  <p>
+  Given the following instance space :
 
-    $$
-    \begin{align}
-    Pos&= 25\\
-    Neg&= 75\\
-    \end{align}
-    $$
+  <table>
+  <thead>
+    <tr>
+      <th>Instance</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>p1 : Length = 3 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p2 :  Length = 4 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p3 :  Length = 3 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>p4 :  Length = 5 & Gills=no & Beak=yes & Teeth=many</td>
+      <td>+</td>
+    </tr>
+    tr>
+      <td>p5 :  Length = 5 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>+</td>
+    </tr>
+    <tr>
+      <td>n1 : Length = 5 & Gills=yes & Beak=yes & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n2 : Length = 4 & Gills=yes & Beak=yes & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n3 : Length = 5 & Gills=yes & Beak=no & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n4 : Length = 4 & Gills=yes & Beak=no & Teeth=many</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>n5 : Length = 4 & Gills=no & Beak=yes & Teeth=few</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+  </table>
+  construct an unordered rule model for the positive class using the LearnRuleSet
+  and LearnRuleForClass algorithms while employing a beam serach to deal with the
+  'myopia' of precision.
+  </p>
+  <p>
+  For each equivalent rules within a beam we will preffer the ones that are shorter.
+  </p>
+  <p>
+  Moreover, in order to deal with nosiy data we will establish our stopping
+  criteria as follows: a homogeneous set of data will be considered the ones that have
+  the proportion of positives at least twice than the negatives(exception being
+  the case when we have 0 negatives).
+  </p>
+  <p>
+  Taking into consideration that all the other elements that are not classified as
+  positives will be labelled as negatives, compute the accuracy of the rule model in
+  the case of a pure homogeneous set and in parallel with the stopping condition:
+  </p>
 
-    $$
-    \begin{align}
-    TP1&= 10\\
-    TP2&=20\\
-    TP3&= 20\\
-    \end{align}
-    $$
-
-    $$
-    \begin{align}
-    FP1&= 15\\
-    FP2&= 25\\
-    FP3&= 40\\
-    \end{align}
-    $$
-
-    <p>
-    <br />
-    Accuracy of the best classifier is
-  - 1
-  - |
-    <br />
-    The average recall of the best classifier is
-  - 2
-  - |
-    </p>
-
-answer_type: blank_answer
+answer_type: single
 answers:
-  - correctness: 1
-    answer: "0.7"
-    explanation: The accuracy of the best classifier
-  - correctness: 2
-    answer: "0.7"
+  - correctness: "-"
+    answer: "1, 0.8"
+  - correctness: "-"
+    answer: "0.9, 0.8"
+  - correctness: "+"
+    answer: "1 , 0.9"
     explanation: |
-      The average recall of the best classifier
+      "the first rule classifies all data correctly, while the second one mislabbeles one of the negatives"
+  - correctness: "-"
+    answer: "1, 1"
 
 workings: |
+  In unordered rule sets we learn on class at a time. This is why in the LearnRuleSet
+  algorithm, described in the "Machine learning" by Peter Flach, we will iterate
+  through all the classes given. However, the problem restricts the computation of
+  only the positive class so we therefore have the next algorithm:
+
+  <pre>
+  <code class="python">
+  LearnRuleSet(D)
+
+  Input: labelled training data D.
+  Output: rule set R.
+  R <- {}
+  D{i} <- D;
+  while D{i} contains examples of class C{i} do
+    r <- LearnRuleForClass(D{i}, C{i})
+    R <- R U {r}
+    D{i} <- D{i} \ {x from C{i} | x is covered by r};
+  end
+  return R
+  </code>
+  </pre>
+
   <p>
-  In a coverge plot, classifiers with the same accuracy are connected
-  by line segments with slope 1. However, coverage plots do not take
-  account of different class distributions. For this reason we should
-  consider its normalised version which is referred to as a ROC plot
-  that explicitly takes the class distribution into account.
+  As it can be seen in the algorithm, after each iteration we will remove all
+  positive instances covered by the rule in constrast with the algorithm for
+  ordered list when we were eliminating all instances covered including the
+  negatives ones. Moreover, in LeranRuleForClass we will now assess the best
+  literals on only the respective class instances while also labelling the head
+  of the rule with the positive class as follows:.
+  </p>
+
+  <pre>
+  <code class="python">
+  LearnRuleForClass(D, C{i})
+
+  Input: labelled training data D; class C{i};
+  Output: rule r.
+  b <- true;
+  L <- set of available literals;
+  while not Homogeneous(D) do
+    l <- BestLiteral(D, L, C{i});
+    b <- b & l;
+    D <- {x from D | x is covered by b};
+    L <- L \ {l' from L | l' uses same features as l };
+  end
+  r <- if b then Class = C{i}
+  return r
+  </code>
+  </pre>
+
+  <p>
+  However, in our case the BestLiteral implementation will differ to allow
+  a beam search. A beam search will be usefull to also consider in our literal
+  choosing process the occassionally near-pure rules that can be speciliased
+  into a more general pure rule.
+  </p>
+  <p>
+  Each possible pure features will be added in the beam and after adding all
+  possible specialisations, we stop when all beams elements are homogeneous
+  (pure or proportion of + instances is double that the - instances) and pick
+  the one that contains the most well classified positives. In case we have 2
+  equivalent definitions we will choose the shorter one.
+  </p>
+  <p>
+  So starting with our first rule serach we decompose the total instance space
+  5+ 5- using all individual possible literals obtaining:
+  $$
+  \begin{align}
+  [5+, 5-] distributed as follows:\\
+  Length = 3 -> [2+, 0-]\\
+  Length = 4 -> [1+, 3-]\\
+  Length = 5 -> [0+, 2-]\\
+  Gills = yes -> [0+, 4-]\\
+  Gills = no -> [1+, 1-]\\
+  Beak = yes -> [1+, 3-]\\
+  Beak = no -> [0+, 2-]\\
+  Teeth = many -> [1+, 4-]\\
+  Teeth = few -> [0+, 1-]\\
+  \end{align}
+  $$
   </p>
 
   <p>
-  From the given coverage plot we can conclude that C2 is superior to
-  C3, while they both have the same number of true positives, C2 has a
-  lower number of false positives. However, because of the different
-  class distributions we cannot confirm that C1 is equivalent to C2
-  even if they have the same accuracy.
+  The first chosen literal in the case of homogeneous described by purity will be
+  length = 3 as it classifies [2+ ,0-] while in the second case we will direcly
+  choose Gills = no as it achieves the classification [5+, 1-] where 5\1 = 5 > 2.
   </p>
 
   <p>
-  To be able to graphically represent the classifier performance differences we
-  have to normalise the data which will make noticable that they have
-  different average recalls.  This is due to the fact that even if the
-  differences on the x and y axis do might include an equal amount of
-  false and true positives instances, because the number of negatives
-  instances is higher than the number of positive instances, the
-  increase on the true positive axis will have a higher weight. This
-  can be also observed when computing for both C1 nad C2 their true
-  positive / negatives rates that are included in the computation of
-  average recall as follows:
+  While in the second case the iteration will stop, in the first one we will have next
+  the following:
+  $$
+  \begin{align}
+  [3+, 5-] distributed as follows:\\
+  Length = 4 -> [1+, 3-]\\
+  Length = 5 -> [2+, 2-]\\
+  Gills = yes -> [0+, 4-]\\
+  Gills = no -> [3+, 1-]\\
+  Beak = yes -> [3+, 3-]\\
+  Beak = no -> [0+, 2-]\\
+  Teeth = many -> [2+, 4-]\\
+  Teeth = few -> [1+, 1-]\\
+  \end{align}
+  $$
+  </p>
+  <p>
+  This time using the beam serach we will choose Gill=no & Length=5 as it achieves
+  [2+, 0-] with an equivalent of Gills=no & Teeth = many that will be consequenly
+  choose at the next iteration.
   </p>
 
-  $$\text{average recall} = \frac{TPR + TNR}{2}$$
+  <p>
+  In the end the rule for the positive class is:
+  $$
+  \begin{align}
+  If Length = 3 then Class = +\\
+  If Gills = no & Length = 5 then Class = +\\
+  If Gills = no & Teeth = many then Class = +\\
+  \end{align}
+  $$
+  classifying every example correctly and therefore having the accuracy of 1.
+  However, in the second case we will classify all positives, but we will alos
+  have one false positive the accuracy being therefore equal to 9/10 = 0.9 where
+  the accuracy definition is as follows:
+  </p>
+  <br>
+  $$
+  \begin{align}
+  accuracy &= \frac{1}{|T{e}|} * \sum_{x \in Te}\left[ I(\hat{c}(x) = c(x) \right]\\
+  \end{align}
+  $$
+
 hint: |
-  For each classifier compute their accuracy and average recall to aid you with
-  deciding whether your choice is indeed the best classifier.
+  <p>
+  Each possible pure features will be added in the beam and after adding all
+  possible specialisations, we stop when all beams elements are homogeneous
+  (pure or proportion of + instances is double that the - instances) and pick
+  the one that contains the most well classified positives. In case we have 2
+  equivalent definitions we will choose the shorter one.
+  </p>
 
 comments: |
-  Test the students ability to interpret the visualisation methods of a
-  classification performance and the mapping of a coverage plot to a ROC curve.
+  The question involves the knowledge of new concepts on rule models and its
+  parameters in which they can vary,such as ways to deal with 'myopia' or
+  stoping criterias to improve generalisation.
   <br>
-  Complexity 3 because it requires a deep understanding of assessing classification
-  performance and involves computing the accuracy and average recall in order to make
-  a competent decision having no representation of an equivalent ROC plot .
+  It is a level 3 question because it requires not only reasoning, but also
+  computation of the best feature to split on and the output rule models accuracies.

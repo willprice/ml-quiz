@@ -1,272 +1,50 @@
-images:
-  - url: img/hypspace.jpg
-    caption: hyphothesis space
-  - url: img/cvplot_1.jpg
-    caption: Coverage Plots
-  - url: img/cvplot_2.jpg
-    caption: Coverage Plots
-difficulty: "3"
-reference: "4.2"
-problem_type: evaluation
+images: []
+problem_type: definition
+difficulty: "2"
+reference: "12.2"
 source: |
-  Machine Learning: Concept Learning - Paths through the hypothesis space
+  Machine Learning: Machine learning experiments - How to measure it.
 question: |
   <p>
-  Given the following conjunctive concept hypothesis space representing
-  concepts for categorising fish by species and the table of fish below,
-  match each coloured path through the hypothesis space with its
-  corresponding coverage plot.
+  In our measurements we expect some variations to occur from one measurement to
+  the next. In Chapter 12 we dealt with different procedures that use the averaging
+  of K measurements to estimate our variance.
   </p>
 
-  <table>
-  <thead>
-    <tr>
-      <th>Instance</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>p1 : length = 3 & weight = 5 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>p2 : length = 4 & weight = 5 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>p3 : length = 3 & weight = 6 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>n1 : length = 3 & weight = 6 & scales = many</td>
-      <td>-</td>
-    </tr>
-
-    <tr>
-      <td>n2 : length = 4 & weight = 6 & scales = many</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>n3 : length = 4 & weight = 6 & scales = few</td>
-      <td>-</td>
-    </tr>
-  </tbody>
-  </table>
-
   <p>
-  Each level in the hypothesis space is labelled from top to bottom from 1 to 4.
+  Match the fallowing concepts to their definitions or properties:
   </p>
 answer_type: matrix_sort_answer
 answers:
-  - correctness: Path 1
-    answer: Coverage plot 3
-    explanation: Associated cover plot
-  - correctness: Path 2
-    answer: Coverage plot 4
-    explanation: Associated cover plot
-  - correctness: Path 3
-    answer: Coverage plot 2
-    explanation: Associated cover plot
-  - correctness: Path 4
-    answer: Coverage plot 1
-    explanation: Associated cover plot
-
+  - correctness: "Cross-validation procedure"
+    answer: |
+      is applied by randomly partitioning the data in k parts or 'folds', where
+      one fold is set aside for testing and the model will be trained on the
+      remaining k-1 folds. The process will be repeted k times until each fold
+      has been used for testing once.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
+  - correctness: Leave-one-out cross-validation
+    answer: |
+      it is used when having a small number of instances and implies setting n folds
+      and training on all but one test instance, process repeated n times.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
+  - correctness: Stratified cross-validation(e.g. 10 times 10-fold cross-validation)
+    answer: |
+      It is applied if we expect the learning algorithm to be sensitive to the
+      class distribution because it aims to achieving roughly the same class
+      distribution in each fold. It can therefore pe repeated for different random
+      partitions into folds and the results averaged again to further reduce variance
+      in our estimates.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
 workings: |
-  <p>
-  A path through hypothesis space corresponds to a coverage curve.
-  Starting at the most specialised concept and terminating at the empty
-  concept we count examples of each class that are covered by the
-  current hypothesis until reaching the root of the lattice.
-  </p>
-
-  <p>
-  Once the hypotheses along the path have been traversed and the
-  examples covered counted, we can draw the coverage plots.
-  </p>
-
-  <table>
-     <tr>
-        <th rowspan="2">Rule id</td>
-        <th colspan="3">Concept</td>
-        <th rowspan="2">#pos covered</td>
-        <th rowspan="2">#neg covered</td>
-        <th rowspan="2">Path</td>
-     </tr>
-     <tr>
-        <td>Length</td>
-        <td>Weight</td>
-        <td>Scales</td>
-     </tr>
-     <tr>
-        <td>1</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>3</td>
-        <td>3</td>
-        <td>1,2,3,4</td>
-     </tr>
-     <tr>
-        <td>2</td>
-        <td>3</td>
-        <td>5</td>
-        <td>many</td>
-        <td>0</td>
-        <td>0</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>3</td>
-        <td>3</td>
-        <td>-</td>
-        <td>many</td>
-        <td>0</td>
-        <td>1</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>4</td>
-        <td>3</td>
-        <td>-</td>
-        <td>-</td>
-        <td>2</td>
-        <td>1</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>5</td>
-        <td>3</td>
-        <td>5</td>
-        <td>few</td>
-        <td>1</td>
-        <td>0</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>6</td>
-        <td>3</td>
-        <td>5</td>
-        <td>-</td>
-        <td>1</td>
-        <td>0</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>7</td>
-        <td>3</td>
-        <td>-</td>
-        <td>-</td>
-        <td>2</td>
-        <td>1</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>8</td>
-        <td>4</td>
-        <td>5</td>
-        <td>many</td>
-        <td>0</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>9</td>
-        <td>4</td>
-        <td>5</td>
-        <td>-</td>
-        <td>1</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>10</td>
-        <td>-</td>
-        <td>5</td>
-        <td>-</td>
-        <td>2</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>11</td>
-        <td>4</td>
-        <td>5</td>
-        <td>few</td>
-        <td>1</td>
-        <td>0</td>
-        <td>4</td>
-     </tr>
-     <tr>
-        <td>12</td>
-        <td>4</td>
-        <td>-</td>
-        <td>few</td>
-        <td>1</td>
-        <td>1</td>
-        <td>4</td>
-     </tr>
-     <tr>
-        <td>13</td>
-        <td>-</td>
-        <td>-</td>
-        <td>few</td>
-        <td>3</td>
-        <td>1</td>
-        <td>4</td>
-     </tr>
-  </table>
-
-  <p>
-  We will reference hypotheses using the Rule Id in the table above to
-  save having to repetitiously write them out!
-  </p>
-
-  <p>
-  A coverage curve is produced by traversing a path from the least
-  general hypothesis to most general. Initially a point at $(0,0)$ is added,
-  For each hypothesis traversed, a point for the number of positive and
-  negative examples covered is added. Finally the default rule covers
-  all examples so a point is added $(\#Pos, \#Neg)$
-  </p>
-
-  <p>
-  For Path 1, the least general hypothesis, rule 2, covers no examples,
-  so we add a point at $(0, 0)$, the next hypothesis, rule 3, covers 1
-  negative example, so we add a point at $(1, 0)$, next the rule 4
-  covers 2 positives and 1 negative (the same one the previous rule
-  covered), we add a point $(2, 1)$, finally the default rule, rule 1,
-  covers all positive and negative examples so a point at $(3, 3)$ is
-  added. The coverage plot we have produced corresponds exactly to
-  coverage plot 3.
-  </p>
-
-  <p>
-  Path 2 gives the coverage curve: $(0, 0) - (0, 1) - (1, 2) - (3, 3)$
-  </p>
-
-  <p>
-  Path 3 gives the coverage curve: $(0, 0) - (0, 1) - (0, 2) - (3, 3)$
-  </p>
-
-  <p>
-  Path 4 gives the coverage curve: $(0, 0) - (0, 1) - (1, 1) - (1, 3) - (3, 3)$
-  </p>
+  Leave-one-out cross-validation and stratified cross-validation are specific variations
+  of the cross-validation procedure, all aiming to decrease the data variance through
+  means such that it will not affect the model performance.
 
 hint: |
-  <p>
-  For each hypothesis on a path count the number of positives and
-  negatives covered, how can this be used to construct a coverage plot?
-  </p>
-
+  Review Chapter 12 on Machine Learning Experiments that deals with external impediments
+  of training an accurate model such as variation of the data and uncertainty of
+  measurements.
 comments: |
-  <p>
-  This question tests the students ability to derive coverage plots from
-  paths through a hypothesis lattice.
-  </p>
-
-  <p>
-  This question requires a reasonable amount of work, the student must
-  first calculate the instances covered by each hypothesis and then use
-  this information to construct a coverage plot
-  </p>
+  The question tests basic concepts that can aid decreasing the impact of error
+  measurements on models performance.
