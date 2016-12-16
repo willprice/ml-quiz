@@ -1,128 +1,555 @@
-images: []
-problem_type: problem-solving
-difficulty: "3"
-reference: "6.2"
+images:
+  - url: img/perceptron-kernel-training-data.png
+    caption: "Fig 1: Training data"
+problem_type: training
+difficulty: "4"
+reference: "7.5"
 source: |
-  Machine Learning: Rule Models - Learning unordered rule sets - Rule sets for
-  ranking and probability estimation (p173-174)
+  Machine Learning: Linear Models - Perceptron  (p 225-226) & Going
+  beyond linearity with kernel methods (p 244)
 question: |
   <p>
-  You are a devops engineer in a company acting as an intermediary
-  between banks and online stores facilitating credit card payments.
-  </p>
-
-  <p>
-  The company has been losing revenue because their system is buggy.
-  About once a day one of the nodes supporting the service crashes
-  causing payments to be lost, you've been tasked to analyse the root
-  cause of the bug.
-  </p>
-
-  <p>
-  To analyse the bug you've written some scripts to collect data about
-  the node when a service raises an exception. You hope to be able to
-  use rule set learning to find the combination of factors that trigger
-  the bug to help guide your debugging process.
-  </p>
-
-  <p>
-  Over the period of a week, you collect data on the exceptions raised
-  by the services, this data is shown below.
+  A perceptron model with a polynomial kernel of degree 2 is being
+  trained on the data below (from top to bottom), at the end of the 8th
+  iteration during training, $\alpha = (4, 3, 2, 6)$.
   </p>
 
   <table>
     <thead>
-      <tr><th>Node</th><th>Load > 50%</th><th>Service</th><th>Fatal</th></tr>
+      <tr>
+         <td>$i$</td>
+         <td>$x_0^{(i)}$</td>
+         <td>$x_1^{(i)}$</td>
+         <td>$y^{(i)}$</td>
+      </tr>
     </thead>
     <tbody>
-      <tr><td>2</td><td>Yes</td><td>HTTP Server</td><td>No</td></tr>
-      <tr><td>1</td><td>Yes</td><td>HTTP Server</td><td>Yes</td></tr>
-      <tr><td>1</td><td>Yes</td><td>Messaging</td><td>Yes</td></tr>
-      <tr><td>2</td><td>Yes</td><td>Messaging</td><td>Yes</td></tr>
-      <tr><td>3</td><td>No</td><td>Messaging</td><td>No</td></tr>
-      <tr><td>1</td><td>No</td><td>HTTP Server</td><td>Yes</td></tr>
-      <tr><td>2</td><td>Yes</td><td>HTTP Server</td><td>No</td></tr>
-      <tr><td>2</td><td>No</td><td>Messaging</td><td>No</td></tr>
+      <tr>
+         <td>0</td>
+         <td>1</td>
+         <td>0</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>1</td>
+         <td>1</td>
+         <td>2</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>2</td>
+         <td>3</td>
+         <td>0</td>
+         <td>1</td>
+      </tr>
+      <tr>
+         <td>3</td>
+         <td>2</td>
+         <td>1</td>
+         <td>-1</td>
+      </tr>
     </tbody>
   </table>
 
   <p>
-  Using rule set learning on this data, you produce the following set of rules
-  </p>
-
-  <ul>
-    <li>A: if Node == 2 and Load > 50% then non fatal</li>
-    <li>B: if Node == 3 then non fatal</li>
-    <li>C: if Load < 50% then non fatal</li>
-    <li>D: if Load > 50% and Service == Messaging then fatal</li>
-  </ul>
-
-  <p>
-  The next day another fatal crash occurs with the properties:
-  </p>
-
-  <ul>
-    <li>Node = 2</li>
-    <li>Load > 50%</li>
-    <li>Service = Messaging</li>
-  </ul>
-
-  <p>
-  You want to test the rules learnt the day before to see whether they
-  are consistent with this new datum, or whether you need to collect more
-  data to learn better rules for predicting fatal crashes.
+  $x_0^{(i)}$ denotes feature $x_0$ for the $i$th training example.
   </p>
 
   <p>
-  What does the rule set predict?
+  Does the perceptron algorithm terminate?
   </p>
 answer_type: single
 answers:
-  - correctness: '+'
-    answer: '+'
-    explanation: |
-      $\dot{p} = \frac{3}{5}$, $\dot{p} > 0.5$ so we predict positive
-      (assuming the class ratio is the same for test, which it should be
-      given the context). This is assumes a cost ratio $c = 1$, i.e.
-      false positives are as costly as false negatives.
-  - correctness: '-'
-    answer: '-'
+   - correctness: '+'
+     answer: 'Yes'
+     explanation: |
+       The perceptron algorithm does not perform any updates to the
+       $\alpha$ array, hence the algorithm converges.
+   - correctness: '-'
+     answer: 'No'
+# Add the following to `workings` to get syntax highlighting
+#<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
+#<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+#<script>hljs.initHighlightingOnLoad();</script>
 workings: |
+
   <p>
-  We evaluate the head of each rule to see if it applies, in this case
-  rules A and D are relevant, if the rules predict the same class then
-  we're done, however this is not the case! Since the rules disagree in
-  the class prediction we need some way of reconciling these
-  differences, which class should we choose?
+  Recall the dual form perceptron training algorithm, the version here
+  is executable python, so feel free to have a play around this and
+  print out intermediate value to get a feel for the it. $X$ is a matrix
+  with a column per feature, and a row per training example. $y$ is a
+  column vector of the classification of each training example.
+  </p>
+
+  <pre>
+  <code class="python">
+  def perceptron(X, y, k=(lambda x0, x1: np.dot(x0, x1)**2)):
+    converged = False
+    while converged == False:
+       converged = True
+       for i in range(len(X)):
+           s = 0
+           for j in range(len(X)):
+               s += alphas[j] * y[j] * k(X[i], X[j])
+           s = s * y[i]
+           if s <= 0:
+               alphas[i] += 1
+               converged = False
+  </code>
+  </pre>
+
+  <p>
+  Several observations can be made to save us from having to reevaluate
+  certain expressions repeatedly. $k(x_0^{(i)}, x_1^{(i)})$ will be
+  constant throughout the training. If we evaluate this then we can
+  reduce the number of (tedious) steps to take
+  </p>
+
+  <table>
+     <thead>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\mathbf{x}^{(i)}$</td>
+        <td>$\mathbf{x}^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     </thead>
+     <tbody>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>(1, 0)</td>
+        <td>(1, 0)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>(1, 0)</td>
+        <td>(1, 2)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>(1, 0)</td>
+        <td>(3, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>(1, 0)</td>
+        <td>(2, 1)</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>(1, 2)</td>
+        <td>(1, 0)</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>(1, 2)</td>
+        <td>(1, 2)</td>
+        <td>25</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>(1, 2)</td>
+        <td>(3, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>(1, 2)</td>
+        <td>(2, 1)</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>(3, 0)</td>
+        <td>(1, 0)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>(3, 0)</td>
+        <td>(1, 2)</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>(3, 0)</td>
+        <td>(3, 0)</td>
+        <td>81</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>(3, 0)</td>
+        <td>(2, 1)</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>(2, 1)</td>
+        <td>(1, 0)</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>(2, 1)</td>
+        <td>(1, 2)</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>(2, 1)</td>
+        <td>(3, 0)</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>(2, 1)</td>
+        <td>(2, 1)</td>
+        <td>25</td>
+     </tr>
+     </tbody>
+  </table>
+
+  <p>
+  There are duplicates in the table, since $k(i, j) = k(j, i)$, but for
+  the sake of ones sanity in calculating the next table it's handy to be
+  able to go to the exact $(i, j)$ pair of interest.
   </p>
 
   <p>
-  First we check the coverage over the training set for each rule.
+  Now for a single iteration of the while loop we need to calculate
+  $y^{i} \sum_{j} \left( \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2 \right)$
   </p>
 
-  <ul>
-    <li>Rule A: [2+, 0-]</li>
-    <li>Rule D: [1+, 2-]</li>
-  </ul>
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\alpha^{(j)}y^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$\alpha^{(j)}y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>4</td>
+        <td>-24</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>3</td>
+        <td>25</td>
+        <td>75</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>16</td>
+        <td>-96</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>4</td>
+        <td>9</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>3</td>
+        <td>9</td>
+        <td>27</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
+        <td>81</td>
+        <td>162</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>36</td>
+        <td>-216</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>4</td>
+        <td>4</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+        <td>16</td>
+        <td>48</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>2</td>
+        <td>36</td>
+        <td>72</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>25</td>
+        <td>-150</td>
+     </tr>
+  </table>
 
   <p>
-  Average the coverages: [1.5+, 1-], then make a prediction based on
-  this, $\dot{p} = \frac{1.5}{2.5} = \frac{3}{5}$
+  For each iteration of $i$, we compute $y^{i} \sum_{j} \left(
+  \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2 \right)$ by summing the
+  individual terms we calculated in the previous step
   </p>
 
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$j$</td>
+        <td>$\alpha^{(j)}y^{(j)}$</td>
+        <td>$(\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$\alpha^{(j)}y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>4</td>
+        <td>-24</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0</td>
+        <td>4</td>
+        <td>1</td>
+        <td>4</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>3</td>
+        <td>25</td>
+        <td>75</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>2</td>
+        <td>9</td>
+        <td>18</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>16</td>
+        <td>-96</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0</td>
+        <td>4</td>
+        <td>9</td>
+        <td>36</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>1</td>
+        <td>3</td>
+        <td>9</td>
+        <td>27</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
+        <td>81</td>
+        <td>162</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>36</td>
+        <td>-216</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0</td>
+        <td>4</td>
+        <td>4</td>
+        <td>16</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>1</td>
+        <td>3</td>
+        <td>16</td>
+        <td>48</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>2</td>
+        <td>2</td>
+        <td>36</td>
+        <td>72</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>3</td>
+        <td>-6</td>
+        <td>25</td>
+        <td>-150</td>
+     </tr>
+  </table>
 
+  <p>
+  For each iteration of $i$, we compute 
+  </p>
+
+  <table>
+     <tr>
+        <td>$i$</td>
+        <td>$\sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+        <td>$y^{(i)}$</td>
+        <td>$y^{(i)} \sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot \mathbf{x}^{(j)})^2$</td>
+     </tr>
+     <tr>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>9</td>
+        <td>1</td>
+        <td>9</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>-14</td>
+        <td>-1</td>
+        <td>14</td>
+     </tr>
+  </table>
+
+  Since for all $i$, $y^{(i)} \sum_j \alpha^{(j)} y^{(j)} (\mathbf{x}^{(i)} \cdot
+  \mathbf{x}^{(j)})^2 \geq 0$ the algorithm terminates.
 hint: |
-  Work out which training examples the rules cover, then think about
-  what would happen if a rule covered all of those examples, which class
-  would you predict? 
+  On what condition does the perceptron algorithm terminate?
+comments: |
+  Tests the student's knowledge of training a perceptron model in dual
+  form, replacing the dot product in a linear model with a kernel.
+  <br />
+  Complexity 4 because kernels are starred material.
+hint: |
+  On what condition does the perceptron algorithm terminate?
 comments: |
   <p>
-  Tests the student's knowledge of how to use rule sets to predict the
-  class of a new instance, and what to do when those rules disagree
+  Tests the student's knowledge of training a perceptron model in dual
+  form, replacing the dot product in a linear model with a kernel. The
+  diagram tries to through the student off by visualising demonstrating
+  the data is not linearly separable.
   </p>
 
   <p>
-  Complexity 3 because it is not a straight forward prediction.
+  Complexity 4 because kernels are starred material.
   </p>
 
   <p>

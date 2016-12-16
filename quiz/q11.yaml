@@ -1,272 +1,60 @@
-images:
-  - url: img/hypspace.jpg
-    caption: hyphothesis space
-  - url: img/cvplot_1.jpg
-    caption: Coverage Plots
-  - url: img/cvplot_2.jpg
-    caption: Coverage Plots
-difficulty: "3"
-reference: "4.2"
-problem_type: evaluation
+images: []
+problem_type: problem-solving
+difficulty: "2"
+reference: "11.2"
 source: |
-  Machine Learning: Concept Learning - Paths through the hypothesis space
+  Machine Learning: Model ensembles (p 332, 334)
 question: |
   <p>
-  Given the following conjunctive concept hypothesis space representing
-  concepts for categorising fish by species and the table of fish below,
-  match each coloured path through the hypothesis space with its
-  corresponding coverage plot.
+  Order the following learning algorithms from those most applicable to
+  boosting to those most applicable to bagging.
   </p>
-
-  <table>
-  <thead>
-    <tr>
-      <th>Instance</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>p1 : length = 3 & weight = 5 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>p2 : length = 4 & weight = 5 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>p3 : length = 3 & weight = 6 & scales = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>n1 : length = 3 & weight = 6 & scales = many</td>
-      <td>-</td>
-    </tr>
-
-    <tr>
-      <td>n2 : length = 4 & weight = 6 & scales = many</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>n3 : length = 4 & weight = 6 & scales = few</td>
-      <td>-</td>
-    </tr>
-  </tbody>
-  </table>
-
-  <p>
-  Each level in the hypothesis space is labelled from top to bottom from 1 to 4.
-  </p>
-answer_type: matrix_sort_answer
+answer_type: sort
 answers:
-  - correctness: Path 1
-    answer: Coverage plot 3
-    explanation: Associated cover plot
-  - correctness: Path 2
-    answer: Coverage plot 4
-    explanation: Associated cover plot
-  - correctness: Path 3
-    answer: Coverage plot 2
-    explanation: Associated cover plot
-  - correctness: Path 4
-    answer: Coverage plot 1
-    explanation: Associated cover plot
-
+  - correctness: "1"
+    answer: Decision tree stumps
+    explanation: |
+      Decision tree stumps have extremely high bias as they only split
+      on a single feature hence graphically they separate the instance
+      space with an axis parallel decision boundary.
+  - correctness: "2"
+    answer: Linear regression
+    explanation: |
+      Linear regression is high bias due to the simplicity of the model,
+      although it can express more complex decision boundaries than
+      decision tree stumps
+  - correctness: "3"
+    answer: SVM
+    explanation: |
+      SVMs have high bias, similar to that of linear regression, however
+      since a SVM's decision boundary is defined soley by support
+      vectors, it cannot be used with boosting as weights cannot be
+      accounted for with SVMs.
+  - correctness: "4"
+    answer: KNN with small K.
+    explanation: |
+      When K is small KNN produces models with high variance that are
+      prone to overfitting the training data. This model is most suited
+      to bagging
 workings: |
-  <p>
-  A path through hypothesis space corresponds to a coverage curve.
-  Starting at the most specialised concept and terminating at the empty
-  concept we count examples of each class that are covered by the
-  current hypothesis until reaching the root of the lattice.
-  </p>
-
-  <p>
-  Once the hypotheses along the path have been traversed and the
-  examples covered counted, we can draw the coverage plots.
-  </p>
-
-  <table>
-     <tr>
-        <th rowspan="2">Rule id</td>
-        <th colspan="3">Concept</td>
-        <th rowspan="2">#pos covered</td>
-        <th rowspan="2">#neg covered</td>
-        <th rowspan="2">Path</td>
-     </tr>
-     <tr>
-        <td>Length</td>
-        <td>Weight</td>
-        <td>Scales</td>
-     </tr>
-     <tr>
-        <td>1</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>3</td>
-        <td>3</td>
-        <td>1,2,3,4</td>
-     </tr>
-     <tr>
-        <td>2</td>
-        <td>3</td>
-        <td>5</td>
-        <td>many</td>
-        <td>0</td>
-        <td>0</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>3</td>
-        <td>3</td>
-        <td>-</td>
-        <td>many</td>
-        <td>0</td>
-        <td>1</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>4</td>
-        <td>3</td>
-        <td>-</td>
-        <td>-</td>
-        <td>2</td>
-        <td>1</td>
-        <td>1</td>
-     </tr>
-     <tr>
-        <td>5</td>
-        <td>3</td>
-        <td>5</td>
-        <td>few</td>
-        <td>1</td>
-        <td>0</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>6</td>
-        <td>3</td>
-        <td>5</td>
-        <td>-</td>
-        <td>1</td>
-        <td>0</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>7</td>
-        <td>3</td>
-        <td>-</td>
-        <td>-</td>
-        <td>2</td>
-        <td>1</td>
-        <td>2</td>
-     </tr>
-     <tr>
-        <td>8</td>
-        <td>4</td>
-        <td>5</td>
-        <td>many</td>
-        <td>0</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>9</td>
-        <td>4</td>
-        <td>5</td>
-        <td>-</td>
-        <td>1</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>10</td>
-        <td>-</td>
-        <td>5</td>
-        <td>-</td>
-        <td>2</td>
-        <td>0</td>
-        <td>3</td>
-     </tr>
-     <tr>
-        <td>11</td>
-        <td>4</td>
-        <td>5</td>
-        <td>few</td>
-        <td>1</td>
-        <td>0</td>
-        <td>4</td>
-     </tr>
-     <tr>
-        <td>12</td>
-        <td>4</td>
-        <td>-</td>
-        <td>few</td>
-        <td>1</td>
-        <td>1</td>
-        <td>4</td>
-     </tr>
-     <tr>
-        <td>13</td>
-        <td>-</td>
-        <td>-</td>
-        <td>few</td>
-        <td>3</td>
-        <td>1</td>
-        <td>4</td>
-     </tr>
-  </table>
-
-  <p>
-  We will reference hypotheses using the Rule Id in the table above to
-  save having to repetitiously write them out!
-  </p>
-
-  <p>
-  A coverage curve is produced by traversing a path from the least
-  general hypothesis to most general. Initially a point at $(0,0)$ is added,
-  For each hypothesis traversed, a point for the number of positive and
-  negative examples covered is added. Finally the default rule covers
-  all examples so a point is added $(\#Pos, \#Neg)$
-  </p>
-
-  <p>
-  For Path 1, the least general hypothesis, rule 2, covers no examples,
-  so we add a point at $(0, 0)$, the next hypothesis, rule 3, covers 1
-  negative example, so we add a point at $(1, 0)$, next the rule 4
-  covers 2 positives and 1 negative (the same one the previous rule
-  covered), we add a point $(2, 1)$, finally the default rule, rule 1,
-  covers all positive and negative examples so a point at $(3, 3)$ is
-  added. The coverage plot we have produced corresponds exactly to
-  coverage plot 3.
-  </p>
-
-  <p>
-  Path 2 gives the coverage curve: $(0, 0) - (0, 1) - (1, 2) - (3, 3)$
-  </p>
-
-  <p>
-  Path 3 gives the coverage curve: $(0, 0) - (0, 1) - (0, 2) - (3, 3)$
-  </p>
-
-  <p>
-  Path 4 gives the coverage curve: $(0, 0) - (0, 1) - (1, 1) - (1, 3) - (3, 3)$
-  </p>
-
+  The algorithms' bias and variance characteristics are enumerated,
+  those with bias issues are more suitable to boosting providing they
+  support weighted training examples. Bagging helps reduce variance so
+  is suitable for high variance methods and does not require weight
+  training example support.
 hint: |
-  <p>
-  For each hypothesis on a path count the number of positives and
-  negatives covered, how can this be used to construct a coverage plot?
-  </p>
-
+  Bagging is good for reducing variance and boosting for reducing bias.
 comments: |
   <p>
-  This question tests the students ability to derive coverage plots from
-  paths through a hypothesis lattice.
+  Tests the student's knowledge of which models are suitable for bagging
+  or boosting.
   </p>
 
   <p>
-  This question requires a reasonable amount of work, the student must
-  first calculate the instances covered by each hypothesis and then use
-  this information to construct a coverage plot
+  Since this is relatively straightforward with little complexity and no
+  calculation it scores a difficulty of 2.
+  </p>
+
+  <p>
+  Author: Will Price
   </p>

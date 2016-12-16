@@ -1,134 +1,163 @@
-images: []
-problem_type: definition
-difficulty: "2"
-reference: "1.2"
-source: "https://arbital.com/p/bayes_rule/"
+images:
+  - url: img/bayes-balls/bayesian-network.png
+    caption: "Fig 1: Bayesian (Belief) Network"
+problem_type: problem-solving
+difficulty: "5"
+reference: "0"
+source: "http://mlg.eng.cam.ac.uk/zoubin/course04/BayesBall.pdf"
 question: |
   <p>
-  An air squadron maintain a large number of Apache attack helicopters,
-  it has been reported that the sensor pods on 5% of the helicopters
-  has been malfunctioning. A diagnostics team had been tasked with
-  coming up with a quick test to determine whether a helicopter has
-  malfunctioning sensor pods. You have been asked to determine the
-  efficacy of the test, you decide that an informative statistic to
-  report would be the probability the test is positive (the sensor pods
-  are faulty) given the helicopter has faulty sensor pods.
+  Bayesian Networks (BNs) graphically model the conditional dependence
+  and independence of events. A BN is modelled as a directed acyclic
+  graph (DAG) where each node represents an event, a directed edge
+  from node A to node B denotes the conditional dependence of A upon
+  B.
   </p>
 
   <p>
-  The test is evaluated on a sample of helicopters and you are given the
-  following statistics: 2 of the 30 helicopters without faulty sensor
-  pods test positive, only 1 out of the 40 helicopters with faulty
-  sensor pods tests negative.
+  Each BN represents a class of probability distributions with certain
+  conditional independence properties. A distribution can be realised by
+  associating a conditional probability table with each node in the graph.
   </p>
 
   <p>
-  What is the probability that a helicopter has faulty sensor pods given
-  the test result is positive (i.e. says it has faulty sensor pods)
+  BNs can be used to model scenarios involving multiple random
+  variables. Random variables become nodes and edges represent
+  conditional dependence.  Once formulated, a network can be analysed to
+  find out whether two sets of variables $X_a, X_b$ are conditionally
+  independent conditioned upon a set of variables $X_c$, this is denoted
+  $X_a \cind X_b | X_c$.
   </p>
-answer_type: single
+
+  <p>
+  $x_1$ is independent of $x_2$ conditioned on $x_3$ providing $x_1$ and
+  $x_2$ are <b>d-separated</b> by $x_3$. d-separation is a property of
+  three sets of nodes expressing certain properties about paths.
+  </p>
+
+  <b>Baye's Ball</b> is a method of determining d-separation, and hence
+  whether $X_a \cind X_b | X_c$
+  </p>
+
+  <p>
+  Using the Bayes-Ball algorithm determine whether the following
+  statements are true
+  </p>
+answer_type: multiple
 answers:
+  - correctness: '-'
+    answer: |
+      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$
   - correctness: '+'
-    answer: $0.44$
-    explanation: See the workings for derivation
-  - correctness: '-'
-    answer: $0.98$
-  - correctness: '-'
-    answer: $0.93$
-  - correctness: '-'
-    answer: $0.11$
+    answer: |
+      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_2, x_7}, X_c = {x_3, x_8}$
+    explanation: |
+      <p>
+      Path from $x_1$ to $x_2$: $x_1 - x_3 - x_2$
+      </p>
+      <p>
+      Path from $x_1$ to $x_7$: $x_1 - x_3 - x_2 - x_4 - x_5 - x_7$
+      </p>
+  - correctness: '+'
+    answer: |
+      $X_a \cind X_b | X_c$ where $X_a = {x_3, x_7}, X_b = {x_5, x_8}, X_c = {x_4}$
+    explanation: |
+      <p>
+      Path from $x_3$ to $x_8$: $x_3 - x_2 - x_4 - x_6 - x_8$
+      </p>
+      <p>
+      Path from $x_7$ to $x_5$: $x_7 - x_5$
+      </p>
 workings: |
-  <p>
-  The first step when given a problem like this is to condense the
-  information provided into a table
-  </p>
-
-
-  <p>
-  Defining relevant events:
-  </p>
-
-  <ul>
-    <li>$F = \text{Helicopter has faulty sensor pod}$</li>
-    <li>$R = \text{Helicopter has a positive test result}$</li>
-  </ul>
+  <div style="display:none">
+  $
+  \(
+    \newcommand\cind{\bot}
+  \)
+  $
+  </div>
 
   <p>
-  Helicopter population information
+  To prove a statement $X_a \cind X_b | X_c$, the Bayes-Ball algorithm
+  plants a ball at each of the nodes in $X_a$, shades the nodes in $X_c$
+  then using rules derived from canonical graphs determines whether any
+  ball can reach a node in $X_b$, if no ball can reach any node in $X_b$, then the
+  statement holds.
   </p>
+
+  <p>
+  The following table shows the rules for determining whether a Bayes
+  ball can traverse a given node given the context of the node (it's neighbours).
+  Nodes that are conditioned are in orange/yellow. A purple arrow from
+  $x_1$ to $x_2$ denotes the conditional dependence of $x_2$ on $x_1$.
+  The green arrows denote the travel of the Bayes ball, if a ball cannot
+  pass a node, the arrow is terminated with a vertical line.
+  </p>
+
   <table>
-    <thead>
-        <tr><td>Working sensor pods</td><td>Faulty sensor pods</td></tr>
-    </thead>
-    <tbody>
-        <tr><td>95%</td><td>5%</td></tr>
-    </tbody>
+  <tr>
+  <td>Rule number</td>
+  <td>Rule</td>
+  <td>Dual conditioned rule</td>
+  </tr>
+
+  <tr>
+  <td>1</td>
+  <td><img width="200" alt="Bayes Balls rule 1" src="img/bayes-balls/rule-1.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 1 (conditioned)" src="img/bayes-balls/rule-1-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>2</td>
+  <td><img width="200" alt="Bayes Balls rule 2" src="img/bayes-balls/rule-2.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 2 (conditioned)" src="img/bayes-balls/rule-2-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>3</td>
+  <td><img width="200" alt="Bayes Balls rule 3" src="img/bayes-balls/rule-3.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 3 (conditioned)" src="img/bayes-balls/rule-3-conditioned.png"></td>
+  </tr>
+
+  <tr>
+  <td>4</td>
+  <td><img width="200" alt="Bayes Balls rule 4" src="img/bayes-balls/rule-4.png"></td>
+  <td><img width="200" alt="Bayes Balls rule 4 (conditioned)" src="img/bayes-balls/rule-4-conditioned.png"></td>
+  </tr>
   </table>
 
   <p>
-  Quick test information
+  $$X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$$
+
   </p>
+
   <table>
-    <tbody>
-        <tr><td></td><td>Working sensor pods</td><td>Faulty pods</td></tr>
-        <tr><td>Positive test result</td><td>$\frac{2}{30}$</td><td>$\frac{39}{40}$</td></tr>
-        <tr><td>Negative test result</td><td>$\frac{28}{30}$</td><td>$\frac{1}{40}$</td></tr>
-    </tbody>
+    <tr>
+      <td><img width="300" alt="Q1 paths" src="img/bayes-balls/bayesian-network-q1.png"></td>
+      <td><img width="300" alt="Q2 paths" src="img/bayes-balls/bayesian-network-q2.png"></td>
+      <td><img width="300" alt="Q3 paths" src="img/bayes-balls/bayesian-network-q3.png"></td>
+    </tr>
+    <tr>
+      <td>Q1 paths starting from $X_a$</td>
+      <td>Q2 paths starting from $X_a$</td>
+      <td>Q3 paths starting from $X_a$</td>
+    </tr>
   </table>
-
-  <p>
-  We want to find $P(F|R)$
-
-  $$
-  \begin{align}
-  P(F|R) &= \frac{P(F \land R)}{P(R)} \\
-         &= \frac{P(R|F) \cdot P(F)}{P(R)} \\
-  \end{align}
-  $$
-  </p>
-
-  <p>
-  We need to find $P(R|F)$, $P(F)$, $P(R)$.
-  </p>
-
-  <ul>
-    <li>
-      $P(R|F) = \frac{39}{40}$, the probability of obtaining a
-      positive result given the helicopter has faulty sensor pods.
-    </li>
-    <li>
-      $P(F) = 0.05$, the probability that any given helicopter has faulty sensor pods.
-    </li>
-    <li>
-      $P(R) = P(R \land F) + P(R \land \lnot F) = P(F) \cdot P(R|F) +
-      P(\lnot F) \cdot P(R|\lnot F) = 0.05 \cdot \frac{39}{40} + 0.95 \cdot \frac{2}{30} = 0.112$, 
-      the probability of obtaining a positive test result
-    </li>
-  </ul>
-
-
-  <p>
-  Finally we can find $P(F|R)$.
-
-  $$
-  P(F|R) = \frac{\frac{39}{40} \cdot 0.05}{0.112} = 0.435
-  $$
-  </p>
-
 hint: |
-  Note down all the information you have in a table, label each cell of
-  the table with the probability it represents. Write down the
-  probability you want to find and then think about what rules you can
-  use to find this.
+  Write down the Bayes-ball node traversal rules and then begin applying
+  them from nodes in $X_a$. When can you conclude whether the two sets
+  are conditionally independent based on the node traversal?
 comments: |
   <p>
-  Tests the student's ability to derive events and probabilities from
-  English prose, then formulate a target probability which can be
-  derived using Bayes rule.
+  Tests the student's knowledge of Bayesian Networks, what they
+  represent and how to determine whether two sets of variables are
+  conditionally independent on another set of variables using Bayes-Ball.
   </p>
 
   <p>
-  Complexity 2 because this is quite straight forward Bayes' rule question 
+  Complexity 5 because Bayesian networks aren't covered and there is a
+  lot of prerequisite knowledge necessary to be able to complete this
+  question.
   </p>
 
   <p>

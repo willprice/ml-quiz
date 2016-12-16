@@ -1,61 +1,168 @@
-images: []
-difficulty: "3"
-reference: "3.1"
-problem_type: evaluation
-source: |
-  Machine Learning: Beyond binary classification
+images:
+  - url: img/underfitting-vs-overfitting-labelled.png
+    caption: "Fig 1: Effects of increasing the complexity of a parametric model"
+  - url: img/learning-curves-high-bias.png
+    caption: "Fig 2: Learning Curve A"
+  - url: img/learning-curves-high-variance.png
+    caption: "Fig 3: Learning Curve B"
+problem_type: problem-solving
+difficulty: "4"
+reference: "3.2"
+source: "http://scikit-learn.org/stable/modules/learning_curve.html"
 question: |
+  <h3>Debugging learning algorithms for high bias or high variance</h3>
+
   <p>
-  Given the score of six pairwise clssifiers
-  $$
-  \begin{align}
-  ( C1, C2, C3, C4, C5, C6)=( +5, -0.5, +4, -0.5, +4 , +0.5)\\
-  \end{align}
-  $$
-  compute their asymmetric one-versus-one scheme. Following this, compute their
-  distances to the word w = +1 -1 +1 -1 +1 +1 using the exponential loss functions
-  and the voting-based scheme and sort the classes according to your results
-  in descending order of their favoritism.
+  When developing new learning algorithms and models it is common to
+  obtain less than stellar performance, but why isn't your model
+  performing as well as it should? Perhaps you could try adding more
+  training data, maybe the model is underfitted, or overfitted, maybe
+  the features derived from your data aren't sufficiently expressive.
   </p>
 
-answer_type: sort
-answers:
-  - correctness: "1"
-    answer: "0.7"
-    explanation: The accuracy of the best classifier
-  - correctness: "2"
-    answer: "0.7"
-    explanation: |
-      The average recall of the best classifier
+  <p>
+  As you can see from the list above, there are many pitfalls that can
+  cause your model to perform poorly. Which aspect do you choose to
+  improve? Do you collect more training data, or do you try some
+  different features representing your data, etc. As with any problem,
+  without visibility into the problem, you are progressing blindly and
+  you'll most likely pick the wrong avenue of improvement.
+  </p>
 
+  <p>
+  The mean squared error (MSE) is commonly used to evaluate a model,
+  $\hat{f}(x)$, output by a learning algorithm, the MSE can be decomposed
+  into three components: The bias of the model, the variance of the model
+  and finally the irreducible error (which is due to the noise in observed
+  values).
+
+  $$\mathrm{MSE}(\hat{f}(x)) =
+    \underbrace{\sigma^2}_{\text{Irreducible error}} +
+    \mathrm{Var}[\hat{f}(x)] +
+    (\mathrm{Bias}[\hat{f}(x)])^2
+  $$
+  </p>
+
+  <p>
+  There are a variety of visualisation techniques we can use to better
+  understand the problems of the trained model. Learning curves show how
+  the accuracy (or some other evaluation metric) of models produced by a
+  learning algorithm vary as we increase the training set size.
+  </p>
+
+  <p>
+  Using your knowledge of bias and variance, interpret the following
+  plots and match each plot to the property of the model the plot is
+  revealing.
+  </p>
+  <p>
+  <b>Model evaluation</b>
+  <br />
+  Match the model with the type of bias/variance
+  </p>
+
+  <p>
+  <b>Learning curves</b>
+  <br />
+  Match up the learning curve with the type of error the model displays
+  </p>
+
+answer_type: matrix_sort_answer
+answers:
+  - correctness: "Model evaluation: A"
+    answer: "Model evaluation: High bias"
+    explanation: |
+      The estimator underfits the training data causing the expected error
+      of the estimator to be different from the expected error of the
+      k
+    answer: "Model evaluation: Low bias, low variance"
+    explanation: |
+      The trained model is very close to the underlying distribution.
+  - correctness: "Model evaluation: C"
+    answer: "Model evaluation: High variance"
+    explanation: |
+      The estimator overfits the training data, the expected error of
+      the estimator will be close to the expected error of the true
+      function, however where there is little training data the
+      estimator produces widely inaccurate predictions causing the
+      estimator to have  high variance (i.e. the spread of predictions
+      is much larger than the spread of data sampled from the true
+      distribution)
+  - correctness: "Learning curve A"
+    answer: "Learning curve: High bias"
+    explanation: |
+      The estimator overfits the training data, the expected error of
+      the estimator will be close to the expected error of the true
+      function, however where there is little training data the
+      estimator produces widely inaccurate predictions causing the
+      estimator to have  high variance (i.e. the spread of predictions
+      is much larger than the spread of data sampled from the true
+      distribution)
+  - correctness: "Learning curve B"
+    answer: "Learning curve: High variance"
+    explanation: |
+      The training score shows that the model has fit the training data
+      almost perfectly, however with smaller training sets the cross
+      validation score considerably lower than the training score. As
+      the training set size increases the cross validation score
+      improves suggesting that better performance can be obtained by
+      training the model on a large training set.
 workings: |
   <p>
-  In a one-versus-one scheme each column of the matrice describes a binary
-  classification task, using the class coressponding to the row with +1 entry
-  as positive class and the class with the -1 entry as the negative class.
-  Therefore, we train k(k-1)/2 binary classifiers, one for each pair of
-  different classes. If a binary classifier treats the classes asymmetrically,
-  we will train two classes for each pair, leading to a total of k(k-1)
-  classifiers, where k is the number of total classes given.
+  Recall the following figure from the book
   </p>
 
+  <div style="text-align:center;">
+    <img src="./img/dartboards.png" alt="Dartboard visualisation of variance and bias">
+  </div>
 
+  <p>
+  The four dartboards from the top left clockwise demonstrate good
+  predicition, predictions with high variance, predictions with high
+  variance and bias, and predictions with high bias.
+  </p>
+
+  <p>
+  Consider the linear regressor trying to fit the data in Fig 1,
+  regardless of the parameters it will be unable to achieve good
+  regression performance. For similar features the prediction will
+  be similar but will be far away from the true value.
+  </p>
+
+  <p>
+  Consider the polynomial of degree 15 regressor trying to fit the data
+  in Fig 1, it achieves good training performance, but the plot shows
+  how for small steps away from training examples the prediction varies
+  wildly from the true value, since there is no consistency to these errors,
+  the regressor has high variance.
+  </p>
 hint: |
+  Blah
+  wa
+comments: |
   <p>
-  Computing their asymmetric one-versus-one scheme should aid the interpretation
-  of the votes for the classes reprsented such that every c{i} character of the
-  word equal with an entry on collumn i row j will represent a vote for the
-  classifier C{j}.
-  </p>
-  <p>
-  The same asymmetric one-versus-one scheme, but taking into consideration the
-  score vector given, should aid the computation of L(z) = exp(-z).
+  Tests the student's knowledge of bias and variance, introduces them to
+  learning curves and asks them to understand how the learning curve
+  looks for models with high variance and for models with high bias.
   </p>
 
-comments: |
-  Test student knowledge on using one-versus-one schemes to turn binary
-  classifiers into multi-class classifiers.
-  <br>
-  Complexity 3 because it requires interpretation of the voting scheme in
-  parallel with computing the distances to the word using the exponential
-  loss formula and outputing their possibly different results.
+  <p>
+  Complexity 4 because the bias-variance trade off is a starred topic,
+  and learning curves aren't covered in the book.
+  </p>
+
+  <p>
+  The images were created by the
+  <a href="http://scikit-learn.org/stable/modules/learning_curve.html">
+  scikit-learn team
+  </a>.
+  Stanford have published an online course,
+  <a href="https://www.coursera.org/learn/machine-learning/home/week/6">
+  Machine Learning
+  </a> which has a section on evaluating learning algorithms using
+  learning and validation curves from which this question was inspired.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>

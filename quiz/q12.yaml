@@ -1,323 +1,255 @@
 images: []
+problem_type: calculation
 difficulty: "3"
-reference: "5.1"
-problem_type: training
+reference: "12.3"
 source: |
-  Machine Learning: Tree Models - Decision Trees
+  Machine Learning: Machine learning experiments - How to interpret it
 question: |
   <p>
-  Defining the following features:
-  $$
-  \begin{align}
-  Length &= [3,4,5]\\
-  Gills  &= [\text{yes}, \text{no}]\\
-  Beak   &= [\text{yes}, \text{no}]\\
-  Teeth  &= [\text{many}, \text{few}]\\
-  \end{align}
-  $$
-  and the following table of training samples:
+  A comparison between two linear models over a collection of datasets
+  was performed. Determine whether the following null hypothesis can be
+  rejected or not by means of a Wilcoxon's signed-rank test with $\alpha=0.01$.
+  </p>
+
+  <p>
+  Null hypothesis, $h_0$: The difference between the average recall of the trained SVM and Ridge regression models follow a symmetric distribution around 0
   </p>
 
   <table>
      <tr>
-        <td>Length</td>
-        <td>Gills</td>
-        <td>Beak</td>
-        <td>Teeth</td>
-        <td>Class</td>
+        <td rowspan="2">Dataset</td>
+        <td colspan="2">Average recall</td>
+     </tr>
+     <tr>
+        <td>Ridge Regression</td>
+        <td>SVM</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0.84</td>
+        <td>0.93</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0.81</td>
+        <td>0.88</td>
      </tr>
      <tr>
         <td>3</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Many</td>
-        <td>+</td>
+        <td>0.83</td>
+        <td>0.71</td>
      </tr>
      <tr>
         <td>4</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Many</td>
-        <td>+</td>
-     </tr>
-     <tr>
-        <td>3</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Few</td>
-        <td>+</td>
+        <td>0.83</td>
+        <td>0.73</td>
      </tr>
      <tr>
         <td>5</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Many</td>
-        <td>+</td>
+        <td>0.83</td>
+        <td>0.94</td>
      </tr>
      <tr>
-        <td>5</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Few</td>
-        <td>+</td>
+        <td>6</td>
+        <td>0.81</td>
+        <td>0.89</td>
      </tr>
      <tr>
-        <td>5</td>
-        <td>Yes</td>
-        <td>Yes</td>
-        <td>Many</td>
-        <td>-</td>
+        <td>7</td>
+        <td>0.85</td>
+        <td>0.94</td>
      </tr>
      <tr>
-        <td>4</td>
-        <td>Yes</td>
-        <td>Yes</td>
-        <td>Many</td>
-        <td>-</td>
+        <td>8</td>
+        <td>0.8</td>
+        <td>0.89</td>
      </tr>
      <tr>
-        <td>5</td>
-        <td>Yes</td>
-        <td>No</td>
-        <td>Many</td>
-        <td>-</td>
+        <td>9</td>
+        <td>0.83</td>
+        <td>0.92</td>
      </tr>
      <tr>
-        <td>4</td>
-        <td>Yes</td>
-        <td>No</td>
-        <td>Many</td>
-        <td>-</td>
+        <td>10</td>
+        <td>0.8</td>
+        <td>0.88</td>
      </tr>
      <tr>
-        <td>4</td>
-        <td>No</td>
-        <td>Yes</td>
-        <td>Few</td>
-        <td>-</td>
+        <td>11</td>
+        <td>0.84</td>
+        <td>0.95</td>
+     </tr>
+     <tr>
+        <td>12</td>
+        <td>0.83</td>
+        <td>0.94</td>
      </tr>
   </table>
-
-  <p>
-  Construct a decision tree using entropy as the impurity measure with
-  the <code>GrowTree(D, F)</code> algorithm, where $D$ is the set of
-  examples and $F$ is set of features. The algorithm determines which
-  feature to split on by choosing the one resulting in the highest
-  impurity reduction.  Impurity is a measure of homogeneity of a set of
-  instances; the more homogenous the instances, the lower the impurity.
-  When impurity the impurity of a set of instances $D$, denoted
-  $Imp(D)$, is 0, then the set is completely homogenous, i.e. the
-  instances are all of the same class.
-  </p>
-
-  <p>
-  To increase the generalisation of our decision tree, next apply the
-  PruneTree(T,D) algorithm using the following pruning set of labelled
-  data not seen during training:
-  </p>
-
-  <table>
-  <thead>
-    <tr>
-      <th>Instance</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>p3 :  Length = 4 & Gills = no & Beak = no & Teeth = few</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>p4 :  Length = 4 & Gills = no & Beak = no & Teeth = many</td>
-      <td>+</td>
-    </tr>
-    <tr>
-      <td>n1 : Length = 5 & Gills = no & Beak = no & Teeth = few</td>
-      <td>-</td>
-    </tr>
-    <tr>
-      <td>n4 : Length = 4 & Gills = yes & Beak = yes & Teeth = few</td>
-      <td>-</td>
-    </tr>
-  </tbody>
-  </table>
-
-  <p>
-  Following the reduced-error pruning, complete the next contingency matrix
-  according to your results to observe the impact on the first given data.
-  </p>
-
-answer_type: cloze_answer
+answer_type: single
 answers:
-  answer:
-    - "5 | 0  | 5"
-    - "------------"
-    - "1 | 4 | 5"
-    - "------------"
-    - "6 | 4 | 10"
-  explanation: |
-    When prunning the accuracy of the decision tree on the first data given will decrease
-
+  - correctness: '+'
+    answer: 'Yes'
+    explanation: See the workings for derivation
+  - correctness: '-'
+    answer: 'No'
+    explanation: See the workings for derivation
 workings: |
   <p>
-  GrowTree(D,F) is a divide-and-conquer algorithm that in our case given the
-  D instance space containing 10 samples and the F set of features will return
-  a feature tree T with labbelled leaves, assuring that each labeled leaf is
-  is homogeneous and each split is given by BestSplit-Class(D,F) algorithm.
-  </p>
-
-  <pre>
-  <code>
-  The GrowTree(D,F) is as follows:
-
-  Input : data D; features D.
-  Output: feature tree T with labbelled leaves.
-  if Homogeneous(D) then return Label(D);
-  S<-BestSplit(D,F);
-  split D into subsets D(i) according to the literals in S;
-  for each i do
-    if D(i) <> {} then
-      T(i) <- GrowTree(D(i),F)
-      else
-        T(i) is a leaf labelled with Label(D)
-  end
-  return a tree whose root is labelled with S and whose children are T(i)
-  </code>
-  </pre>
-
-
-  <p>
-  The BestSplit-class algorithm chooses as the best feature to spilt on, the one
-  that achieves the maximum information gain, Imp(D)-Imp({D1,...,Dl}),
-  for splitting the parent node D into leaves D1,..,Dl. While the Imp(D)
-  is constant during one iteration of the algorithm, it will be equivalently
-  correct to choose the feature that achieves the minimum impurity.
+  The Wilcoxon's signed-rank test can be executed as follows
+    <ol>
+      <li>Determine the critical value given $n$, $\alpha$, and one-tail/two-tail</li>
+      <li>Calculate the difference in performance between the pair of algorithms under test</li>
+      <li>Rank the absolute differences in descending order (rank 1 for largest difference)</li>
+      <li>Calculate two sum of ranks, one sum of ranks for positive differences, and the other for negative differences</li>
+      <li>Select the lowest sum of ranks and compare to the critical value, if it is less than or equal, reject the null hypothesis</li>
+    </ol>
   </p>
 
   <p>
-  The feature available will contain the examples as follows for the first split:
-  \begin{align}
-  Length &= 3           \rightarrow [2+, 0-]\\
-  Length &= 4           \rightarrow [1+, 3-]\\
-  Length &= 4           \rightarrow [2+, 2-]\\
-  Gills  &= \text{yes}  \rightarrow [0+, 4-]\\
-  Gills  &= \text{no}   \rightarrow [5+, 1-]\\
-  Beak   &= \text{yes}  \rightarrow [5+, 3-]\\
-  Beak   &= \text{no}   \rightarrow [0+, 2-]\\
-  Teeth  &= \text{many} \rightarrow [3+, 4-]\\
-  Teeth  &= \text{few}  \rightarrow [2+, 1-]\\
-  \end{align}
+  $\alpha = 0.01$ as given in the question and $n = 12$ since there are
+  12 datasets, the test is
+  <a href="http://www.ats.ucla.edu/stat/mult_pkg/faq/general/tail_tests.htm">
+  two tailed</a> since we're interested in whether the difference a
+  symmetric distribution with mean greater than 0 <b>or</b> less than 0.
   </p>
 
   <p>
-  For feature length = 3 we only have positive instances meaning the leaf will
-  be pure so therefore we have entropy = 0;
-  <br>
-  For feature length = 4 will have:
+  Using the above information we can lookup the critical value: $7$
+  </p>
 
-  $$entropy = -(1/4) \log(1/4) - (3/4) \log(3/4) = 0.51 + 0.31 = 1.81$$
+  <table>
+     <tr>
+        <td rowspan="2">Dataset</td>
+        <td colspan="2">Average recall</td>
+        <td rowspan="2">Difference</td>
+        <td rowspan="2">Rank</td>
+        <td rowspan="2">Sign</td>
+     </tr>
+     <tr>
+        <td>Ridge Regression</td>
+        <td>SVM</td>
+     </tr>
+     <tr>
+        <td>1</td>
+        <td>0.84</td>
+        <td>0.93</td>
+        <td>0.09</td>
+        <td>4</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>2</td>
+        <td>0.81</td>
+        <td>0.88</td>
+        <td>0.07</td>
+        <td>10</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>3</td>
+        <td>0.83</td>
+        <td>0.71</td>
+        <td>-0.12</td>
+        <td>12</td>
+        <td>-1</td>
+     </tr>
+     <tr>
+        <td>4</td>
+        <td>0.83</td>
+        <td>0.73</td>
+        <td>-0.1</td>
+        <td>11</td>
+        <td>-1</td>
+     </tr>
+     <tr>
+        <td>5</td>
+        <td>0.83</td>
+        <td>0.94</td>
+        <td>0.11</td>
+        <td>2</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>6</td>
+        <td>0.81</td>
+        <td>0.89</td>
+        <td>0.08</td>
+        <td>8</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>7</td>
+        <td>0.85</td>
+        <td>0.94</td>
+        <td>0.09</td>
+        <td>4</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>8</td>
+        <td>0.8</td>
+        <td>0.89</td>
+        <td>0.09</td>
+        <td>6</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>9</td>
+        <td>0.83</td>
+        <td>0.92</td>
+        <td>0.09</td>
+        <td>6</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>10</td>
+        <td>0.8</td>
+        <td>0.88</td>
+        <td>0.08</td>
+        <td>8</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>11</td>
+        <td>0.84</td>
+        <td>0.95</td>
+        <td>0.11</td>
+        <td>1</td>
+        <td>1</td>
+     </tr>
+     <tr>
+        <td>12</td>
+        <td>0.83</td>
+        <td>0.94</td>
+        <td>0.11</td>
+        <td>2</td>
+        <td>1</td>
+     </tr>
+  </table>
 
-  For feature length =5 we have 50% positives as 50% negatives that means
-  we have a maximum impurity of 1.
-  <br>
-  Therefore, the total impurity will be as follows:
-
-  $$ total impurity = 2/10 * 0 + 4/10 * 0.81 + 4/10 * 1 = 0.72 $$
-
-  For feature Gills = yes we only have negative instances so we will have again
-  an entropy of 0.
-  <br>
-  For feature Gills = no will have :
-
-  $$ entropy = -(5/6) \log(5/6) - (1/6) \log(1/6)$$
-
-  Therefore the total impurity will be will be as follows:
-
-  $$ total impurity = 4/10 * 0 + 6/10 *(-(5/6)\log(5/6)-(1/6)\log(1/6)) = 0.39.  $$
-
-  Following the same calculations:
-  $$
-  total impurity for feature beak = 8/10 *(-(5/8) \log(5/8) - (3/8) \log(3/8)) + 2/10 * 0 = 0.76
-  $$
-
-  $$
-  \begin{align}
-  total impurity for feature teeth = &{} 7/10 *(-(3/7) \log(3/7) - (4/7) \log(4/7)) + {} \\
-  &{} 3/10 *(-(2/3) \log(2/3) - (1/3) \log(1/3)) = 0.97
-  \end{align}
-  $$
+  <p>
+  $W^{+}$ denotes the sum of ranks for positive differences and $W^{-}$ for negative differences.
   </p>
 
   <p>
-  As we already established that the BestSplit-class will choose the feature that
-  achieves the minimum impurity we can therefore say that 'Gills' will be the first
-  best feature to split on.
-  </p>
-
-  <p>
-  While Gills = no will be homogeneous we will label that leaf with the negative
-  class. Following this, we will repeat the same process on the Gills = yes branch
-  untill all the leafs obtained will achieve the maximum accuracy. From top to bottom,
-  the decision tree will be in the end split in order on the following features:
-  gills, length, teeth.
-  </p>
-
-  <p>
-  However, that implies that we will in the end overfitt our decision tree for the
-  data provided.To avoid this we can either stop our feature tree construction earlier,
-  process known as pre-prunning or we can otherwise reasses our splits in a bottom-up
-  manner provided a new set of data that was not part of our training procedure.
-  </p>
-
-  <p>
-  The latter will be realised using the PruneTree algorithm that takes as input
-  a labelled decision tree and a new labelled set of instances and outputs a
-  pruned tree T' as follows:
-  </p>
-
-  <pre>
-  <code>
-  PruneTree(T,D) is as follows:
-
-  Input : decision tree D; labelled data D;
-  Output: pruned tree T'.
-  for every internal node N of T, starting form the bottom do:
-    T{N} <- subtree of T rooted at N;
-    D{N} <- {x from D|x is covered by N}
-    if accuracy of T{N} over D{N} is worse than majority class in D{N} then
-      replace T{N} in T be a leaf labelled with the majority class in D{N}
-      end
-  end
-  return pruned version of T
-  </code>
-  </pre>
-
-  <p>
-  Using the new data given teeth feature will classify a positive instances
-  as being negative in the case of teeth = few. However, if we were to take
-  the majority class of its parent we would be able to classify it correctly
-  having therefore a higher accuracy that will cause that subtree to be pruned.
-  Is it also revelant to say that now that all conditional branches of length
-  classify their instances as being positive we can prune that subtree as well,
-  keeping in the end only the split on the gills feature.
+  $W^{+} = 51$, and $W^{-} = 23$. Comparing the smaller sum of ranks to
+  the critical value: $23 > 7$ so we cannot reject the null hypothesis
+  at $\alpha = 0.01$.
   </p>
 
 hint: |
-  <p>
-  Follow the given algorithms taking into consideration that finding the best
-  split will require finding the feature that achieves the minimum entropy/impurity
-  while at each added split the number of instances will reduce.
-  </p>
-
+  You'll have to lookup the critical value for $\alpha$ either in a
+  <a href="http://www.bios.unc.edu/~mhudgens/bios/662/2008fall/wilcox_t.pdf">table</a>,
+  or use a statistical package like scipy or R.
 comments: |
   <p>
-  Problem requires the understanding of basic algorithms used in the construction of
-  decision trees, while also introducing the problem of overfitting which can be solved
-  through prunning.
+  Tests the student's knowledge of Wilcoxon's signed-rank test for
+  determining whether there is a statistically significant difference
+  between two models evaluated over multiple datasets.
   </p>
 
   <p>
-  Complexity 3 because it requires extensive computations for determining the best
-  feature to split on and also the decision tree accuracy on the new data presented.
+  Complexity 3 because there is quite a lot of calculation although it's
+  fairly formulaic. One potential trip up would be using critical values
+  for a one tailed test.
   </p>

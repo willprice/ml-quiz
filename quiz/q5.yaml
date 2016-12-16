@@ -1,99 +1,83 @@
 images:
-  - url: img/coveragePlot.png
-    caption: "Figure 1: Coverage plot of 3 classifiers"
-problem_type: evaluation
+  - url: img/decision-tree.png
+    caption: "Fig 1: Decision Tree"
+problem_type: calculation
 difficulty: "3"
-reference: "2.1"
+reference: "5.2"
 source: |
-  Machine Learning: Binary classification and related tasks
-question:
-  - Given the coverage plot in Fig. 1 depicting the performance of three classifiers and
-    the details below, determine the dominant class by considering their mapping to
-    a ROC curve. Then compute its accuracy and average recall.
-
-    $$
-    \begin{align}
-    Pos&= 25\\
-    Neg&= 75\\
-    \end{align}
-    $$
-
-    $$
-    \begin{align}
-    TP1&= 10\\
-    TP2&=20\\
-    TP3&= 20\\
-    \end{align}
-    $$
-
-    $$
-    \begin{align}
-    FP1&= 15\\
-    FP2&= 25\\
-    FP3&= 40\\
-    \end{align}
-    $$
-
-    <p>
-    <br />
-    Accuracy of the best classifier is
-  - 1
-  - |
-    <br />
-    The average recall of the best classifier is
-  - 2
-  - |
-    </p>
-
-answer_type: blank_answer
+  Machine Learning: Tree Models - Turning trees into classifier (p. 142)
+question: |
+  An unlabelled decision tree is given in Fig 1. You are asked to label
+  each leaf of the tree based on different cost assessments, for each
+  assessment you are given $c$, the ratio of the cost of false negatives
+  to false positives. Match the leaf class labellings with the costs.
+answer_type: matrix_sort_answer
 answers:
-  - correctness: 1
-    answer: "0.7"
-    explanation: The accuracy of the best classifier
-  - correctness: 2
-    answer: "0.7"
+  - correctness: $c = 0.1$
+    answer: "++++"
     explanation: |
-      The average recall of the best classifier
-
+      Cost adjusted counts: $(5+, 1-), (8+, 2-), (1+, 0.5-), (6+, 2.5-)$
+  - correctness: $c = 0.2$
+    answer: "++-+"
+    explanation: |
+      Cost adjusted counts: $(5+, 2-), (8+, 4-), (1+, 1-), (6+, 5-)$
+  - correctness: $c = 0.4$
+    answer: "+---"
+    explanation: |
+      Cost adjusted counts: $(5+, 4-), (8+, 8-), (1+, 2-), (6+, 10-)$
+      <br />
+      The second leaf is classified as $\ominus$ since $c \cdot 20 = 8$
+      which gives an equal number of weighted positives and negatives,
+      so we use the majority class, in this case negative to choose the
+      class label.
+  - correctness: $c= 1$
+    answer: "----"
+    explanation: |
+      Cost adjusted counts: $(5+, 10-), (8+, 20-), (1+, 5-), (6+, 25-)$
 workings: |
   <p>
-  In a coverge plot, classifiers with the same accuracy are connected
-  by line segments with slope 1. However, coverage plots do not take
-  account of different class distributions. For this reason we should
-  consider its normalised version which is referred to as a ROC plot
-  that explicitly takes the class distribution into account.
+  To derive the labelling of each leaf we need to take into account the
+  cost ratio and the class distribution.
   </p>
 
   <p>
-  From the given coverage plot we can conclude that C2 is superior to
-  C3, while they both have the same number of true positives, C2 has a
-  lower number of false positives. However, because of the different
-  class distributions we cannot confirm that C1 is equivalent to C2
-  even if they have the same accuracy.
+  For $c = 1$, false negatives are as costly as false positives, so we
+  don't have to manipulate the class distribution in any way, we simple
+  label the leaf with the majority class, from left to right this is: "----".
   </p>
 
   <p>
-  To be able to graphically represent the classifier performance differences we
-  have to normalise the data which will make noticable that they have
-  different average recalls.  This is due to the fact that even if the
-  differences on the x and y axis do might include an equal amount of
-  false and true positives instances, because the number of negatives
-  instances is higher than the number of positive instances, the
-  increase on the true positive axis will have a higher weight. This
-  can be also observed when computing for both C1 nad C2 their true
-  positive / negatives rates that are included in the computation of
-  average recall as follows:
+  Generally, for an arbitrary $c$, false negatives are $c$ times more
+  costly than false positives, we manipulate each leaf distribution to
+  take this into account by weighting the negative count with $c$. For
+  example, take the left most leaf with $c = 0.2$, $10 \cdot 0.2 = 2$.
+  Having taken into account the cost ratio we can now perform the same
+  technique above and predict the majority class which is "++--" for $c
+  = 0.2$.
   </p>
 
-  $$\text{average recall} = \frac{TPR + TNR}{2}$$
+  <p>
+  In the case where the leaf class distribution is uniform, we predict
+  the majority class of the full dataset.
+  </p>
 hint: |
-  For each classifier compute their accuracy and average recall to aid you with
-  deciding whether your choice is indeed the best classifier.
-
+  Recall the definition of $c = \frac{c_{FN}}{c_{FP}}$, consider how
+  this additional information affects the class distributions in each
+  leaf.
 comments: |
-  Test the students ability to interpret the visualisation methods of a
-  classification performance and the mapping of a coverage plot to a ROC curve.
-  <br>
-  Complexity 3 because it requires a deep understanding of assessing classification
-  performance and involves computing the accuracy and average recall in order to make
-  a competent decision having no representation of an equivalent ROC plot .
+  <p>
+  Tests the student's knowledge of decision tree labelling given skewed
+  FN-FP costs.
+  </p>
+
+  <p>
+  Complexity 3 because it's more involved than simply labelling a tree
+  based on majority class, the added complexity of having to break ties
+  in the leaf by predicting majority class pushes this up a bit more as
+  it requires the student to have a good understanding of how
+  distributions effect predictions.
+  </p>
+
+  <p>
+  Author: Will Price
+  </p>
