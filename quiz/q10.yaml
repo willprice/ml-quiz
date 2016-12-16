@@ -35,8 +35,9 @@ question: |
   three sets of nodes expressing certain properties about paths.
   </p>
 
-  <b>Baye's Ball</b> is a method of determining d-separation, and hence
-  whether $X_a \cind X_b | X_c$
+  <p>
+  <b>Baye's Ball</b> is a method of determining d-separation between
+  sets $X_a$, $X_b$ and $X_c$ which tells us whether $X_a \cind X_b | X_c$
   </p>
 
   <p>
@@ -45,22 +46,24 @@ question: |
   </p>
 answer_type: multiple
 answers:
-  - correctness: '-'
-    answer: |
-      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$
   - correctness: '+'
     answer: |
-      $X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_2, x_7}, X_c = {x_3, x_8}$
+      $X_a \cind X_b | X_c$ where $X_a = \{x_1\}, X_b = \{x_5, x_8\}, X_c = \{x_4, x_6\}$
+    explanation: |
+      There are no paths from $X_a$ to $X_b$
+  - correctness: '-'
+    answer: |
+      $X_a \cind X_b | X_c$ where $X_a = \{x_1\}, X_b = \{x_2, x_7\}, X_c = \{x_3, x_8\}$
     explanation: |
       <p>
-      Path from $x_1$ to $x_2$: $x_1 - x_3 - x_2$
+      Path from $x_1$ to $x_2$: $x_1 - x_3 - x_2$ using rule
       </p>
       <p>
       Path from $x_1$ to $x_7$: $x_1 - x_3 - x_2 - x_4 - x_5 - x_7$
       </p>
-  - correctness: '+'
+  - correctness: '-'
     answer: |
-      $X_a \cind X_b | X_c$ where $X_a = {x_3, x_7}, X_b = {x_5, x_8}, X_c = {x_4}$
+      $X_a \cind X_b | X_c$ where $X_a = \{x_3, x_7\}, X_b = \{x_5, x_8\}, X_c = \{x_4\}$
     explanation: |
       <p>
       Path from $x_3$ to $x_8$: $x_3 - x_2 - x_4 - x_6 - x_8$
@@ -126,11 +129,6 @@ workings: |
   </tr>
   </table>
 
-  <p>
-  $$X_a \cind X_b | X_c$ where $X_a = {x_1}, X_b = {x_5, x_8}, X_c = {x_4, x_6}$$
-
-  </p>
-
   <table>
     <tr>
       <td><img width="300" alt="Q1 paths" src="img/bayes-balls/bayesian-network-q1.png"></td>
@@ -143,6 +141,44 @@ workings: |
       <td>Q3 paths starting from $X_a$</td>
     </tr>
   </table>
+
+  <p>
+  The valid paths given below are justified by use of the rules above,
+  if a rule has been used, it's rule number is given, if the rule was
+  the conditioned dual then it is denoted by the number followed by
+  prime, e.g. rule 1' corresponds to the rule in the top right corner.
+  </p>
+
+
+  <p>
+  <b>Q1</b>
+  <br/>
+  To determine whether
+  $X_a \cind X_b | X_c$ where $X_a = \{x_1\}, X_b = \{x_5, x_8\}, X_c = \{x_4, x_6\}$ holds,
+  we plant a ball at $x_1$ and try to reach $x_5$ or $x_8$. The ball can
+  traverse $x_1 - x_3 - x_6$ following rule 1, but then cannot travel
+  any further. There are no paths from $X_a$ to $X_b$ hence $X_a \cind X_b | X_c$ holds.
+  </p>
+
+  <p>
+  <b>Q2</b>
+  <br/>
+  To determine whether
+  $X_a \cind X_b | X_c$ where $X_a = \{x_1\}, X_b = \{x_2, x_7\}, X_c = \{x_3, x_8\}$
+  holds, we use the Bayes-ball algorithm planting a ball at $x_1$.
+  Since  $x_2$ can be reach from $x_1$ along the path: $x_1 - x_3 - x_2$ using the rule 2'
+  </p>
+
+  <p>
+  <b>Q3</b>
+  <br/>
+  To determine whether
+  $X_a \cind X_b | X_c$ where $X_a = \{x_3, x_7\}, X_b = \{x_5, x_8\}, X_c = \{x_4\}$ holds,
+  we plant two balls, one at $x_3$ and the other at $x_7$, then if
+  either ball reaches $x_5$ or $x_8$ we will have disproved the
+  statement.
+  Path from $x_7$ to $x_5$: $x_7 - x_5$ by rule 4. As you can see from the figure, the balls can also reach $x_8$ 
+  </p>
 hint: |
   Write down the Bayes-ball node traversal rules and then begin applying
   them from nodes in $X_a$. When can you conclude whether the two sets
