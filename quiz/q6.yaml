@@ -6,27 +6,23 @@ source: |
   Machine Learning: Beyond binary classification
 question: |
   <p>
-  Given the score of six pairwise clssifiers
-  $$
-  \begin{align}
-  ( C1, C2, C3, C4, C5, C6)=( +5, -0.5, +4, -0.5, +4 , +0.5)\\
-  \end{align}
-  $$
-  compute their asymmetric one-versus-one scheme. Following this, compute their
-  distances to the word w = +1 -1 +1 -1 +1 +1 using the exponential loss functions
-  and the voting-based scheme and sort the classes according to your results
+  Given six pairwise clssifiers compute their asymmetric one-versus-one scheme.
+  Following this, compute their distances to the word w = +1 -1 +1 -1 +1 +1 using
+  the voting-based scheme and sort the classes according to your results
   in descending order of their favoritism.
   </p>
 
 answer_type: sort
 answers:
   - correctness: "1"
-    answer: "0.7"
-    explanation: The accuracy of the best classifier
+    answer: "$C_3$"
+    explanation: for help refer to workings
   - correctness: "2"
-    answer: "0.7"
-    explanation: |
-      The average recall of the best classifier
+    answer: "$C_1$"
+    explanation: for help refer to workings
+  - correctness: "2"
+    answer: "$C_2$"
+    explanation: for help refer to workings
 
 workings: |
   <p>
@@ -38,24 +34,60 @@ workings: |
   we will train two classes for each pair, leading to a total of k(k-1)
   classifiers, where k is the number of total classes given.
   </p>
+  Therefore, in our case we obtain the fallowing scheme:
+  $$\mathbf{y} =
+  \begin{pmatrix}
+    +1 & +1 & +1 & 0 & 0 & 0 \\
+    -1 & 0 & 0 & +1 & +1 & 0 \\
+    0 & -1 & 0 & -1 & 0 & +1 \\
+    0 & 0 & -1 & 0 & -1 & -1 \\
+  \end{pmatrix}$$
+
+  <p>
+  Computing their asymmetric one-versus-one scheme should aid the interpretation
+  of the votes for the classes represented such that every $c_i$ character of the
+  word equal with an entry on collumn i row j will represent a vote for the
+  classifier $C{j}$.
+  </p>
+
+  <p>
+  Therefore, given the word w = +1 -1 +1 -1 +1 +1 we can interpret the match
+  between between $w_1$ and c(1,1), $w_2$ and c(2,3), $w_3$ and c(3,1), $w_4$
+  and c(4,3), $w_5$ and c(5,2), $w_6$ and c(6,3) as votes for $C_1$, $C_3$,
+  $C_1$, $C_3$, $C_2$, $C_3$.
+  </p>
+
+  <p>
+  So in the end we obtained 3 votes for $C_3$, 2 votes for $C_1$ and one vote for
+  $C_2$.
+  </p>
 
 
 hint: |
   <p>
-  Computing their asymmetric one-versus-one scheme should aid the interpretation
-  of the votes for the classes reprsented such that every c{i} character of the
-  word equal with an entry on collumn i row j will represent a vote for the
-  classifier C{j}.
+  Another option of diriving the correct results implies using the fallowing distance
+  function:
+  <br>
+  $d(w,c)=\sum_{i}\left[ (1 - w_i c_i)/2 \right]$
+  <br>
+  to define the distance between a word w and a code word c, where i ranges over
+  the 'bits' of the word. The 'bits' that agree would not contribute to the distance,
+  whiles the one that don't will contribute with 1 with the exception that if either
+  of the 'bits' is 0 the contribution is 1/2 regardless of the other 'bit'.
   </p>
   <p>
-  The same asymmetric one-versus-one scheme, but taking into consideration the
-  score vector given, should aid the computation of L(z) = exp(-z).
+  Because the 0 bits will contribute with 1/2 we can derive the fallowing equivalence:
+  <br>
+  $v_j = \frac{(k-1)(k-2)}{4} - d_j$
+  <br>
+  where $v_j$ represents the number of votes for class $C_j.$
   </p>
+
 
 comments: |
   Test student knowledge on using one-versus-one schemes to turn binary
   classifiers into multi-class classifiers.
   <br>
   Complexity 3 because it requires interpretation of the voting scheme in
-  parallel with computing the distances to the word using the exponential
-  loss formula and outputing their possibly different results.
+  parallel with computing the distances to the word and outputing their possibly
+  different results.
