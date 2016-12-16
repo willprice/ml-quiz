@@ -75,7 +75,7 @@ workings: |
   <div style="display:none">
   $
   \(
-    \newcommand\cind{\bot}
+    \newcommand\cind{\mathbin{\bot}}
   \)
   $
   </div>
