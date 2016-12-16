@@ -2,7 +2,8 @@ images: []
 difficulty: "3"
 reference: "8.4"
 problem_type: calculation
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Distance Based Clustering : K-means algorithm
 question:
   <p>
   Considering the following data points

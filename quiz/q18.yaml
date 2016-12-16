@@ -3,7 +3,7 @@ problem_type: problem-solving
 difficulty: "2"
 reference: "11.2"
 source: |
-  Machine Learning (P. Flach): Model ensembles (p 332, 334)
+  Machine Learning: Model ensembles (p 332, 334)
 question: |
   <p>
   Order the following learning algorithms from those most applicable to

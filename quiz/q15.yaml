@@ -2,7 +2,8 @@ images: []
 difficulty: "3"
 reference: "7.1"
 problem_type: training
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Linear Models - The least-squares method
 question: |
   Given the following instance table:
   <table>

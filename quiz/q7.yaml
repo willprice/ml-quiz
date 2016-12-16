@@ -4,7 +4,8 @@ images:
 problem_type: calculation
 difficulty: "3"
 reference: "5.2"
-source: "5.2 - Turning trees into classifier p. 142"
+source: |
+  Machine Learning: Tree Models - Turning trees into classifier (p. 142)
 question: |
   An unlabelled decision tree is given in Fig 1. You are asked to label
   each leaf of the tree based on different cost assessments, for each

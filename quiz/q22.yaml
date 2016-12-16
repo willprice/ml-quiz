@@ -2,7 +2,8 @@ images: []
 difficulty: "3"
 reference: "11.2"
 problem_type: calculation
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Model ensembles: Boosting
 question: |
   Given the below contingency matrix:
   <table>

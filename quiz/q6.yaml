@@ -2,7 +2,8 @@ images: []
 difficulty: "3"
 reference: "3.1"
 problem_type: evaluation
-source: "https://www.cs.bris.ac.uk/Teaching/Resources/COMS30301/slides/slides2_3.pdf"
+source: |
+  Machine Learning: Beyond binary classification
 question: |
   <p>
   Given the score of six pairwise clssifiers

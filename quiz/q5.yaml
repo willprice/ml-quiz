@@ -4,7 +4,8 @@ images:
 problem_type: evaluation
 difficulty: "3"
 reference: "2.1"
-source: "https://www.cs.bris.ac.uk/Teaching/Resources/COMS30301/slides/slides2_3.pdf"
+source: |
+  Machine Learning: Binary classification and related tasks
 question:
   - Given the coverage plot in Fig. 1 depicting the performance of three classifiers and
     the details below, determine the dominant class by considering their mapping to

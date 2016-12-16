@@ -6,9 +6,10 @@ images:
   - url: img/cvplot_2.jpg
     caption: Coverage Plots
 difficulty: "3"
-reference: "4.1"
+reference: "4.2"
 problem_type: evaluation
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Concept Learning - Paths through the hypothesis space
 question: |
   <p>
   Given the following conjunctive concept hypothesis space representing

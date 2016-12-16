@@ -2,7 +2,8 @@ images: []
 difficulty: "3"
 reference: "6.2"
 problem_type: training
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Rule Models - Learning unordered rule sets
 question: |
   <p>
   Given the following instance space :

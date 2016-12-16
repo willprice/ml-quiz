@@ -2,7 +2,8 @@ images: []
 problem_type: calculation
 difficulty: "3"
 reference: "12.3"
-source: "URL"
+source: |
+  Machine Learning: Machine learning experiments - How to interpret it
 question: |
   <p>
   A comparison between two linear models over a collection of datasets

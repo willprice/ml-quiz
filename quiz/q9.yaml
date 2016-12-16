@@ -3,7 +3,7 @@ problem_type: problem-solving
 difficulty: "3"
 reference: "6.2"
 source: |
-  Machine Learning: Learning unordered rule sets - Rule sets for
+  Machine Learning: Rule Models - Learning unordered rule sets - Rule sets for
   ranking and probability estimation (p173-174)
 question: |
   <p>
