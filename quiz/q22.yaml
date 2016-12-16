@@ -1,0 +1,146 @@
+images: []
+difficulty: "3"
+reference: "11.2"
+problem_type: calculation
+source: "https://mlbook.cs.bris.ac.uk/"
+question: |
+  Given the below contingency matrix:
+  <table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Predicted $\oplus$</th>
+      <th>Predicted $\ominus$</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual $\oplus$</td>
+      <td>21</td>
+      <td>19</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Actual $\ominus$</td>
+      <td>13</td>
+      <td>47</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>34</td>
+      <td>66</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+  </table>
+  update the weighted misclassified examples using the error rate and complete
+  the associated contingency table.
+
+
+answer_type: cloze_answer
+answers:
+  answer:
+    - "17 | 29  | 46"
+    - "------------"
+    - "20 | 34 | 54"
+    - "------------"
+    - "37 | 63 | 100"
+  explanation: |
+    multiply misclassified examples with 1/(2*e) and correctly classified examples
+    with 1/(2*(1-e))
+
+
+workings: |
+  Suppose we train a linear classifier on a data set and find that its training error
+  rate is e where
+
+  $$
+  \begin{align}
+  e = \frac{1}{|T_e|}*\sum_{x \in Te}\left[ I(\hat{c}(x)) <> c(x) \right]\\
+  \end{align}
+  $$
+
+  We want to add another classifier to the ensemble that does better on the
+  misclassifications of the best classifier. One way to do that is to duplicate
+  the misclassified instances, but a better way is to give the misclassified
+  instances a higher weight of 1/2e and the correctly classified ones 1/(2*(1-e)).
+  <br>
+  Same concept is also implemented within the Boosting algorithm defined below:
+
+  <pre>
+  <code class="python">
+  Boosting(D, T, A)
+
+  Input: data set D; ensemble size T; learning algorithm A.
+  Output: weighted ensemble of models.
+
+  $w_1_i$ <- 1/|D| for all $x_i$ from D;
+  for t from 1 to T do
+    run A on D with weights $w_t_i$ to produce a model $M_t$;
+    calculate weighted error $e_t$;
+    if $e_t$ >= 1/2 then
+      set T<- t-1 and break
+    end
+    alpha <- 1/2 * ln((1-e_t)/e_t);
+    increase weight for each misclassified instance x from D;
+    decrease weight for each classified instance x from D;
+  end
+  return M(x)=sum of alpha*M_t(x)
+  </code>
+  </pre>
+
+  <p>
+  So fallowing the algorithm above we will compute the error:
+  <br>
+  e = $\frac{19+13}{100}$ = $\frac{32}{100}$ = 0.32
+  <br>
+  and we will modify the mislabelled instances by 1/2e = 1.56 and the correctly
+  labelled one bt 1/2(1-e)= 0.735.
+  </p>
+
+  Applying the above concept to our contingency matrix we will obtain:
+  <table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Predicted $\oplus$</th>
+      <th>Predicted $\ominus$</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Actual $\oplus$</td>
+      <td>21 * 0.735 =17</td>
+      <td>19 * 1.562 =29</td>
+      <td>46</td>
+    </tr>
+    <tr>
+      <td>Actual $\ominus$</td>
+      <td>13 * 1.562 =20</td>
+      <td>47 * 0.735 =34</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>37</td>
+      <td>63</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+  </table>
+
+
+hint: |
+  Multiply misclassified examples with 1/(2*e) and correctly classified examples
+  with 1/(2*(1-e)) here e is the error rate.
+
+comments: |
+  The question tackels the reconstruction of models from adapted versions of the
+  training data by reweighting the samples in accordence with the results on the
+  weak classifers.
+  <br>
+  The task has complexity 3 as requires along with a general understanding of the
+  concept, also means of applying the knowledge on a given example based on calculations.
