@@ -6,114 +6,139 @@ source: |
   Machine Learning: Probabilistic Models - Probabilistic models for
   categorising data
 question:
-  Considering the following data set describing emails using count vectors for a
-  three word vocabulary
+  - |
+    <p>
+    Considering the following data set describing emails. Each vector
+    represents the number of occurences of a specific word $w_i$ in an
+    email $e_i$, these are known as <i>count vectors</i>
+    </p>
 
-  <table>
-  <thead>
-    <tr>
-      <th>E-mail</th>
-      <th>a</th>
-      <th>b</th>
-      <th>c</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$e_1$</td>
-      <td>0</td>
-      <td>1</td>
-      <td>1</td>
-      <td>+ve</td>
-    </tr>
-    <tr>
-      <td>$e_2$</td>
-      <td>1</td>
-      <td>3</td>
-      <td>1</td>
-      <td>+ve</td>
-    </tr>
-    <tr>
-      <td>$e_3$</td>
-      <td>3</td>
-      <td>1</td>
-      <td>0</td>
-      <td>+ve</td>
-    </tr>
-    <tr>
-      <td>$e_4$</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>+ve</td>
-    </tr>
-    tr>
-      <td>$e_5$</td>
-      <td>4</td>
-      <td>0</td>
-      <td>2</td>
-      <td>-ve</td>
-    </tr>
-    <tr>
-      <td>$e_6$</td>
-      <td>5</td>
-      <td>2</td>
-      <td>2</td>
-      <td>-ve</td>
-    </tr>
-    <tr>
-      <td>$e_7$</td>
-      <td>3</td>
-      <td>0</td>
-      <td>5</td>
-      <td>-ve</td>
-    </tr>
-    <tr>
-      <td>$e_8$</td>
-      <td>4</td>
-      <td>0</td>
-      <td>0</td>
-      <td>-ve</td>
-    </tr>
-  </tbody>
-  </table>
-  estimate the multinomial model and use maximum likelihood decision rule to classify
-  the new email x = (3,0,1).
+    <table>
+    <thead>
+      <tr>
+        <th rowspan="2">E-mail</th>
+        <th colspan="3">Word</th>
+        <th rowspan="2">Class</th>
+      </tr>
+      <tr>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>$e_1$</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>+ve</td>
+      </tr>
+      <tr>
+        <td>$e_2$</td>
+        <td>1</td>
+        <td>3</td>
+        <td>1</td>
+        <td>+ve</td>
+      </tr>
+      <tr>
+        <td>$e_3$</td>
+        <td>3</td>
+        <td>1</td>
+        <td>0</td>
+        <td>+ve</td>
+      </tr>
+      <tr>
+        <td>$e_4$</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>+ve</td>
+      </tr>
+      <tr>
+        <td>$e_5$</td>
+        <td>4</td>
+        <td>0</td>
+        <td>2</td>
+        <td>-ve</td>
+      </tr>
+      <tr>
+        <td>$e_6$</td>
+        <td>5</td>
+        <td>2</td>
+        <td>2</td>
+        <td>-ve</td>
+      </tr>
+      <tr>
+        <td>$e_7$</td>
+        <td>3</td>
+        <td>0</td>
+        <td>5</td>
+        <td>-ve</td>
+      </tr>
+      <tr>
+        <td>$e_8$</td>
+        <td>4</td>
+        <td>0</td>
+        <td>0</td>
+        <td>-ve</td>
+      </tr>
+    </tbody>
+    </table>
 
+    <p>
+    Model the occurence of words using a multinomial distribution and
+    use the maximum likelihood decision rule to classify the new email $e_t
+    = (3,0,1)$. Give all answers to 2 decimal places.
+    </p>
 
-  \begin{align}
-  P(x|\oplus) = , 1\\
-  P(x|\ominus) = , 2\\
-  \text{The label predicted will be}, 3\\
-  \end{align}
+    <ul>
+    <li>$P(e_t|\oplus) = $
+  - 1
+  - |
+    </li>
+  - <li>$P(e_t|\ominus) = $
+  - 2
+  - |
+    </li>
+    <li>
+    The label predicted will be: 
+  - 3
+  - |
+    </li>
+    </ul>
 
 answer_type: blank_answer
 answers:
-  - correctness: "1"
+  - correctness: 1
     answer: "0.03"
     explanation: "as computed in workings"
-  - correctness: "2"
+  - correctness: 2
     answer: "0.24"
     explanation: "as computed in workings"
-  - correctness: "3"
+  - correctness: 3
     answer: "-"
     explanation: "as computed in workings"
 
 workings: |
   For the multinomial model we will need to sum up the count vectors for each class:
+
   \begin{align}
   +ve : ( 4, 6, 2)\\
   -ve : ( 16, 2, 9)\\
   \end{align}
+
   We then add a pseudo-count for each word to dmooth the probability estimates. This
   gives a total of 15 word occurences for the positives and 30 word occurences for
   the negative class which gives the following parameters estimates:
+
   \begin{align}
-  theta \oplus = (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
-  theta \ominus = (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
+  theta \oplus &= (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
+  theta \ominus &= (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
   \end{align}
-  Next we need to calculate $argmax_y P(X=x|Y=y):$
+
+  Next we need to calculate $\underset{y}{\operatorname{argmax}} P(X=x|Y=y)$
+
   \begin{align}
   P(x|\oplus) = 4! \frac{0.33{3}}{3!} \frac{0.47{0}}{0!} \frac{0.2{1}}{1!} = 0.03 \\
   P(x|\ominus) = 4! \frac{0.57{3}}{3!} \frac{0.1{0}}{0!} \frac{0.33{1}}{1!} = 0.24 \\
