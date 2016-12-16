@@ -5,7 +5,8 @@ problem_type: training
 source: |
   Machine Learning: Linear Models - The least-squares method
 question: |
-  Given the following instance table:
+  Given the following training examples:
+
   <table>
   <thead>
     <tr>
@@ -30,7 +31,7 @@ question: |
       <td>6</td>
       <td>4</td>
     </tr>
-    tr>
+    <tr>
       <td>7</td>
       <td>4</td>
     </tr>
@@ -48,12 +49,11 @@ question: |
     </tr>
   </tbody>
   </table>
-  \begin{align}
 
-  \end{align}
-  determine the best fitting polynomial $y = a_0 +a_1x + a_2x{2}$, using the matrix form.
-  <br>
-  After introducing 2 more samples:
+  <p>
+  Determine the best fitting polynomial $\hat{y} = a_0 +a_1x + a_2x^{2}$, using the matrix form least squares method.
+  </p>
+
   <table>
   <thead>
     <tr>
@@ -72,13 +72,19 @@ question: |
     </tr>
   </tbody>
   </table>
-  compute the new best fitting polynomial and compare your results, taking into
-  consideration that the 2 added instances are outliers.
 
-  <br>
-  Now compute the difference between the predicted y and given y in each case for
-  the sample (8,3). Then compute their difference and choose the correct one from
-  the list below:
+  <p>
+  The data points above are outliers, train a new regressor $\hat{y}'$
+  by including the outliers in the training data and compare the
+  coefficients before and after adding the outliers.
+  </p>
+
+  <p>
+  Given the new data point $(8, 3)$, determine the prediction of
+  $\hat{y}$ and $\hat{y}'$, then calculate the residual for each
+  regressor, finally compute the difference between the residuals and
+  select the correct difference of residuals below:
+  </p>
 
 answer_type: single
 answers:
@@ -96,21 +102,17 @@ answers:
 workings: |
   <p>
   Finding the model parameters amounts to finding the best fitting line given the
-  data that implies minimising the distance measure from the points to the line,
-  concept also used in the Least-Squares Method.
+  data involves minimising the distance measure from the points to the line.
   </p>
 
   <p>
-  Therefore having the following polynomial definition of the fitting line:
-  \begin{align}
-  y = a_0 +a_1x + a_2x{2}\\
-  \end{align}
-  we will try to minimise the residual described as below:
-  </p>
+  The form of a polynomial of degree 2:
 
-  \begin{align}
-  R(a_0, a_1, a_2) &= \sum_{i \in N}\left[ (y_i - (a_0 +a_1x + a_2x{2})){2} \right] &= ||y-Xa||{2}\\
-  \end{align}
+  $$y = a_0 +a_1x + a_2x{2}$$
+
+  The sum squared of residuals of training data $X$ is
+
+  $$R(a_0, a_1, a_2) = \sum_{i = 1}^N \left[ (y_i - (a_0 +a_1 x_i + a_2 x_i^{2}))^{2} \right] = ||\mathbf{y} - \mathbf{X} \cdot \mathbf{a}||^{2}$$
   where:
 
   $$\mathbf{y} =
@@ -137,24 +139,24 @@ workings: |
   \end{pmatrix}$$.
 
   <p>
-  To solve the least squares we will use the following deductions:
-
-  \begin{align}
-  \text{minimise } R(a) = ||y - Xa_L||{2} => ||y - Xa_L||{2} =0 => y - Xa_L = 0 =>
-  Xa_L = y => X{T}Xa_L = X{T}y\\
-  => a_L = (X{T}X){-1}X{T}y\\
-  \end{align}
-
+  $\mathbf{a_{LS}}$ is the vector $\mathbf{a}$ obtained by minimizing
+  the sum squared of the residuals, the formula for obtaining
+  $\mathbf{a_{LS}}$ is $\mathbf{a_{LS}} = (\mathbf{X}^T \mathbf{X})^{-1}
+  \mathbf{X}^{T} \mathbf{y}$. This can be derived by considering partial
+  derivatives of the sum of squared residuals with respect to each
+  individual residual component and forming the gradient of
+  $\mathbf{a_{LS}}$.
   </p>
 
   <p>
-  Having the instance space:
-  <br>
-  $(1,1) (3,2) (5,2) (6,4) (7,4) (8,3) (9,4) (10,5)$
-  <br>
-  we will constuct the following matrices:
+  Given the set of annotated training examples in the form $(x, y)$:
+
+  $$\{(1,1), (3,2), (5,2), (6,4), (7,4), (8,3), (9,4), (10,5)\}$$
+
+  We will derive $a_{LS}$
   </p>
 
+  <p>
   $$\mathbf{y} =
   \begin{pmatrix}
     1\\
@@ -193,14 +195,14 @@ workings: |
     1{2} & 3{2} & 5{2} & 6{2} & 7{2} & 8{2} & 9{2} & 10{2}\\
   \end{pmatrix}
   \begin{pmatrix}
-    1 & 1 & 1{2}\\
-    1 & 3 & 3{2}\\
-    1 & 5 & 5{2}\\
-    1 & 6 & 6{2}\\
-    1 & 7 & 7{2}\\
-    1 & 8 & 8{2}\\
-    1 & 9 & 9{2}\\
-    1 & 10 & 10{2}\\
+    1 & 1 & 1^{2}\\
+    1 & 3 & 3^{2}\\
+    1 & 5 & 5^{2}\\
+    1 & 6 & 6^{2}\\
+    1 & 7 & 7^{2}\\
+    1 & 8 & 8^{2}\\
+    1 & 9 & 9^{2}\\
+    1 & 10 & 10^{2}\\
   \end{pmatrix}
   =
   \begin{pmatrix}
@@ -208,39 +210,40 @@ workings: |
     49 & 365 & 2953\\
     365 & 2953 & 25061\\
   \end{pmatrix}$$
-  <p>
-  So after inverting the $X{T}X$ we obtained:
-  </p>
 
-  $$\mathbf{a_LS = (X{T}X){-1}X{T}} =
+  So after inverting $X^{T} X$ we obtained:
+
+  $$
+  \mathbf{a_{LS}} = (X^{T}X)^{-1}X^{T} =
   \begin{pmatrix}
     0.6009\\
     0.4395\\
     -0.0037\\
-  \end{pmatrix}$$.
+  \end{pmatrix}
+  $$
 
-  \begin{align}
-  => y = 0.60 + 0.43*x -0.0037*x{2}\\
-  \end{align}
+  $$\hat{y} = 0.60 + 0.43x -0.0037x^{2}$$
+  </p>
 
-  However, introducing the new 2 points will have:
-  \begin{align}
-  a_LS = (X{T}X){-1}X{T}y=\\
-  \end{align}
+  <p>
+  Introducing the outliers and retraining the classifier to produce a
+  new regressor $\hat{y}'$ determined by $\mathbf{a}_{LS'}$
 
-  $$\mathbf{} =
+
+  $$
+  \mathbf{a_{LS'}} = 
   \begin{pmatrix}
     1.3851 & -0.5259 & 0.0417\\
     -0.5259 & 0.2417 & -0.0209\\
     0.0417 & -0.0209 & 0.0019\\
   \end{pmatrix}
-  *
+  \cdot
   \begin{pmatrix}
     1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
     1 & 3 & 5 & 6 & 7 & 8 & 9 & 10 & 2 & 4\\
-    1{2} & 3{2} & 5{2} & 6{2} & 7{2} & 8{2} & 9{2} & 10{2} & 2{2} 4{2}\\
+    1^{2} & 3^{2} & 5^{2} & 6^{2} & 7^{2} & 8^{2} & 9^{2} & 10^{2} & 2^{2} & 4^{2}\\
   \end{pmatrix}
-  *
+  \cdot
   \begin{pmatrix}
     1\\
     2\\
@@ -258,27 +261,30 @@ workings: |
     2.1825\\
     0.3905\\
     -0.0190\\
-  \end{pmatrix}$$.
+  \end{pmatrix}
+  $$
 
-  \begin{align}
-  => y = 2.182 + 0.39*x -0.019*x{2}
-  \end{align}
-
-  <p>
-  So for (8,3) we will predict $y_1$ = 3.7968 and $y_2$ = 6.518.
+  $$\hat{y}' = 2.182 + 0.39x -0.019x^{2}$$
   </p>
+
   <p>
-  $|y_1 - y|$ = 0.7968
-  <br>
-  $|y_2 - y|$ = 3.518
-  <br>
-  $||y_1 - y |-|y_2 - y||$ = 2.7212   where  $|y_2 - y|$ > $|y_1 - y|$ which we were
+  So for (8,3) we will predict $\hat{y}$ = 3.7968 and $\hat{y}'$ = 6.518.
+
+  $$|\hat{y} - y| = 0.7968$$
+  $$|\hat{y}' - y| = 3.518$$
+  $$\left| |\hat{y} - y| - |\hat{y}' - y| \right| = 2.7212$$ 
+
+  where
+
+  $$|\hat{y} - y| > |\hat{y}' - y|$$ 
+
+  which we were
   expecting as the least-square method is sensible to outliers.
   </p>
 hint: |
   <p>
   Generalise the definition of the linear function to be under the following form
-  $y = a_0 +a_1x + a_2x{2}$. Then compute the slope and the y-intercept trying to
+  $y = a_0 +a_1x + a_2x^{2}$. Then compute the slope and the y-intercept trying to
   minimise the residual.
   </p>
 
