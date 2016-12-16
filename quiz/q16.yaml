@@ -13,7 +13,7 @@ question:
   k=2 as the number of clusters.
   </p>
   <p>
-  Fallowing your chosen clustering choose the corresponding within-cluster scatter
+  Following your chosen clustering choose the corresponding within-cluster scatter
   trace and between-cluster scatter trace.
   </p>
 

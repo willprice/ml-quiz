@@ -11,7 +11,7 @@ question: |
   ( C1, C2, C3, C4, C5, C6)=( +5, -0.5, +4, -0.5, +4 , +0.5)\\
   \end{align}
   $$
-  compute their asymmetric one-versus-one scheme. Fallowing this, compute their
+  compute their asymmetric one-versus-one scheme. Following this, compute their
   distances to the word w = +1 -1 +1 -1 +1 +1 using the exponential loss functions
   and the voting-based scheme and sort the classes according to your results
   in descending order of their favoritism.

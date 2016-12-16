@@ -107,7 +107,7 @@ question: |
   </table>
   </p>
   <p>
-  Fallowing the reduced-error pruning, complete the next contingency matrix
+  Following the reduced-error pruning, complete the next contingency matrix
   according to your results to observe the impact on the first given data.
   </p>
 
@@ -199,7 +199,7 @@ workings: |
   total impurity = 4/10 * 0 + 6/10 *(-(5/6)log(5/6)-(1/6)log(1/6)) = 0.39.
   <br>
   <br>
-  Fallowing the same calculations:
+  Following the same calculations:
   <br>
   total impurity for feature beak = 8/10 *(-(5/8) log(5/8) - (3/8) log(3/8)) +
   2/10 * 0 = 0.76;
@@ -214,7 +214,7 @@ workings: |
   </p>
   <p>
   While Gills = no will be homogeneous we will label that leaf with the negative
-  class. Fallowing this, we will repeat the same process on the Gills = yes branch
+  class. Following this, we will repeat the same process on the Gills = yes branch
   untill all the leafs obtained will achieve the maximum accuracy. From top to bottom,
   the decision tree will be in the end split in order on the following features:
   gills, length, teeth.
@@ -260,7 +260,7 @@ workings: |
 
 hint: |
   <p>
-  Fallow the given algorithms taking into consideration that finding the best
+  Follow the given algorithms taking into consideration that finding the best
   split will require finding the feature that achieves the minimum entropy/impurity
   while at each added split the number of instances will reduce.
   </p>
