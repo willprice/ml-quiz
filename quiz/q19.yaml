@@ -32,56 +32,56 @@ question:
         <td>0</td>
         <td>1</td>
         <td>1</td>
-        <td>+ve</td>
+        <td>+</td>
       </tr>
       <tr>
         <td>$e_2$</td>
         <td>1</td>
         <td>3</td>
         <td>1</td>
-        <td>+ve</td>
+        <td>+</td>
       </tr>
       <tr>
         <td>$e_3$</td>
         <td>3</td>
         <td>1</td>
         <td>0</td>
-        <td>+ve</td>
+        <td>+</td>
       </tr>
       <tr>
         <td>$e_4$</td>
         <td>0</td>
         <td>1</td>
         <td>0</td>
-        <td>+ve</td>
+        <td>+</td>
       </tr>
       <tr>
         <td>$e_5$</td>
         <td>4</td>
         <td>0</td>
         <td>2</td>
-        <td>-ve</td>
+        <td>-</td>
       </tr>
       <tr>
         <td>$e_6$</td>
         <td>5</td>
         <td>2</td>
         <td>2</td>
-        <td>-ve</td>
+        <td>-</td>
       </tr>
       <tr>
         <td>$e_7$</td>
         <td>3</td>
         <td>0</td>
         <td>5</td>
-        <td>-ve</td>
+        <td>-</td>
       </tr>
       <tr>
         <td>$e_8$</td>
         <td>4</td>
         <td>0</td>
         <td>0</td>
-        <td>-ve</td>
+        <td>-</td>
       </tr>
     </tbody>
     </table>
@@ -123,40 +123,43 @@ answers:
 workings: |
   For the multinomial model we will need to sum up the count vectors for each class:
 
+  <ul>
+    <li>Class + : $(4, 6, 2)$</li>
+    <li>Class - : $(16, 2, 9)$</li>
+  </ul>
+
+  We then add a pseudo-count for each word to smooth the probability
+  estimates. This gives a total of 15 word occurences for the positives
+  and 30 word occurences for the negative class which gives the
+  following distribution parameter estimates:
+
   \begin{align}
-  +ve : ( 4, 6, 2)\\
-  -ve : ( 16, 2, 9)\\
+  \hat{\theta}_\oplus &= (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
+  \hat{\theta}_\ominus &= (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
   \end{align}
 
-  We then add a pseudo-count for each word to dmooth the probability estimates. This
-  gives a total of 15 word occurences for the positives and 30 word occurences for
-  the negative class which gives the following parameters estimates:
+  Next we need to calculate $\underset{y}{\operatorname{argmax}}
+  P(e_t|Y=y)$, i.e. is the email more likely to be sampled from the
+  positive or negative class distribution?
 
   \begin{align}
-  theta \oplus &= (5/15, 7/15, 3/15) = (0.33, 0.47, 0.2)\\
-  theta \ominus &= (17/30, 3/30, 10/30) = (0.57, 0.1, 0.33)\\
-  \end{align}
-
-  Next we need to calculate $\underset{y}{\operatorname{argmax}} P(X=x|Y=y)$
-
-  \begin{align}
-  P(x|\oplus) = 4! \frac{0.33{3}}{3!} \frac{0.47{0}}{0!} \frac{0.2{1}}{1!} = 0.03 \\
-  P(x|\ominus) = 4! \frac{0.57{3}}{3!} \frac{0.1{0}}{0!} \frac{0.33{1}}{1!} = 0.24 \\
+  P(e|\oplus) = 4! \frac{0.33{3}}{3!} \frac{0.47{0}}{0!} \frac{0.2{1}}{1!} = 0.03 \\
+  P(e|\ominus) = 4! \frac{0.57{3}}{3!} \frac{0.1{0}}{0!} \frac{0.33{1}}{1!} = 0.24 \\
   \end{align}
 
 
 
 hint: |
   <p>
-  For a specific e-mail x we calculate both
+  For a specific e-mail $e_i$ we calculate both
+
   \begin{align}
-  P(X=x|Y=\oplus) \\
-  P(X=x|Y=\ominus) \\
+    P(X=x|Y=\oplus) \\
+    P(X=x|Y=\ominus) \\
   \end{align}
-  and apply the makimum likelihood decision rule
-  \begin{align}
-  \text{predict }argmax_y P(X=x|Y=y) \\
-  \end{align}
+
+  and using the makimum likelihood decision rule
+  predict $\underset{y}{\operatorname{argmax}} P(X=x|Y=y)$
   </p>
 
 comments: |
