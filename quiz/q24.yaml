@@ -42,9 +42,9 @@ question: |
   <table>
   <thead>
     <tr>
-      <th> f1 </th>
-      <th> f2 </th>
-      <th> f3 </th>
+      <th> $f_1$ </th>
+      <th> $f_2$ </th>
+      <th> $f_3$ </th>
       <th> Preference </th>
     </tr>
   </thead>
@@ -53,7 +53,7 @@ question: |
       <td>0</td>
       <td>1</td>
       <td>1</td>
-      <td>$l_1$ > $l_2$ , $l_2$ > $l_3$</td>
+      <td>$l_1$ > $l_2$ > $l_3$</td>
     </tr>
     <tr>
       <td>1</td>
@@ -71,6 +71,12 @@ question: |
       <td>0</td>
       <td>0</td>
       <td>1</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
       <td>...</td>
     </tr>
   </tbody>
@@ -87,28 +93,235 @@ question: |
   $$
   Using the above rulles and traing sets represent separetly $M(l_1,l_2)$, $M(l_2,l_3)$,
   $M(l_1,l_3)$ to add the classification of a new instance:
-  $f1 = 1\text{, } f2 = 1\text{, } f3 = 0$.
-  <br>
+  $f_1 = 1\text{, } f_2 = 1\text{, } f_3 = 0$.
+
+  <p>
   Fallowing the above concepts reorder the labels in decreasing order or their ranks,
-  using the voting scheme.
+  using the voting scheme dependent of the votes of $M(l_1,l_2)$, $M(l_2,l_3)$ and
+  $M(l_1,l_3)$
+  </p>
 
 answer_type: sort
 answers:
-  - correctness: "2"
+  - correctness: "1"
     answer: "$l_1$"
     explanation: "see workings"
-  - correctness: "4"
+  - correctness: "3"
     answer: "$l_2$"
     explanation: "see workings"
-  - correctness: "1"
+  - correctness: "2"
     answer: "$l_3$"
     explanation: "see workings"
 
 
 workings: |
-  Workings
+  The table within the question will be completed as fallows using the given rules:
+
+  <table>
+  <thead>
+    <tr>
+      <th> $f_1$ </th>
+      <th> $f_2$ </th>
+      <th> $f_3$ </th>
+      <th> Preference </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>$l_1$ > $l_2$ > $l_3$</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>$l_1$ > $l_3$ > $l_2$</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>$l_1$ > $l_3$ > $l_2$</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>$l_2$ > $l_1$ > $l_3$</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>$l_3$ > $l_2$ > $l_1$</td>
+    </tr>
+  </tbody>
+  </table>
+  and split into the fallowing models:
+  <br>
+  $M(1,2)$
+
+  <table>
+    <thead>
+      <tr>
+        <th> $f_1$ </th>
+        <th> $f_2$ </th>
+        <th> $f_3$ </th>
+        <th> $f1$ > $f2$ </th>
+      </tr>
+    </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+  </table>
+
+  $M(1,3)$
+
+  <table>
+    <thead>
+      <tr>
+        <th> $f_1$ </th>
+        <th> $f_2$ </th>
+        <th> $f_3$ </th>
+        <th> $f1$ > $f3$ </th>
+      </tr>
+    </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+  </table>
+
+  $M(2,3)$
+
+  <table>
+    <thead>
+      <tr>
+        <th> $f_1$ </th>
+        <th> $f_2$ </th>
+        <th> $f_3$ </th>
+        <th> $f2$ > $f3$ </th>
+      </tr>
+    </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+  </table>
+
+  So for the new instance:
+  $f_1 = 1\text{, } f_2 = 1\text{, } f_3 = 0$
+  we have in M(1,1) two instance with $f_1$=1 that both predict 1 and two instances
+  with $f_2$=1 that predict 1 respectively 0.
+  <br>
+  Taking up the majority class on both two pairs we will therefore predict 1 so
+  $l_1$ > $l_2$.
+
+  <p>
+  In M(1,3) we have two instances with $f_1$=1 that both predict 1 and two instances
+  with $f_3$=0 that predict 1 respectively 0.
+  Taking up the majority class on both two pairs we will therefore predict 1 so
+  $l_1$ > $l_3$.
+  </p>
+
+  <p>
+  And finally, in M(1,3) we have two instances with $f_2$=1 that both predict 1 respectively
+  0 and two instances with $f_3$=0 that both predict 0.
+  Taking up the majority class on both two pairs we will therefore predict 0 so
+  $l_2$ < $l_3$ obtaining the preference $l_1$ > $l_3$ > $l_2$.
+  </p>
+
 
 hint: |
-  Hints
+  For each element of a pair found to match some labels in M(i,j), the preference will
+  be chosen depending on the majority.
 comments: |
-  Comments
+  Complexity 5 question because it extends the information within the book by
+  generalising the concept of raking also to labels in a paiwise manner.
