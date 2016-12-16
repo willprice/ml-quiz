@@ -5,7 +5,7 @@ problem_type: calculation
 source: |
   Machine Learning - Features - Feature transformations
 question: |
-  $Agglomerative merging$
+  $\text{Agglomerative merging}$
   <br>
   Given the set of labelled instances:
 

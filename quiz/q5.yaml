@@ -74,7 +74,7 @@ workings: |
 
   <p>
   To be able to graphically represent the classifier performance differences we
-  have to normalise the data which will make noticable that they have
+  have to normalise the data which will make noticeable that they have
   different average recalls.  This is due to the fact that even if the
   differences on the x and y axis do might include an equal amount of
   false and true positives instances, because the number of negatives

@@ -1,6 +1,6 @@
 images:
   - url: img/hypspace.jpg
-    caption: hyphothesis space
+    caption: Hyphothesis space
   - url: img/cvplot_1.jpg
     caption: Coverage Plots
   - url: img/cvplot_2.jpg
@@ -13,7 +13,7 @@ source: |
 question: |
   <p>
   Given the following conjunctive concept hypothesis space representing
-  concepts for categorising fish by species and the table of fish below,
+  concepts for categorising fish by species and the table of fish instances below,
   match each coloured path through the hypothesis space with its
   corresponding coverage plot.
   </p>
@@ -218,7 +218,7 @@ workings: |
   </table>
 
   <p>
-  We will reference hypotheses using the Rule Id in the table above to
+  We will reference hypothesis using the Rule Id in the table above to
   save having to repetitiously write them out!
   </p>
 
