@@ -7,12 +7,13 @@ source: |
 question:
   <p>
   Considering the following data points
-  \begin{align}
-  (2, 3, 2) (1, 4, 3) (0, 2, 3) (-1, 3, -1) (-2, 2, -2) (0, 0, -2)\\
-  \end{align}
-  compute the best k-means clusters taking into consideration only 2 dimensions and
-  k=2 as the number of clusters.
+  $$
+  \{ (2, 3, 2), (1, 4, 3), (0, 2, 3), (-1, 3, -1), (-2, 2, -2), (0, 0, -2) \}
+  $$
+  compute the best clustering using the K-means algortihm by using only
+  2 dimensions and k=2 as the number of clusters.
   </p>
+
   <p>
   Following your chosen clustering choose the corresponding within-cluster scatter
   trace and between-cluster scatter trace.
@@ -33,22 +34,31 @@ answers:
 
 workings: |
   <p>
-  Taking pairs of two of the 3 features and representin them on the coordinate axes
-  will be the most efficient way to assess the chosen dimensions. While choosing
-  the x and y dimensions will give us a cloud with high variance, the y and z will
-  issolate a single point on the y axis that can either be an outlier or otherwise
-  determines a high within-cluster scatter. Therefore, the x and z dimensions will
-  be the one choosen as it both maximises the between-cluster scatter, but also
-  minimises the within-cluster scatter.
-  </p>
+  Taking pairs of 2 of the 3 features and plotting them in 2D space
+  is a good  way to assess clustering potential of the features.
   <p>
-  Even if visually it is easy to identify the clusters that will predict two different
-  classes, an automatated distance-based cluster will have to follow the following
-  KMeans algorithm:
+
+  <img src="img/k-means-analysis.png">
+  
+  <p>
+  While choosing the x and y dimensions will give us a cloud with high
+  variance, the y and z will issolate a single point on the y axis that
+  can either be an outlier or otherwise determines a high within-cluster
+  scatter. Therefore, the x and z dimensions will be the one choosen as
+  it both maximises the between-cluster scatter, but also minimises the
+  within-cluster scatter.
+  </p>
+
+
+  <p>
+  Even if it is visually easy to identify the clusters that will separate two
+  classes, it isn't precise nor repeatable, an automated algorithm like
+  K-means can used (although dependent upon the initial cluster setting
+  it may or may not be deterministic)
   </p>
 
   <pre>
-  <code class="python">
+  <code>
   KMeans(D, K):
 
   Input: data D; a natural number of clusters k;
@@ -72,29 +82,32 @@ workings: |
   will be grouped in the end in 2 different clusters.
   </p>
 
+
   <p>
-  We will then proceed to partition the given data D into K subsets and let q{i}
-  denote the mean of a cluster D{i}. Let S{j} be the scatter matrices of D{j} having
+  We will then proceed to partition the given data D into K subsets and let $\mu_i$
+  denote the mean of a cluster $C_i$. Let $S_i$ be the scatter matrix of $D_i$ having
   the following relationship:
   </p>
 
-  \begin{align}
-  S &= \sum_{j \in k}\left[ S{j} + B \right]\\
-  \end{align}
-  where S{j} is called the within-clustre scatter matrix and B the between-cluster
-  scatter matrix and describes the spread of the cluster centroids.
+  $$
+  S = \sum_{j = 1}^K \left[ S_j + B \right]
+  $$
+
+  Where $S_j$ is called the within-clustre scatter matrix and $B$ the
+  between-cluster scatter matrix and describes the spread of the cluster
+  centroids.
 
   <p>
   Therefore, we can next compute the cluster means as follows:
   </p>
 
   <ul>
-    <li>q{1} = ( (2+ 1+ 0) / 3, (2+ 3+ 3) / 3) = ( 1, 2.6)</li>
-    <li>q{2} = ( (-1+ -2+ 0) / 3, (-1+ -2+ -2) / 3) = ( -1, -1.6)</li>
+    <li>$\mu_1 = ( (2+ 1+ 0) / 3, (2+ 3+ 3) / 3) = ( 1, 2.6)$</li>
+    <li>$\mu_2 = ( (-1+ -2+ 0) / 3, (-1+ -2+ -2) / 3) = ( -1, -1.6)$</li>
   </ul>
   and the scatter matrixes:
 
-  $$\mathbf{S{1}} =
+  $$\mathbf{S_1} =
   \begin{pmatrix}
     2-1 & 1-1 & 0-1\\
     2-2.6 & 3-2.6 & 3-2.6\\
@@ -110,7 +123,7 @@ workings: |
     -1 & 0.68 \\
   \end{pmatrix}$$
 
-  $$\mathbf{S{2}} =
+  $$\mathbf{S_2} =
   \begin{pmatrix}
     -1-(-1) & -2-(-1) & 0-(-1)\\
     -1-(-1.6) & -2-(-1.6) & -2-(-1.6)\\
@@ -128,11 +141,11 @@ workings: |
 
   with traces:
   <ul>
-    <li>Scat(D{1}) = 2.68</li>
-    <li>Scat(D{2}) = 2.68</li>
+    <li>$Scat(D_1) = 2.68$</li>
+    <li>$Scat(D_2) = 2.68$</li>
   </ul>
   We next calculate the between-cluster sctter matrix as
-  $$\mathbf{S{2}} =
+  $$\mathbf{S_2} =
   \begin{pmatrix}
     1 & 1 & 1 & -1 & -1 & -1\\
     2.6 & 2.6 & 2.6 & -1.6 & -1.6 & -1.6\\
