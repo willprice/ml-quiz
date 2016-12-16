@@ -26,3 +26,4 @@ candidate_number:
 "21": !include quiz/q21.yaml
 "22": !include quiz/q22.yaml
 "23": !include quiz/q23.yaml
+"24": !include quiz/q24.yaml

@@ -1,0 +1,114 @@
+images: []
+problem_type: definition
+difficulty: "5"
+reference: "0"
+source: "http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.161.6356&rep=rep1&type=pdf"
+question: |
+  $\text{Label ranking by learning pairwise preferences}$
+  <p>
+  As we discussed in Chapter 1 achine learning is concerned with using the right
+  features to build the right models that achieve the given task. This is done by
+  measuring similarities within our instance space, where measures can be viewed as
+  logical, geometric or probabilistic as discussed within the book.
+  </p>
+  <p>
+  However, even the dependence between labels can become an additional source of
+  information. Multi-label learning aims to exploit this information by learning
+  the dependence between the labels as well as the mapping between the features
+  and each individual label. A related area is preference learning, where the goal
+  is to learn instance-dependent preferences between class labels proposed by many
+  studies from which we will use as reference the $\text{"Label ranking by learning pairwise
+  preferences" paper by Eyke Hullermeier, Johannes Furnkranz, Weiwei Cheng and Klaus Brinker.}$
+  </p>
+  <p>
+  The key idea of ranking by pairwise comparison(RPC) is to reduce the problem of
+  label ranking to several binary classification problems. The prediction of this
+  ensemble of binary classifiers can then be combined into a ranking using a separate
+  ranking algorithm. One simple effective strategy for that would be a generalization
+  of the voting strategy and all labels are then oredered according to these evaluation.
+  </p>
+
+  <p>
+  To this end, a separate Model(i,j) is trained for each pair of labels $(l_i,l_j)$
+  from the size m label space where 1<= i<= j<= m. Therefore, in the end we will
+  have trained m(m-2)/2 models where each prediction of a model will be interpreted
+  as vote for the labels described, such that the closer the output of M(i,j) to 1,
+  the stronger the preference of label i with be to label j.
+  </p>
+
+  <p>
+  For this new concept we will introduce the fallowing example where f1, f2, f3
+  represent the labels and l1, l2, l3 will represent the labels.
+  <table>
+  <thead>
+    <tr>
+      <th> f1 </th>
+      <th> f2 </th>
+      <th> f3 </th>
+      <th> Preference </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>$l_1$ > $l_2$ , $l_2$ > $l_3$</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>...</td>
+    </tr>
+  </tbody>
+  </table>
+  </p>
+  that will need to be futher completed given the fallowing simple rules:
+  $$
+  \begin{align}
+  M(l_1,l_2): l_1>l_2 \text{  if $f_2$ = 1}\\
+  M(l_2,l_3): l_2>l_3 \text{  if $f_3$ = 1}\\
+  M(l_1,l_3): l_1>l_3 \text{  if $f_1$ = 1 or $f_3$ = 1}\\
+  \\
+  \end{align}
+  $$
+  Using the above rulles and traing sets represent separetly $M(l_1,l_2)$, $M(l_2,l_3)$,
+  $M(l_1,l_3)$ to add the classification of a new instance:
+  $f1 = 1\text{, } f2 = 1\text{, } f3 = 0$.
+  <br>
+  Fallowing the above concepts reorder the labels in decreasing order or their ranks,
+  using the voting scheme.
+
+answer_type: sort
+answers:
+  - correctness: "2"
+    answer: "$l_1$"
+    explanation: "see workings"
+  - correctness: "4"
+    answer: "$l_2$"
+    explanation: "see workings"
+  - correctness: "1"
+    answer: "$l_3$"
+    explanation: "see workings"
+
+
+workings: |
+  Workings
+
+hint: |
+  Hints
+comments: |
+  Comments
