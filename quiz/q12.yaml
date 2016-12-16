@@ -160,6 +160,11 @@ answers:
     When prunning the accuracy of the decision tree on the first data given will decrease
 
 workings: |
+  <div style="display: none">
+  $$\(
+  \DeclareMathOperator{\imp}{Imp}
+  \)$$
+  </div>
   <p>
   GrowTree(D,F) is a divide-and-conquer algorithm that in our case given the
   D instance space containing 10 samples and the F set of features will return
@@ -177,7 +182,7 @@ workings: |
   S<-BestSplit(D,F);
   split D into subsets D(i) according to the literals in S;
   for each i do
-    if D(i) <> {} then
+    if D(i) != {} then
       T(i) <- GrowTree(D(i),F)
       else
         T(i) is a leaf labelled with Label(D)
@@ -189,18 +194,27 @@ workings: |
 
   <p>
   The BestSplit-class algorithm chooses as the best feature to spilt on, the one
-  that achieves the maximum information gain, Imp(D)-Imp({D1,...,Dl}),
-  for splitting the parent node D into leaves D1,..,Dl. While the Imp(D)
-  is constant during one iteration of the algorithm, it will be equivalently
-  correct to choose the feature that achieves the minimum impurity.
+  that achieves the maximum reduction in impurity and in the case of
+  using entropy as the impurity metric, the maximum information gain.
+  The gain in impurity from a parent node $D$ to a set of children
+  $\{D_1, ..., D_l\}$ is defined as $\imp(D) - \imp(\{D_1,...,D_l\})$.
   </p>
 
   <p>
-  The feature available will contain the examples as follows for the first split:
+  When choosing the best feature to split, we can simply choose the
+  feature that produces the minimum weighted impurity since, the
+  impurity of the parent is constant when testing out all the different
+  feature splits.
+  </p>
+
+  <p>
+  Splitting the data set based on the feature on the left results in the
+  child leaf counts on the right
+
   \begin{align}
   Length &= 3           \rightarrow [2+, 0-]\\
   Length &= 4           \rightarrow [1+, 3-]\\
-  Length &= 4           \rightarrow [2+, 2-]\\
+  Length &= 5           \rightarrow [2+, 2-]\\
   Gills  &= \text{yes}  \rightarrow [0+, 4-]\\
   Gills  &= \text{no}   \rightarrow [5+, 1-]\\
   Beak   &= \text{yes}  \rightarrow [5+, 3-]\\
@@ -211,40 +225,60 @@ workings: |
   </p>
 
   <p>
-  For feature length = 3 we only have positive instances meaning the leaf will
-  be pure so therefore we have entropy = 0;
-  <br>
-  For feature length = 4 will have:
+  Using these counts and entropy as our purity measure we can determine
+  which feature produces the best split by finding the feature that
+  produced the minimum weight sum of impurities of the child leaves.
+  </p>
 
-  $$entropy = -(1/4) \log(1/4) - (3/4) \log(3/4) = 0.51 + 0.31 = 1.81$$
+  <p>
+  We will abbreviate features and values for brevity, length becomes
+  $L$, gills becomes $G$, beak becomes $B$, and so on.
 
-  For feature length =5 we have 50% positives as 50% negatives that means
-  we have a maximum impurity of 1.
-  <br>
-  Therefore, the total impurity will be as follows:
+  <p>
+  <b>Split on Length</b><br />
+  For $L = 3$ we only have positive instances meaning the leaf will
+  be pure so therefore we have 
 
-  $$ total impurity = 2/10 * 0 + 4/10 * 0.81 + 4/10 * 1 = 0.72 $$
+  $$\imp(D_{L= 3}) = 0$$
 
-  For feature Gills = yes we only have negative instances so we will have again
+  $$\imp(D_{L = 4}) = -(1/4) \log(1/4) - (3/4) \log(3/4) = 0.5 + 0.31 = 0.81$$
+
+  For $L = 5$, the leaf has the same number of each class so impurity as
+  it a maximum: $\imp(D_{L=5}) = 1$
+
+  Calculating the weighted sum of impurity:
+
+  $$\imp(\{D_{L = 3}, D_{L = 4}, D_{L = 5}\}) = 2/10 \cdot 0 + 4/10 \cdot 0.81 + 4/10 \cdot 1 = 0.72 $$
+  </p>
+
+
+  <p>
+  <b>Split on Gills</b><br />
+  For feature $G = Y$ we only have negative instances so we will have again
   an entropy of 0.
-  <br>
-  For feature Gills = no will have :
+  <br />
 
-  $$ entropy = -(5/6) \log(5/6) - (1/6) \log(1/6)$$
+  $$\imp(D_{G=N}) = -(5/6) \log(5/6) - (1/6) \log(1/6)$$
 
-  Therefore the total impurity will be will be as follows:
+  Calculating the weighted sum of impurity:
 
-  $$ total impurity = 4/10 * 0 + 6/10 *(-(5/6)\log(5/6)-(1/6)\log(1/6)) = 0.39.  $$
+  $$\imp(\{D_{G=Y}, D_{G=N}\}) = 4/10 \cdot 0 + 6/10 \cdot(-(5/6)\log(5/6)-(1/6)\log(1/6)) = 0.39.  $$
+  </p>
 
-  Following the same calculations:
+  <p>
+  <b>Split on Beak</b><br />
   $$
-  total impurity for feature beak = 8/10 *(-(5/8) \log(5/8) - (3/8) \log(3/8)) + 2/10 * 0 = 0.76
+  \imp(\{D_{B=Y}, D_{B=N}\}) = 8/10 \cdot(-(5/8) \log(5/8) - (3/8) \log(3/8)) + 2/10 \cdot 0 = 0.76
   $$
+  </p>
 
+  <p>
+  <b>Split on Teeth</b><br />
   $$
   \begin{align}
-  total impurity for feature teeth = &{} 7/10 *(-(3/7) \log(3/7) - (4/7) \log(4/7)) + {} \\
-  &{} 3/10 *(-(2/3) \log(2/3) - (1/3) \log(1/3)) = 0.97
+  \imp(\{D_{T=F}, D_{T=M}\}) = & 7/10 \cdot(-(3/7) \log(3/7) - (4/7) \log(4/7)) + {} \\
+                           & 3/10 \cdot(-(2/3) \log(2/3) - (1/3) \log(1/3)) \\
+                           = &0.97
   \end{align}
   $$
   </p>
@@ -252,19 +286,20 @@ workings: |
   <p>
   As we already established that the BestSplit-class will choose the feature that
   achieves the minimum impurity we can therefore say that 'Gills' will be the first
-  best feature to split on.
+  best feature to split on. The rest of the tree can be derived in a similar fashion.
   </p>
 
   <p>
-  While Gills = no will be homogeneous we will label that leaf with the negative
-  class. Following this, we will repeat the same process on the Gills = yes branch
-  untill all the leafs obtained will achieve the maximum accuracy. From top to bottom,
-  the decision tree will be in the end split in order on the following features:
-  gills, length, teeth.
+  Gills = no will be homogeneous over the negative class hence it will
+  be labeled that negative. In a similar vein, we will repeat the
+  labelling process on the Gills = yes branch until all the leafs
+  obtained until the leaves are all labelled. From top to bottom, the
+  decision tree will be in the end split in order on the following
+  features: gills, length, teeth.
   </p>
 
   <p>
-  However, that implies that we will in the end overfitt our decision tree for the
+  However, that implies that we will in the end overfit our decision tree for the
   data provided.To avoid this we can either stop our feature tree construction earlier,
   process known as pre-prunning or we can otherwise reasses our splits in a bottom-up
   manner provided a new set of data that was not part of our training procedure.
