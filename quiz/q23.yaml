@@ -2,35 +2,40 @@ images: []
 problem_type: definition
 difficulty: "2"
 reference: "12.2"
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Machine learning experiments - How to measure it.
 question: |
+  <p>
   In our measurements we expect some variations to occur from one measurement to
-  the next. In Chapter 12 we delt with different procedures that use the averaging
-  of k measurements to estimate our variance.
-  <br>
+  the next. In Chapter 12 we dealt with different procedures that use the averaging
+  of K measurements to estimate our variance.
+  </p>
+
+  <p>
   Match the fallowing concepts to their definitions or properties:
+  </p>
 answer_type: matrix_sort_answer
 answers:
   - correctness: "Cross-validation procedure"
     answer: |
-      "is applied by randomly partitioning the data in k parts or 'folds', where
+      is applied by randomly partitioning the data in k parts or 'folds', where
       one fold is set aside for testing and the model will be trained on the
       remaining k-1 folds. The process will be repeted k times until each fold
-      has been used for testing once."
-    explanation: "theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach"
-  - correctness: "Leave-one-out cross-validation"
+      has been used for testing once.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
+  - correctness: Leave-one-out cross-validation
     answer: |
-      "it is used when having a small number of instances and implies setting n folds
-      and training on all but one test instance, process repeated n times. "
-    explanation: "theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach"
-  - correctness: "Stratified cross-validation(e.g. 10 times 10-fold cross-validation)"
+      it is used when having a small number of instances and implies setting n folds
+      and training on all but one test instance, process repeated n times.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
+  - correctness: Stratified cross-validation(e.g. 10 times 10-fold cross-validation)
     answer: |
-      "it is applied if we expect the learning algorithm to be sensitive to the
+      It is applied if we expect the learning algorithm to be sensitive to the
       class distribution because it aims to achieving roughly the same class
       distribution in each fold. It can therefore pe repeated for different random
       partitions into folds and the results averaged again to further reduce variance
-      in our estimates."
-    explanation: "theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach"
+      in our estimates.
+    explanation: Theory presented in Chapter 12.2 pag 348 of Machine Learning by Peter Flach
 workings: |
   Leave-one-out cross-validation and stratified cross-validation are specific variations
   of the cross-validation procedure, all aiming to decrease the data variance through

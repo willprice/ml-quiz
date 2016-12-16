@@ -2,9 +2,11 @@ images: []
 difficulty: "3"
 reference: "9.2"
 problem_type: calculation
-source: "https://mlbook.cs.bris.ac.uk/"
+source: |
+  Machine Learning: Probabilistic Models - Probabilistic models for
+  categorising data
 question:
-  Considerin the following data set describing emails using count vectors for a
+  Considering the following data set describing emails using count vectors for a
   three word vocabulary
 
   <table>

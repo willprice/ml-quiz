@@ -2,7 +2,8 @@ images: []
 problem_type: calculation
 difficulty: "3"
 reference: "12.3"
-source: "URL"
+source: |
+  Machine Learning: Machine learning experiments - How to interpret it
 question: |
   <p>
   A comparison between two linear models over a collection of datasets
@@ -251,4 +252,8 @@ comments: |
   Complexity 3 because there is quite a lot of calculation although it's
   fairly formulaic. One potential trip up would be using critical values
   for a one tailed test.
+  </p>
+
+  <p>
+  Author: Will Price
   </p>

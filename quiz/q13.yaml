@@ -3,8 +3,10 @@ images:
     caption: "Fig 1: Training data"
 problem_type: training
 difficulty: "4"
-reference: "3.3"
-source: Machine Learning (P. Flach) p 225-226
+reference: "7.5"
+source: |
+  Machine Learning: Linear Models - Perceptron  (p 225-226) & Going
+  beyond linearity with kernel methods (p 244)
 question: |
   <p>
   A perceptron model with a polynomial kernel of degree 2 is being
